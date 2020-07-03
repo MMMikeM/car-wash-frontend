@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getCustomers } from './services/customersApi.js';
+import "./css/main.css";
 
 function App() {
   let [customers, setCustomers] = useState([])
@@ -22,6 +23,3 @@ function App() {
       }
     </>
   )
-}
-
-export default App;
