@@ -1,27 +1,25 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { useState, useEffect } from 'react';
+import { getCustomers } from './services/customersApi.js';
 import "./css/main.css";
 
 function App() {
-	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="btn btn-primary"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
-		</div>
-	);
-}
+  let [customers, setCustomers] = useState([])
+  let [loading, setLoading] = useState(true)
 
-export default App;
+  useEffect(() => {
+    getCustomers()
+    .then((res) => {
+      setCustomers(res)
+      setLoading(false)
+    })
+  })
+
+  return (
+    <>
+      {loading ?
+        <div>Loading...</div>
+        :
+        customers.map(c => <div>{c.name}</div>)
+      }
+    </>
+  )
