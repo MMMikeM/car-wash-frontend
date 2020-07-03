@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { getCustomers } from './services/customersApi.js';
 
 function App() {
+  let [customers, setCustomers] = useState([])
+  let [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getCustomers()
+    .then((res) => {
+      setCustomers(res)
+      setLoading(false)
+    })
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      {loading ?
+        <div>Loading...</div>
+        :
+        customers.map(c => <div>{c.name}</div>)
+      }
+    </>
+  )
 }
 
 export default App;
