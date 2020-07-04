@@ -2,9 +2,7 @@ version: '3.7'
 
 services:
   web:
-    stdin_open: true
-    tty: true
-    image: "mmmikem/car-wash-app:0.0.5"
+    image: "mmmikem/car-wash-app:staging"
     ports:
       - "3001:3000"
     env_file:
@@ -16,7 +14,7 @@ services:
     environment:
       POSTGRES_PASSWORD: db_password
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
 
 volumes:
-  bundle:
+  db:
