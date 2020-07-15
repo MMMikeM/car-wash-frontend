@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./css/main.css";
-import { getCustomers, postCustomer } from "./services/customersApi.js";
-import { getVehicles, postVehicle } from "./services/vehiclesApi";
+import { getCustomers } from "./services/customersApi.js";
+import { getVehicles } from "./services/vehiclesApi";
 import AddCustomerForm from "./components/addCustomerForm";
+import AddVehicleForm from "./components/addVehicleForm";
 import Login from "./components/login";
 
 function App() {
@@ -21,16 +22,6 @@ function App() {
 		console.log(localVehicles);
 	};
 
-	let vehicleBody = {
-		user_id: localCustomers ? localCustomers.id : console.log("no customer id"),
-		registration_number: "testtest123",
-	};
-
-	const handlePostVehicle = async () => {
-		let res = await postVehicle(vehicleBody);
-		console.log(res);
-	};
-
 	return (
 		<div className="App container w-75 px-5">
 			<h1 className="display-3 text-center">Welcome to the carwash</h1>
@@ -47,14 +38,16 @@ function App() {
 					>
 						List Vehicles
 					</button>
-					<button className="btn btn-secondary" onClick={handlePostVehicle}>
-						Add Vehicle
-					</button>
 				</div>
 				<div className="col-auto">
 					<ul>
 						{localCustomers.map((x, y) => (
-							<li key={y}>{x.name}</li>
+							<div>
+								<li key={y}>
+									{x.name + " " + x.email + " " + x.contact_number}
+								</li>
+								<li key={y}>{x.id}</li>
+							</div>
 						))}
 					</ul>
 
@@ -62,13 +55,13 @@ function App() {
 						{localVehicles.map((x, y) => (
 							<div>
 								<li key={y}>{x.registration_number}</li>
-								{/* <li key={y}>{x.id}</li> */}
+								<li key={y}>{x.id}</li>
 							</div>
 						))}
 					</ul>
 				</div>
 			</div>
-
+			<AddVehicleForm />
 			<AddCustomerForm />
 		</div>
 	);
