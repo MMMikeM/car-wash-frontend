@@ -1,81 +1,75 @@
 import React, { useState } from "react";
-import { login } from "./services/authApi.js";
 import "./css/main.css";
-import { getCustomers } from "./services/customersApi.js";
+import { getCustomers, postCustomer } from "./services/customersApi.js";
 import { getVehicles, postVehicle } from "./services/vehiclesApi";
+import AddCustomerForm from "./components/addCustomerForm";
+import Login from "./components/login";
 
 function App() {
-	let [loginCredsEmail, setLoginCredsEmail] = useState("");
-	let [loginCredsPassword, setLoginCredsPassword] = useState("");
-	let [isLoggedIn, setLoggedIn] = useState(false);
-	let [isLoading, setIsLoading] = useState(false);
-	let [localVehicles, setLocalVehciles] = useState([]);
-
-	const handleLogin = async () => {
-		setIsLoading(true);
-		let loginResponse = await login(loginCredsEmail, loginCredsPassword);
-		if (!loginResponse.is_success) {
-			alert("Login Failed");
-		} else {
-			sessionStorage.setItem("email", loginResponse.data.user.email);
-			sessionStorage.setItem(
-				"token",
-				loginResponse.data.user.authentication_token
-			);
-			handleFetchCustomers();
-			setLoggedIn(true);
-			setIsLoading(false);
-		}
-	};
-
-	const handleLogout = async () => {
-		sessionStorage.removeItem("email");
-		sessionStorage.removeItem("token");
-	};
+	let [localVehicles, setLocalVehicles] = useState([]);
+	let [localCustomers, setLocalCustomers] = useState([]);
 
 	const handleFetchCustomers = async () => {
-		let localCustomers = await getCustomers();
+		let res = await getCustomers();
+		setLocalCustomers(res);
 		console.log(localCustomers);
 	};
 
 	const handleFetchVehicles = async () => {
 		let res = await getVehicles();
-		setLocalVehciles(res);
+		setLocalVehicles(res);
 		console.log(localVehicles);
 	};
 
+	let vehicleBody = {
+		user_id: localCustomers ? localCustomers.id : console.log("no customer id"),
+		registration_number: "testtest123",
+	};
+
 	const handlePostVehicle = async () => {
-		let res = await postVehicle();
+		let res = await postVehicle(vehicleBody);
 		console.log(res);
 	};
 
 	return (
-		<div className="App">
-			<h1 className="display-1">Welcome to the carwash</h1>
-			{isLoading ? (
-				<h2>please wait, loading</h2>
-			) : isLoggedIn ? (
-				<h2>You are logged in</h2>
-			) : (
-				<h2>Please log in</h2>
-			)}
-			<input
-				type="text"
-				onChange={(e) => setLoginCredsEmail(e.target.value, "email")}
-			/>
-			<input
-				type="password"
-				onChange={(e) => setLoginCredsPassword(e.target.value, "password")}
-			/>
-			<button onClick={handleLogin}>Login</button>
-			<button onClick={handleLogout}>Logout</button>
-			<button onClick={handleFetchCustomers}>fetchCustomers</button>
-			<button onClick={handleFetchVehicles}>fetchVehicles</button>
-			<button onClick={handlePostVehicle}>PostVehicle</button>
+		<div className="App container w-75 px-5">
+			<h1 className="display-3 text-center">Welcome to the carwash</h1>
 
-			{localVehicles.map((x) => (
-				<div className="display-5">{x.registration_number}</div>
-			))}
+			<Login />
+			<div className="row mb-5">
+				<div className="col-auto d-flex flex-column ">
+					<button className="btn btn-secondary" onClick={handleFetchCustomers}>
+						List Customers
+					</button>
+					<button
+						className="btn btn-secondary my-2"
+						onClick={handleFetchVehicles}
+					>
+						List Vehicles
+					</button>
+					<button className="btn btn-secondary" onClick={handlePostVehicle}>
+						Add Vehicle
+					</button>
+				</div>
+				<div className="col-auto">
+					<ul>
+						{localCustomers.map((x, y) => (
+							<li key={y}>{x.name}</li>
+						))}
+					</ul>
+
+					<ul>
+						{localVehicles.map((x, y) => (
+							<div>
+								<li key={y}>{x.registration_number}</li>
+								{/* <li key={y}>{x.id}</li> */}
+							</div>
+						))}
+					</ul>
+				</div>
+			</div>
+
+			<AddCustomerForm />
 		</div>
 	);
 }
