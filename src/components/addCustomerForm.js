@@ -9,7 +9,6 @@ const AddCustomerForm = () => {
 	});
 
 	let customerBody = {
-		id: "03b75b9b-cb0d-4c51-8dae-c7979b901123",
 		email: customerData.email,
 		name: customerData.name,
 		contact_number: customerData.contact_number,
