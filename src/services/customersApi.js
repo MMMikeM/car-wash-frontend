@@ -19,3 +19,7 @@ export const saveCustomer = async (id, body) => {
   let response = await request('PUT', `/customers/${id}`, body)
   return response.json()
 }
+export const searchCustomer = async (searchTerm, searchValue) => {
+  let response = await request('GET', `/customers?${searchTerm}=${searchValue}`)
+  return response.json()
+}
