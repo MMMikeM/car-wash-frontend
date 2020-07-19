@@ -3,9 +3,10 @@ import './css/main.css'
 import Login from './components/login'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import CustomersIndex from './pages/Customers/index'
-import VehiclesIndex from './pages/Vehicles/index'
 import CustomersEdit from './pages/Customers/edit'
 import CustomersNew from './pages/Customers/new'
+import CustomersSearch from './pages/Customers/search'
+import VehicleNew from './pages/Vehicles/new'
 
 function App() {
   return (
@@ -21,9 +22,6 @@ function App() {
           <li>
             <Link to="/customers/new">Add Customer</Link>
           </li>
-          <li>
-            <Link to="/vehicles/index">List Vehicles</Link>
-          </li>
         </ul>
       </nav>
 
@@ -37,10 +35,11 @@ function App() {
         <Route path="/customers/:id/edit">
           <CustomersEdit />
         </Route>
-        <Route path="/vehicles/index">
-          <VehiclesIndex />
+        <Route path="/customers/:id/vehicles/new">
+          <VehicleNew />
         </Route>
         <Route path="/">
+          <CustomersSearch />
           <CustomersIndex />
         </Route>
       </Switch>
