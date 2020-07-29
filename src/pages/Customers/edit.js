@@ -17,6 +17,7 @@ const CustomersEdit = () => {
   }
 
   const save = async () => {
+    // eslint-disable-next-line no-unused-vars
     let res = await saveCustomer(localCustomer.id, localCustomer)
     history.push('/')
   }

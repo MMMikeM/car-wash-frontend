@@ -18,6 +18,7 @@ const WashNew = () => {
 
   const save = async () => {
     setLoading(true)
+    // eslint-disable-next-line no-unused-vars
     let res = await postWash(newWash)
     setLoading(false)
     history.push('/')

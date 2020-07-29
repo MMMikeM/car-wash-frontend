@@ -15,6 +15,7 @@ const CustomersNew = () => {
 
   const save = async () => {
     setLoading(true)
+    // eslint-disable-next-line no-unused-vars
     let res = await postCustomer(localCustomer)
     setLoading(false)
     history.push('/')

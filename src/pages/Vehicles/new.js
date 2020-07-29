@@ -9,6 +9,7 @@ const VehiclesNew = () => {
   let [data, setData] = useState({ user_id: id, registration_number: '' })
 
   const save = async () => {
+    // eslint-disable-next-line no-unused-vars
     let res = await postVehicle(data)
     history.push('/')
   }

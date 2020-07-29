@@ -19,6 +19,7 @@ const Card = (props) => {
               <div className="d-flex align-items-end justify-content-between">
                 <div className="d-flex align-content-end">
                   <img
+                    alt="icon"
                     src="/coin.png"
                     style={{ width: '24px', height: '24px' }}
                   />

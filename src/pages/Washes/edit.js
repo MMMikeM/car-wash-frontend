@@ -17,6 +17,7 @@ const WashEdit = () => {
   }
 
   const save = async () => {
+    // eslint-disable-next-line no-unused-vars
     let res = await saveWash(localWash.id, localWash)
     history.push('/')
   }
