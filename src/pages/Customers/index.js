@@ -26,7 +26,6 @@ const CustomersIndex = () => {
   const handleSearchCustomers = async () => {
     let res = await searchCustomer()
     setFilteredCustomers(res)
-    console.log(filteredCustomers)
   }
 
   return (
