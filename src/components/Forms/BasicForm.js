@@ -9,11 +9,11 @@ const snakeToSpace = (input) => {
 const inputs = (editableKeys, record, editMethod) => {
   return editableKeys.map((key) => {
     return (
-      <div key={key}>
-        <label>{snakeToSpace(key)}</label>
+      <div className="mb-2" key={key}>
+        <label className="text-9">{snakeToSpace(key)}</label>
         <input
           onChange={(e) => editMethod(record, key, e.target.value)}
-          className="form-control"
+          className="form-control bg-2 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
           value={record[key]}
         ></input>
       </div>
@@ -25,7 +25,12 @@ const BasicForm = (props) => {
   return (
     <>
       {inputs(props.editableKeys, props.record, props.editRecordMethod)}
-      <button onClick={(e) => props.saveFormData()}>Button</button>
+      <button
+        className="btn btn-primary px-5 mx-auto"
+        onClick={(e) => props.saveFormData()}
+      >
+        Save
+      </button>
     </>
   )
 }

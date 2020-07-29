@@ -26,7 +26,6 @@ const CustomersIndex = () => {
   const handleSearchCustomers = async () => {
     let res = await searchCustomer()
     setFilteredCustomers(res)
-    console.log(filteredCustomers)
   }
 
   return (
@@ -42,7 +41,13 @@ const CustomersIndex = () => {
             'vehicles/registration_number',
           ]}
           extraButtons={[
-            <button onClick={(e) => addVehicle(e)}>Add Vehicle</button>,
+            <button
+              style={{ height: '19.2px' }}
+              className="link-primary btn btn-link py-0 border-0 d-block"
+              onClick={(e) => addVehicle(e)}
+            >
+              Add Vehicle
+            </button>,
           ]}
         />
       ) : (

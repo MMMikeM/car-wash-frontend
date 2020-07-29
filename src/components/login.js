@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { login } from '../services/authApi.js'
+import { useHistory } from 'react-router-dom'
 
 const Login = () => {
   let [loginCredsEmail, setLoginCredsEmail] = useState('')
   let [loginCredsPassword, setLoginCredsPassword] = useState('')
   let [isLoggedIn, setLoggedIn] = useState(false)
   let [isLoading, setIsLoading] = useState(false)
+  const history = useHistory()
 
   const handleLogin = async () => {
     setIsLoading(true)
@@ -19,7 +21,7 @@ const Login = () => {
         loginResponse.data.user.authentication_token
       )
       setLoggedIn(true)
-      setIsLoading(false)
+      history.push('/')
     }
   }
 
@@ -29,40 +31,40 @@ const Login = () => {
   }
 
   return (
-    <React.Fragment>
-      <div className="my-2 form">
+    <div className="w-50 mx-auto">
+      <div className="my-2 form text-8">
         {isLoading ? (
-          <h2>please wait, loading</h2>
+          <h2>Please wait, loading</h2>
         ) : isLoggedIn ? (
           <h2>You are logged in</h2>
         ) : (
           <h2>Please log in</h2>
         )}
       </div>
-      <div>
+      <div className="text-8">
         <label>Username</label>
         <input
-          className="form-control"
+          className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
           type="text"
           onChange={(e) => setLoginCredsEmail(e.target.value, 'email')}
         />
         <label>Password</label>
         <input
-          className="form-control"
+          className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
           type="password"
           onChange={(e) => setLoginCredsPassword(e.target.value, 'password')}
         />
       </div>
 
-      <div className="mt-2 mb-5">
-        <button className="btn btn-primary mr-1" onClick={handleLogin}>
+      <div className="mt-2 mb-5 d-flex justify-content-between">
+        <button className="btn btn-primary" onClick={handleLogin}>
           Login
         </button>
         <button className="btn btn-primary" onClick={handleLogout}>
           Logout
         </button>
       </div>
-    </React.Fragment>
+    </div>
   )
 }
 
