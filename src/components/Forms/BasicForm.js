@@ -1,7 +1,7 @@
 import React from 'react'
 
 const snakeToSpace = (input) => {
-  input = input.replace('_', ' ')
+  input = input.replace(/_/g, ' ')
   input = input.charAt(0).toUpperCase() + input.slice(1)
   return input
 }

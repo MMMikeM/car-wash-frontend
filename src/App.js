@@ -12,7 +12,7 @@ import WashesIndex from './pages/Washes/index'
 import Washes from './pages/Washes/customerIndex'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
-import Add from './pages/Wash/add'
+import ManageUserWashes from './pages/Wash/manageUserWashes'
 
 function App() {
   return (
@@ -56,7 +56,6 @@ function App() {
           </li>
         </ul>
       </nav>
-      <Add />
       <div className="container w-75 mt-5">
         <Switch>
           <Route path="/login">
@@ -73,6 +72,9 @@ function App() {
           </Route>
           <Route path="/customers/:id/vehicles/new">
             <VehicleNew />
+          </Route>
+          <Route path="/customers/:id/washes">
+            <ManageUserWashes />
           </Route>
           <Route path="/customers/">
             <CustomersIndex />

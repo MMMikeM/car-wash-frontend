@@ -17,9 +17,9 @@ const CustomersSearch = () => {
     setIsLoaded(true)
   }
 
-  const handleChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+  // const handleChange = (e) => {
+  //   setSearchTerm(e.target.value)
+  // }
 
   const addVehicle = (e) => {
     history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)

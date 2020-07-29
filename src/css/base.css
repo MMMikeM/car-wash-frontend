@@ -174,3 +174,7 @@ div > input:active {
 .card {
   min-width: 300px;
 }
+
+.button-to-link {
+  height: 19.2px;
+}
