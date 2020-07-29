@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { getCustomer, saveCustomer } from '../../services/customersApi.js'
+import { getWash, saveWash } from '../../services/washTypesApi.js'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
 
-const CustomersEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState({})
+const WashEdit = () => {
+  let [localWash, setLocalWash] = useState({})
   let [loading, setLoading] = useState(true)
 
   const history = useHistory()
@@ -13,21 +13,21 @@ const CustomersEdit = () => {
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
     tempRecord[key] = value
-    setLocalCustomer(tempRecord)
+    setLocalWash(tempRecord)
   }
 
   const save = async () => {
-    let res = await saveCustomer(localCustomer.id, localCustomer)
+    let res = await saveWash(localWash.id, localWash)
     history.push('/')
   }
 
   useEffect(() => {
-    const handleFetchCustomer = async () => {
-      let res = await getCustomer(id)
-      setLocalCustomer(res)
+    const handleFetchWash = async () => {
+      let res = await getWash(id)
+      setLocalWash(res)
       setLoading(false)
     }
-    handleFetchCustomer()
+    handleFetchWash()
   }, [id])
 
   return (
@@ -35,9 +35,9 @@ const CustomersEdit = () => {
       {!loading ? (
         <BasicForm
           editRecordMethod={editRecordMethod}
-          record={localCustomer}
+          record={localWash}
           saveFormData={save}
-          editableKeys={['name', 'email', 'contact_number']}
+          editableKeys={['name', 'cost', 'price', 'points', 'description']}
         />
       ) : (
         ''
@@ -46,4 +46,4 @@ const CustomersEdit = () => {
   )
 }
 
-export default CustomersEdit
+export default WashEdit

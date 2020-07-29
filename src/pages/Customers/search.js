@@ -7,17 +7,18 @@ const CustomersSearch = () => {
   let [searchTerm, setSearchTerm] = useState('')
   let [selectValue, setSelectValue] = useState('name')
   let [localCustomers, setLocalCustomers] = useState([])
+  let [isLoaded, setIsLoaded] = useState(false)
 
   const history = useHistory()
 
   const search = async (term, value) => {
     let res = await searchCustomer(term, value)
     setLocalCustomers(res)
+    setIsLoaded(true)
   }
 
   const handleChange = (e) => {
     setSearchTerm(e.target.value)
-    console.log(searchTerm)
   }
 
   const addVehicle = (e) => {
@@ -25,29 +26,98 @@ const CustomersSearch = () => {
   }
 
   return (
-    <div>
-      <select value={searchTerm} onChange={handleChange}>
-        <option value="name">Name</option>
-        <option value="registration_number">Registration Number</option>
-        <option value="email">Email</option>
-        <option value="contact_number">Contact Number</option>
-      </select>
-      <input onChange={(e) => setSelectValue(e.target.value)}></input>
-      <button onClick={() => search(searchTerm, selectValue)}>Search</button>
-      <BasicTable
-        rowType={'customers'}
-        records={localCustomers}
-        headings={[
-          'name',
-          'email',
-          'contact_number',
-          'vehicles/registration_number',
-        ]}
-        extraButtons={[
-          <button onClick={(e) => addVehicle(e)}>Add Vehicle</button>,
-        ]}
-      />
-    </div>
+    <React.Fragment>
+      <div className="d-flex justify-content-center w-100">
+        <div className="d-flex flex-column w-50">
+          <label className="text-6">Search by field</label>
+          <form
+            className="text-9 d-flex flex-column"
+            onChange={(e) => setSelectValue(e.target.value)}
+          >
+            <label className="form-check-label mt-2" htmlfor="iR1">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="inlineRadioOptions"
+                id="iR1"
+                value="name"
+              />
+              Name
+            </label>
+
+            <label className="form-check-label mt-2" htmlfor="iR2">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="inlineRadioOptions"
+                id="iR2"
+                value="registration_number"
+              />
+              Registration Number
+            </label>
+
+            <label className="form-check-label mt-2" htmlfor="iR3">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="inlineRadioOptions"
+                id="iR3"
+                value="email"
+              />
+              Email
+            </label>
+
+            <label className="form-check-label mt-2" htmlfor="iR4">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="inlineRadioOptions"
+                id="iR4"
+                value="contact_number"
+              />
+              Contact Number
+            </label>
+          </form>
+          <input
+            placeholder="Search here..."
+            className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          ></input>
+          <div className="d-flex justify-content-center mt-2">
+            <button
+              className="btn btn-primary px-5 mx-auto"
+              onClick={() => search(selectValue, searchTerm)}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="mt-5">
+        {isLoaded ? (
+          <BasicTable
+            rowType={'customers'}
+            records={localCustomers}
+            headings={[
+              'name',
+              'email',
+              'contact_number',
+              'vehicles/registration_number',
+            ]}
+            extraButtons={[
+              <button
+                className="link-primary btn btn-link py-0 border-0 d-block"
+                onClick={(e) => addVehicle(e)}
+              >
+                Add Vehicle
+              </button>,
+            ]}
+          />
+        ) : (
+          ''
+        )}
+      </div>
+    </React.Fragment>
   )
 }
 
