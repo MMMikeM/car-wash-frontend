@@ -13,13 +13,11 @@ function App() {
 	const handleFetchCustomers = async () => {
 		let res = await getCustomers();
 		setLocalCustomers(res);
-		console.log(localCustomers);
 	};
 
 	const handleFetchVehicles = async () => {
 		let res = await getVehicles();
 		setLocalVehicles(res);
-		console.log(localVehicles);
 	};
 
 	return (
