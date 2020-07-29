@@ -21,7 +21,6 @@ const CustomersNew = () => {
   }
 
   const editRecordMethod = (record, key, value) => {
-    console.log('on change')
     let tempRecord = { ...record }
     tempRecord[key] = value
     setLocalCustomer(tempRecord)
