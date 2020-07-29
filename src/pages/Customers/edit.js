@@ -18,7 +18,6 @@ const CustomersEdit = () => {
 
   const save = async () => {
     let res = await saveCustomer(localCustomer.id, localCustomer)
-    alert('winning')
     history.push('/')
   }
 
