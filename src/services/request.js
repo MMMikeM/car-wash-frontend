@@ -16,10 +16,10 @@ const request = async (method, path, body) => {
   if (validStatuses.includes(response.status)) {
     return response
   } else if (invalidStatuses.includes(response.status)) {
-    console.error(
+    // throw new Error(
+    console.log(
       `Error fetching ${url}: ${response.status} (${response.statusCode}) ${response.body}`
     )
-    return response
   }
 
   return response

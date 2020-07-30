@@ -29,7 +29,7 @@ const CustomersIndex = () => {
   // }
 
   let addWash = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/`)
+    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/new`)
   }
 
   return (
