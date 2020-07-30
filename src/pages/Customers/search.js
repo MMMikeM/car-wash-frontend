@@ -17,9 +17,13 @@ const CustomersSearch = () => {
     setIsLoaded(true)
   }
 
-  // const handleChange = (e) => {
-  //   setSearchTerm(e.target.value)
-  // }
+  let addWash = (e) => {
+    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/new`)
+  }
+
+  let showCustomer = (e) => {
+    history.push(`/customers/${e.currentTarget.parentNode.id}`)
+  }
 
   const addVehicle = (e) => {
     history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)
@@ -104,12 +108,25 @@ const CustomersSearch = () => {
               'contact_number',
               'vehicles/registration_number',
             ]}
+            crudEnabled={true}
             extraButtons={[
               <button
                 className="link-primary btn btn-link py-0 border-0 d-block"
                 onClick={(e) => addVehicle(e)}
               >
                 Add Vehicle
+              </button>,
+              <button
+                className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                onClick={(e) => addWash(e)}
+              >
+                Add Wash
+              </button>,
+              <button
+                className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                onClick={(e) => showCustomer(e)}
+              >
+                View
               </button>,
             ]}
           />

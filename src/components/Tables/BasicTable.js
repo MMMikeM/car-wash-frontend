@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FaEdit } from 'react-icons/fa'
+import { FaEdit, FaTrash } from 'react-icons/fa'
 
 const column = (property, key) => {
   return <td key={key}>{property}</td>
@@ -20,13 +20,16 @@ const snakeToSpace = (input) => {
   return input
 }
 
-const row = (rowType, element, properties, key, extraButtons = []) => {
-  let buttons = [
-    ...extraButtons,
-    <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}/edit`}>
-      <FaEdit />
-    </Link>,
-  ]
+const row = (
+  rowType,
+  element,
+  properties,
+  key,
+  extraButtons = [],
+  crudEnabled = false
+) => {
+  let buttons = [...extraButtons]
+
   return (
     <tr key={key}>
       {properties.map((property, key) => {
@@ -37,6 +40,18 @@ const row = (rowType, element, properties, key, extraButtons = []) => {
         } else return column(element[property], key)
       })}
       {buttons.map((button, key) => buttonColumn(button, key, element['id']))}
+      {crudEnabled ? (
+        <td>
+          <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}/edit`}>
+            <FaEdit />
+          </Link>
+          <a className="px-2 mt-n1">
+            <FaTrash />
+          </a>
+        </td>
+      ) : (
+        ''
+      )}
     </tr>
   )
 }
@@ -57,7 +72,14 @@ const BasicTable = (props) => {
       </thead>
       <tbody>
         {props.records.map((record, key) =>
-          row(props.rowType, record, props.headings, key, props.extraButtons)
+          row(
+            props.rowType,
+            record,
+            props.headings,
+            key,
+            props.extraButtons,
+            props.crudEnabled
+          )
         )}
       </tbody>
     </table>

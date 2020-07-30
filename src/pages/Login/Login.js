@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { login } from '../services/authApi.js'
+import React, { useState, useEffect } from 'react'
+import { login } from '../../services/authApi'
 import { useHistory } from 'react-router-dom'
 
 const Login = () => {
@@ -9,19 +9,50 @@ const Login = () => {
   let [isLoading, setIsLoading] = useState(false)
   const history = useHistory()
 
+  useEffect(() => {
+    if (sessionStorage.getItem('token')) {
+      let roles = JSON.parse(sessionStorage.getItem('roles'))
+      if (roles.includes('managers')) {
+        window.location.assign(`${process.env.REACT_APP_URL}/customers`)
+      } else if (roles.includes('salesperson')) {
+        window.location.assign(`${process.env.REACT_APP_URL}/customers/search`)
+      } else {
+        window.location.assign(`${process.env.REACT_APP_URL}/profile`)
+      }
+    }
+  }, [])
+
   const handleLogin = async () => {
     setIsLoading(true)
-    let loginResponse = await login(loginCredsEmail, loginCredsPassword)
-    if (!loginResponse.is_success) {
+    let loginResponse = {}
+    loginResponse = await login(
+      loginCredsEmail,
+      loginCredsPassword
+    ).catch(() => {})
+    if (!loginResponse?.is_success) {
       alert('Login Failed')
     } else {
       sessionStorage.setItem('email', loginResponse.data.user.email)
+      sessionStorage.setItem(
+        'roles',
+        JSON.stringify(loginResponse.data.user.roles)
+      )
       sessionStorage.setItem(
         'token',
         loginResponse.data.user.authentication_token
       )
       setLoggedIn(true)
-      history.push('/')
+
+      let roles = loginResponse.data.user.roles
+      if (roles.includes('managers')) {
+        window.location.href = `${process.env.REACT_APP_URL}/customers`
+      } else if (roles.includes('salesperson')) {
+        window.location.assign(`${process.env.REACT_APP_URL}/customers/search`)
+      } else {
+        window.location.assign(`${process.env.REACT_APP_URL}/profile`)
+      }
+
+      // history.push('/')
     }
   }
 
