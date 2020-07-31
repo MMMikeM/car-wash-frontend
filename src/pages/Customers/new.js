@@ -18,7 +18,7 @@ const CustomersNew = () => {
     // eslint-disable-next-line no-unused-vars
     let res = await postCustomer(localCustomer)
     setLoading(false)
-    history.push('/')
+    history.push(`/customers/${res.id}`)
   }
 
   const editRecordMethod = (record, key, value) => {

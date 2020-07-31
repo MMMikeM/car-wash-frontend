@@ -21,7 +21,7 @@ const WashNew = () => {
     // eslint-disable-next-line no-unused-vars
     let res = await postWash(newWash)
     setLoading(false)
-    history.push('/')
+    history.push(`/wash_types/${res.id}`)
   }
 
   const editRecordMethod = (record, key, value) => {

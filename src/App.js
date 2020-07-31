@@ -10,6 +10,7 @@ import CustomersSearch from './pages/Customers/search'
 import CustomersShow from './pages/Customers/show'
 import VehicleNew from './pages/Vehicles/new'
 import WashesIndex from './pages/Washes/index'
+import WashesShow from './pages/Washes/show'
 import Washes from './pages/Washes/customerIndex'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
@@ -95,7 +96,6 @@ function App() {
             component={CustomersSearch}
             path="/customers/search"
           />
-          <ProtectedRoute component={CustomersShow} path="/customers/:id" />
           <ProtectedRoute
             component={CustomersEdit}
             path="/customers/:id/edit"
@@ -108,9 +108,11 @@ function App() {
             component={ManageUserWashes}
             path="/customers/:id/washes/new"
           />
+          <ProtectedRoute component={CustomersShow} path="/customers/:id" />
           <ManagerRoute component={CustomersIndex} path="/customers" />
-          <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
           <ProtectedRoute component={WashNew} path="/wash_types/new" />
+          <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
+          <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
           <ProtectedRoute component={WashesIndex} path="/wash_types" />
           <Route path="/">
             <Washes />
