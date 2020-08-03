@@ -20,7 +20,7 @@ const Washes = () => {
       <div className="d-flex flex-row justify-content-center flex-gap flex-wrap">
         <img
           alt="Company logo"
-          src="/logo.png"
+          src="/public/logo.png"
           style={{ width: '200px' }}
           className="mx-auto mb-5"
         />

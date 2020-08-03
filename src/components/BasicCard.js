@@ -20,7 +20,7 @@ const Card = (props) => {
                 <div className="d-flex align-content-end">
                   <img
                     alt="icon"
-                    src="/coin.png"
+                    src="/public/coin.png"
                     style={{ width: '24px', height: '24px' }}
                   />
                   <h5 className="card-text align-bottom font-heading font-weight-semiBold mb-0 mx-2 pt-1">{`Earn ${wash.points} coins`}</h5>
