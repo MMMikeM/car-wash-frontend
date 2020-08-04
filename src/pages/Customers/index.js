@@ -44,6 +44,7 @@ const CustomersIndex = () => {
             'contact_number',
             'vehicles/registration_number',
           ]}
+          crudEnabled={true}
           extraButtons={[
             <button
               className="link-primary btn btn-link py-0 border-0 d-block button-to-link"

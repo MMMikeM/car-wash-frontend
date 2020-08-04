@@ -12,7 +12,7 @@ const Login = () => {
   useEffect(() => {
     if (sessionStorage.getItem('token')) {
       let roles = JSON.parse(sessionStorage.getItem('roles'))
-      if (roles.includes('managers')) {
+      if (roles.includes('manager')) {
         window.location.assign(`${process.env.REACT_APP_URL}/customers`)
       } else if (roles.includes('salesperson')) {
         window.location.assign(`${process.env.REACT_APP_URL}/customers/search`)
@@ -44,7 +44,7 @@ const Login = () => {
       setLoggedIn(true)
 
       let roles = loginResponse.data.user.roles
-      if (roles.includes('managers')) {
+      if (roles.includes('manager')) {
         window.location.href = `${process.env.REACT_APP_URL}/customers`
       } else if (roles.includes('salesperson')) {
         window.location.assign(`${process.env.REACT_APP_URL}/customers/search`)
@@ -90,9 +90,6 @@ const Login = () => {
       <div className="mt-2 mb-5 d-flex justify-content-between">
         <button className="btn btn-primary" onClick={handleLogin}>
           Login
-        </button>
-        <button className="btn btn-primary" onClick={handleLogout}>
-          Logout
         </button>
       </div>
     </div>
