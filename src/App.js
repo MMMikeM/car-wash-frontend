@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import './css/main.css'
-import './css/base.css'
-import Login from './pages/Login/Login'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+
+import Login from './pages/Login/Login'
+import Logout from './pages/Logout/Logout'
+
 import CustomersIndex from './pages/Customers/index'
 import CustomersEdit from './pages/Customers/edit'
 import CustomersNew from './pages/Customers/new'
 import CustomersSearch from './pages/Customers/search'
 import CustomersShow from './pages/Customers/show'
+
 import VehicleNew from './pages/Vehicles/new'
+
 import WashesIndex from './pages/Washes/index'
 import WashesShow from './pages/Washes/show'
 import Washes from './pages/Washes/customerIndex'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
+
 import ManageUserWashes from './pages/Wash/manageUserWashes'
+
+import WashesReport from './pages/Reports/Washes'
+
 import ManagerRoute from './pages/Layouts/ManagerRoute'
 import ProtectedRoute from './pages/Layouts/ProtectedRoute'
-import Logout from './pages/Logout/Logout'
+
+import './css/main.css'
+import './css/base.css'
 
 function App() {
   let [Links, setLinks] = useState([])
@@ -46,6 +55,10 @@ function App() {
     {
       name: 'Wash Prices',
       path: '/wash_types',
+    },
+    {
+      name: 'Washes Report',
+      path: '/reports/washes',
     },
   ]
 
@@ -114,6 +127,9 @@ function App() {
           <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
           <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
           <ProtectedRoute component={WashesIndex} path="/wash_types" />
+          <Route path="/reports/washes">
+            <WashesReport />
+          </Route>
           <Route path="/">
             <Washes />
           </Route>

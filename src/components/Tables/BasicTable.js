@@ -79,7 +79,7 @@ const BasicTable = (props) => {
           row(
             props.rowType,
             record,
-            props.headings,
+            props.fields,
             key,
             props.extraButtons,
             props.crudEnabled,
