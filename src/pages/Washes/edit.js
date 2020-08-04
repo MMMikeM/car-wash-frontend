@@ -19,7 +19,7 @@ const WashEdit = () => {
   const save = async () => {
     // eslint-disable-next-line no-unused-vars
     let res = await saveWash(localWash.id, localWash)
-    history.push('/')
+    history.push(`/wash_types/${id}`)
   }
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const WashEdit = () => {
           editRecordMethod={editRecordMethod}
           record={localWash}
           saveFormData={save}
-          editableKeys={['name', 'cost', 'price', 'points', 'description']}
+          editableKeys={['name', 'cost', 'price', 'points', 'description', 'order']}
         />
       ) : (
         ''
