@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { searchCustomer } from '../../services/customersApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 const CustomersSearch = () => {
   let [searchTerm, setSearchTerm] = useState('')
-  let [selectValue, setSelectValue] = useState('name')
+  let [selectValue, setSelectValue] = useState('registration_number')
   let [localCustomers, setLocalCustomers] = useState([])
   let [isLoaded, setIsLoaded] = useState(false)
 
@@ -56,6 +56,7 @@ const CustomersSearch = () => {
                 name="inlineRadioOptions"
                 id="iR2"
                 value="registration_number"
+                checked
               />
               Registration Number
             </label>
@@ -99,37 +100,45 @@ const CustomersSearch = () => {
       </div>
       <div className="mt-5">
         {isLoaded ? (
-          <BasicTable
-            rowType={'customers'}
-            records={localCustomers}
-            headings={[
-              'name',
-              'email',
-              'contact_number',
-              'vehicles/registration_number',
-            ]}
-            crudEnabled={true}
-            extraButtons={[
-              <button
-                className="link-primary btn btn-link py-0 border-0 d-block"
-                onClick={(e) => addVehicle(e)}
-              >
-                Add Vehicle
-              </button>,
-              <button
-                className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
-                onClick={(e) => addWash(e)}
-              >
-                Add Wash
-              </button>,
-              <button
-                className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
-                onClick={(e) => showCustomer(e)}
-              >
-                View
-              </button>,
-            ]}
-          />
+          <div>
+            {localCustomers.length == 0 ? 
+              <div className="text-center">
+                <p className="text-white">No customers found</p>
+                <Link className="btn btn-primary" to="/customers/new">Add customer</Link> 
+              </div> :
+              <BasicTable
+                rowType={'customers'}
+                records={localCustomers}
+                headings={[
+                  'name',
+                  'email',
+                  'contact_number',
+                  'vehicles/registration_number',
+                ]}
+                crudEnabled={false}
+                extraButtons={[
+                  <button
+                    className="link-primary btn btn-link py-0 border-0 d-block"
+                    onClick={(e) => addVehicle(e)}
+                  >
+                    Add Vehicle
+                  </button>,
+                  <button
+                    className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                    onClick={(e) => addWash(e)}
+                  >
+                    Add Wash
+                  </button>,
+                  <button
+                    className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                    onClick={(e) => showCustomer(e)}
+                  >
+                    View
+                  </button>,
+                ]}
+              />
+            }
+          </div>
         ) : (
           ''
         )}
