@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FaEdit, FaTrash } from 'react-icons/fa'
+import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
 
 const column = (property, key) => {
   return <td key={key}>{property}</td>
@@ -42,6 +42,9 @@ const row = (
       {buttons.map((button, key) => buttonColumn(button, key, element['id']))}
       {crudEnabled ? (
         <td>
+          <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}`}>
+            <FaInfo />
+          </Link>
           <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}/edit`}>
             <FaEdit />
           </Link>
@@ -58,7 +61,7 @@ const row = (
 
 const BasicTable = (props) => {
   return (
-    <table className="table text-9 ">
+    <table className="table text-9">
       <thead>
         <tr>
           {props.headings.map((heading, key) => {
