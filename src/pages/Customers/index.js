@@ -44,6 +44,12 @@ const CustomersIndex = () => {
             <BasicTable
               rowType={'customers'}
               records={localCustomers}
+              fields={[
+                'name',
+                'email',
+                'contact_number',
+                'vehicles/registration_number',
+              ]}
               headings={[
                 'name',
                 'email',

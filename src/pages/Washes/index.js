@@ -42,6 +42,7 @@ const WashesIndex = () => {
               crudEnabled={true}
               deleteMethod={handleDeleteWash}
               headings={['name', 'cost', 'price', 'points', 'order']}
+              fields={['name', 'cost', 'price', 'points', 'order']}
             />
           </div>
         </div>

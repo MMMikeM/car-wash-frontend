@@ -115,6 +115,12 @@ const CustomersSearch = () => {
                   'contact_number',
                   'vehicles/registration_number',
                 ]}
+                fields={[
+                  'name',
+                  'email',
+                  'contact_number',
+                  'vehicles/registration_number',
+                ]}
                 crudEnabled={false}
                 extraButtons={[
                   <button

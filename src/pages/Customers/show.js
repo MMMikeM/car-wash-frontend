@@ -40,6 +40,7 @@ const CustomersShow = () => {
           <BasicTable
             rowType={'washes'}
             records={localCustomer.washes}
+            fields={['wash_type', 'created_at']}
             headings={['wash_type', 'created_at']}
           />
         </div> : ""
