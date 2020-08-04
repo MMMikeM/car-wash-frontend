@@ -19,3 +19,8 @@ export const saveWash = async (id, body) => {
   let response = await request('PUT', `/wash_types/${id}`, body)
   return response.json()
 }
+
+export const deleteWash = async (id) => {
+  let response = await request('DELETE', `/wash_types/${id}`)
+  return response.json()
+}
