@@ -26,7 +26,8 @@ const row = (
   properties,
   key,
   extraButtons = [],
-  crudEnabled = false
+  crudEnabled = false,
+  deleteMethod
 ) => {
   let buttons = [...extraButtons]
 
@@ -48,7 +49,7 @@ const row = (
           <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}/edit`}>
             <FaEdit />
           </Link>
-          <a className="px-2 mt-n1">
+            <a className="px-2 mt-n1" onClick={() => deleteMethod(element.id)}>
             <FaTrash />
           </a>
         </td>
@@ -81,7 +82,8 @@ const BasicTable = (props) => {
             props.headings,
             key,
             props.extraButtons,
-            props.crudEnabled
+            props.crudEnabled,
+            props.deleteMethod
           )
         )}
       </tbody>
