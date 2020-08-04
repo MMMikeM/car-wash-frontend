@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { postCustomer } from '../../services/customersApi.js'
+import { postWash } from '../../services/washTypesApi.js'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory } from 'react-router-dom'
 
-const CustomersNew = () => {
-  let [localCustomer, setLocalCustomer] = useState({
+const WashNew = () => {
+  let [newWash, setNewWash] = useState({
     name: '',
-    email: '',
-    contact_number: '',
+    cost: '',
+    price: '',
+    points: '',
+    description: '',
   })
+
   let [loading, setLoading] = useState(false)
 
   const history = useHistory()
@@ -16,15 +19,15 @@ const CustomersNew = () => {
   const save = async () => {
     setLoading(true)
     // eslint-disable-next-line no-unused-vars
-    let res = await postCustomer(localCustomer)
+    let res = await postWash(newWash)
     setLoading(false)
-    history.push(`/customers/${res.id}`)
+    history.push(`/wash_types/${res.id}`)
   }
 
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
     tempRecord[key] = value
-    setLocalCustomer(tempRecord)
+    setNewWash(tempRecord)
   }
 
   return (
@@ -32,9 +35,9 @@ const CustomersNew = () => {
       {!loading ? (
         <BasicForm
           editRecordMethod={editRecordMethod}
-          record={localCustomer}
+          record={newWash}
           saveFormData={save}
-          editableKeys={['name', 'email', 'contact_number']}
+          editableKeys={['name', 'cost', 'price', 'points', 'description']}
         />
       ) : (
         ''
@@ -43,4 +46,4 @@ const CustomersNew = () => {
   )
 }
 
-export default CustomersNew
+export default WashNew

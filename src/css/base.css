@@ -1,0 +1,205 @@
+:root {
+  --grey-1: #181818;
+  --grey-2: #222;
+  --grey-3: #333;
+  --grey-4: #555;
+  --grey-5: #777;
+  --grey-6: #999;
+  --grey-7: #aaa;
+  --grey-8: #bbb;
+  --grey-9: #ddd;
+}
+
+body {
+  background: var(--grey-2);
+}
+
+.shadow-custom {
+  box-shadow: 4px 4px 8px hsla(295, 15%, 10%, 0.5);
+}
+
+.border-custom {
+  border-radius: 6px !important;
+}
+
+* {
+  font-family: 'lato';
+}
+
+.font-heading {
+  font-family: 'Big Shoulders Display';
+}
+
+.text-1 {
+  color: var(--grey-1);
+}
+.text-2 {
+  color: var(--grey-2);
+}
+.text-3 {
+  color: var(--grey-3);
+}
+.text-4 {
+  color: var(--grey-4);
+}
+.text-5 {
+  color: var(--grey-5);
+}
+.text-6 {
+  color: var(--grey-6);
+}
+.text-7 {
+  color: var(--grey-7);
+}
+.text-8 {
+  color: var(--grey-8);
+}
+.text-9 {
+  color: var(--grey-9);
+}
+.bg-1 {
+  background: var(--grey-1);
+}
+.bg-2 {
+  background: var(--grey-2);
+}
+.bg-3 {
+  background: var(--grey-3);
+}
+.bg-4 {
+  background: var(--grey-4);
+}
+.bg-5 {
+  background: var(--grey-5);
+}
+.bg-6 {
+  background: var(--grey-6);
+}
+.bg-7 {
+  background: var(--grey-7);
+}
+.bg-8 {
+  background: var(--grey-8);
+}
+.bg-9 {
+  background: var(--grey-9);
+}
+
+.font-weight-black {
+  font-weight: 800;
+}
+
+.font-weight-semiBold {
+  font-weight: 500;
+}
+
+.d-flex > input::placeholder:active,
+.d-flex > input::placeholder:focus,
+.d-flex > input::placeholder {
+  color: var(--grey-6);
+}
+
+.d-flex > input:active,
+.d-flex > input:focus {
+  background-color: var(--grey-2);
+  color: var(--grey-6);
+}
+
+/* .d-flex > input:placeholder-shown {
+  color: red;
+} */
+
+select:focus {
+  color: var(--grey-8);
+  font-family: lato !important;
+}
+
+option {
+  font-family: lato !important;
+}
+
+.table > tbody > tr {
+  background-color: var(--grey-3);
+  /* border-color: var(--grey-2); */
+  border: 3px solid var(--grey-2);
+}
+.table > tbody > tr > td:first-of-type {
+  padding-left: 24px;
+}
+.table > thead > tr > th:first-of-type {
+  padding-left: 24px;
+}
+
+.table > tbody > tr > td:last-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.table > tbody > tr:hover,
+.table > tbody > tr > td > a:hover {
+  background-color: var(--grey-4);
+}
+
+.react-icons {
+  vertical-align: middle;
+  margin: auto;
+}
+
+div > input:focus,
+div > input:active {
+  background: var(--grey-2) !important;
+  color: var(--grey-6) !important;
+}
+
+.mt-n1 {
+  margin-top: -0.25rem;
+}
+
+.container {
+  height: 100vh;
+}
+
+.form-check-input:active,
+.form-check-input {
+  background-color: var(--grey-3) !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--grey-6) !important;
+  background-image: var(--grey-6) !important;
+}
+
+.card {
+  min-width: 300px;
+}
+
+.button-to-link {
+  height: 19.2px;
+}
+
+.modal-wrapper {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: hsla(295, 15%, 10%, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: minmax(6rem, 10rem);
+}
+
+.highlighted {
+  border: 4px solid #b4f997;
+
+  border-color: #b4f997;
+  box-shadow: 0px 0px 6px #b4f997;
+}
