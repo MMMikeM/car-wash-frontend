@@ -6,13 +6,13 @@ const snakeToSpace = (input) => {
   return input
 }
 
-const inputs = (editableKeys, record, editMethod) => {
+const inputs = (editableKeys, record, updateValueMethod) => {
   return editableKeys.map((key) => {
     return (
       <div className="mb-2" key={key}>
         <label className="text-9">{snakeToSpace(key)}</label>
         <input
-          onChange={(e) => editMethod(record, key, e.target.value)}
+          onChange={(e) => updateValueMethod(record, key, e.target.value)}
           className="form-control bg-2 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
           value={record[key]}
         ></input>
