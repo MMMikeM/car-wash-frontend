@@ -83,6 +83,7 @@ const ManageUserWashes = () => {
     let resCustomer = await getCustomer(id)
     setLocalCustomer(resCustomer)
     setSelectedWashId('')
+    history.push(`/customers/${id}`)
   }
 
   return (
