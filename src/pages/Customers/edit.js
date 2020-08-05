@@ -39,6 +39,7 @@ const CustomersEdit = () => {
           record={localCustomer}
           saveFormData={save}
           editableKeys={['name', 'email', 'contact_number']}
+          valueTransformations={['', '', '']}
         />
       ) : (
         ''
