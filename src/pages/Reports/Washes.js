@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getWashesReport } from '../../services/reportsApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
-import { centsToRands } from '../../helpers'
+import { centsToRands, formatRands   } from '../../helpers'
 //import { Link, useHistory } from 'react-router-dom'
 
 const WashesReport = () => {
@@ -29,11 +29,11 @@ const WashesReport = () => {
     let res = await getWashesReport(startDate, endDate)
     setReportData(res)
     res.map((washType) => {
-      washType.total_cost = centsToRands(washType.total_cost)
-      washType.total_price = centsToRands(washType.total_price)
       localTotal += washType.total_price
+      washType.total_cost = formatRands(centsToRands(washType.total_cost))
+      washType.total_price = formatRands(centsToRands(washType.total_price))
     })
-    setMainTotal(centsToRands(localTotal))
+    setMainTotal(formatRands(centsToRands(localTotal)))
     setLoading(false)
   }
 
@@ -48,11 +48,11 @@ const WashesReport = () => {
     .then((res) => {
       setReportData(res)
       res.map((washType) => {
-        washType.total_cost = centsToRands(washType.total_cost)
-        washType.total_price = centsToRands(washType.total_price)
         localTotal += washType.total_price
+        washType.total_cost = formatRands(centsToRands(washType.total_cost))
+        washType.total_price = formatRands(centsToRands(washType.total_price))
       })
-      setMainTotal(localTotal)
+      setMainTotal(formatRands(centsToRands(localTotal)))
       setLoading(false)
     })
   }, [])
@@ -92,7 +92,7 @@ const WashesReport = () => {
       </div>
       <div className="col-md-6"></div>
       <div className="col-md-6 mt-4 text-right">
-        <h1 className="text-white">{`Total: R${mainTotal}`}</h1>
+        <h1 className="text-white">{`Total: ${mainTotal}`}</h1>
       </div>
     </div>
   )
