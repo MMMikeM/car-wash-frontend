@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getWashesReport } from '../../services/reportsApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
+import { centsToRands } from '../../helpers'
 //import { Link, useHistory } from 'react-router-dom'
 
 const WashesReport = () => {
@@ -27,8 +28,12 @@ const WashesReport = () => {
     let localTotal = 0
     let res = await getWashesReport(startDate, endDate)
     setReportData(res)
-    res.map((washType) => localTotal += washType.price)
-    setMainTotal(localTotal)
+    res.map((washType) => {
+      washType.total_cost = centsToRands(washType.total_cost)
+      washType.total_price = centsToRands(washType.total_price)
+      localTotal += washType.total_price
+    })
+    setMainTotal(centsToRands(localTotal))
     setLoading(false)
   }
 
@@ -42,7 +47,11 @@ const WashesReport = () => {
     getWashesReport(localStartDate, localEndDate)
     .then((res) => {
       setReportData(res)
-      res.map((washType) => localTotal += washType.price)
+      res.map((washType) => {
+        washType.total_cost = centsToRands(washType.total_cost)
+        washType.total_price = centsToRands(washType.total_price)
+        localTotal += washType.total_price
+      })
       setMainTotal(localTotal)
       setLoading(false)
     })
@@ -59,7 +68,7 @@ const WashesReport = () => {
         <input class="form-control" type="date" onChange={(e) => setEndDate(e.target.value)} value={endDate}/>
       </div>
       <div className="form-group col-md-6">
-        <button className="btn btn-primary mt-4" onClick={() => { handleFetchReport() }}>Generate</button>
+        <button className="btn btn-primary mt-4" onClick={() => { handleFetchReport() }}>Generate Report</button>
       </div>
       <div className="col-md-12 mt-4">
         <BasicTable
@@ -68,8 +77,8 @@ const WashesReport = () => {
           fields={[
             'name',
             'wash_count',
-            'cost',
-            'price',
+            'total_cost',
+            'total_price',
           ]}
           headings={[
             'name',
@@ -81,8 +90,8 @@ const WashesReport = () => {
           extraButtons={[]}
         />
       </div>
-        <div className="col-md-10"></div>
-      <div className="col-md-2 mt-4">
+      <div className="col-md-6"></div>
+      <div className="col-md-6 mt-4 text-right">
         <h1 className="text-white">{`Total: R${mainTotal}`}</h1>
       </div>
     </div>

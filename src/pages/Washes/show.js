@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { getWash, saveWash } from '../../services/washTypesApi.js'
-import BasicForm from '../../components/Forms/BasicForm'
-import { useParams, useHistory, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import { centsToRands } from '../../helpers'
 
 const WashShow = () => {
   let [localWash, setLocalWash] = useState({})
   let [loading, setLoading] = useState(true)
 
-  const history = useHistory()
   let { id } = useParams()
 
   useEffect(() => {
@@ -23,8 +22,8 @@ const WashShow = () => {
     <div className="text-white">
       <p>Name: {localWash.name}</p>
       <p>Description: {localWash.description}</p>
-      <p>Cost: {localWash.cost}</p>
-      <p>Selling Price: {localWash.price}</p>
+      <p>Cost: {centsToRands(localWash.cost)}</p>
+      <p>Selling Price: {centsToRands(localWash.price)}</p>
       <p>Points awarded: {localWash.points}</p>
       <Link className="btn btn-primary" to='/wash_types'>Back to washes</Link>
     </div>
