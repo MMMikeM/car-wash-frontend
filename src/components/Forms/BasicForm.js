@@ -6,15 +6,20 @@ const snakeToSpace = (input) => {
   return input
 }
 
-const inputs = (editableKeys, record, updateValueMethod) => {
-  return editableKeys.map((key) => {
+const inputs = (editableKeys, record, updateValueMethod, transformations) => {
+  return editableKeys.map((key, index) => {
+    let value = record[key]
+    if (transformations[index] != '') {
+      value = transformations[index](value)
+    }
+
     return (
       <div className="mb-2" key={key}>
         <label className="text-9">{snakeToSpace(key)}</label>
         <input
           onChange={(e) => updateValueMethod(record, key, e.target.value)}
           className="form-control bg-2 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
-          value={record[key]}
+          value={value}
         ></input>
       </div>
     )
@@ -24,10 +29,10 @@ const inputs = (editableKeys, record, updateValueMethod) => {
 const BasicForm = (props) => {
   return (
     <>
-      {inputs(props.editableKeys, props.record, props.editRecordMethod)}
+      {inputs(props.editableKeys, props.record, props.editRecordMethod, props.valueTransformations)}
       <button
         className="btn btn-primary px-5 mx-auto"
-        onClick={(e) => props.saveFormData()}
+        onClick={() => props.saveFormData()}
       >
         Save
       </button>

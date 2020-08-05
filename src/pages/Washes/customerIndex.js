@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import BasicCard from '../../components/BasicCard'
 import { getWashes } from '../../services/washTypesApi'
+import {transformWashesCentsToRands} from '../../helpers'
 
 const Washes = () => {
   let [washes, setWashes] = useState([])
@@ -11,7 +12,8 @@ const Washes = () => {
 
   const handleFetchWashes = async () => {
     let res = await getWashes()
-    setWashes(res)
+    let transformedWashes = transformWashesCentsToRands(res)
+    setWashes(transformedWashes)
     setLoading(false)
   }
 
