@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getWash, saveWash } from '../../services/washTypesApi.js'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
+import { centsToRands } from '../../helpers'
 
 const WashEdit = () => {
   let [localWash, setLocalWash] = useState({})
@@ -12,7 +13,11 @@ const WashEdit = () => {
 
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
-    tempRecord[key] = value
+    if (['price', 'cost'].includes(key)) {
+      tempRecord[key] = (value * 100)
+    } else {
+      tempRecord[key] = value
+    }
     setLocalWash(tempRecord)
   }
 
@@ -39,6 +44,7 @@ const WashEdit = () => {
           record={localWash}
           saveFormData={save}
           editableKeys={['name', 'cost', 'price', 'points', 'description', 'order']}
+          valueTransformations={['', centsToRands, centsToRands, '', '', '']}
         />
       ) : (
         ''

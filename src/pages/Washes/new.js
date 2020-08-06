@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { postWash } from '../../services/washTypesApi.js'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory } from 'react-router-dom'
+import { centsToRands } from '../../helpers'
 
 const WashNew = () => {
   let [newWash, setNewWash] = useState({
@@ -38,6 +39,7 @@ const WashNew = () => {
           record={newWash}
           saveFormData={save}
           editableKeys={['name', 'cost', 'price', 'points', 'description']}
+          valueTransformations={['', centsToRands, centsToRands, '', '', '']}
         />
       ) : (
         ''

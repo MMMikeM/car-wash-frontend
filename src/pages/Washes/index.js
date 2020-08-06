@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getWashes, deleteWash } from '../../services/washTypesApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
  import { Link } from 'react-router-dom'
+import {transformWashesCentsToRands} from '../../helpers.js'
 
 const WashesIndex = () => {
   let [washes, setWashes] = useState([])
@@ -9,7 +10,8 @@ const WashesIndex = () => {
 
   const handleFetchWashes = async () => {
     let res = await getWashes()
-    setWashes(res)
+    let transformedWashes = transformWashesCentsToRands(res)
+    setWashes(transformedWashes)
     setLoading(false)
   }
 
