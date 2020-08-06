@@ -50,7 +50,6 @@ const ManageUserWashes = () => {
   // }
 
   const washCard = ({ name, price, points, id }, key, isWashSelected) => {
-    console.log(name, price, points, key, isWashSelected)
     let cardClass =
       'text-white bg-1 d-flex justify-content-center align-items-center m-2 p-2'
     if (isWashSelected) {
