@@ -25,6 +25,8 @@ import WashesReport from './pages/Reports/Washes'
 import ManagerRoute from './pages/Layouts/ManagerRoute'
 import ProtectedRoute from './pages/Layouts/ProtectedRoute'
 
+import Settings from './pages/Settings/edit'
+
 import './css/main.css'
 import './css/base.css'
 
@@ -59,6 +61,10 @@ function App() {
     {
       name: 'Washes Report',
       path: '/reports/washes',
+    },    
+    {
+      name: 'Settings',
+      path: '/settings',
     },
   ]
 
@@ -88,11 +94,11 @@ function App() {
   return (
     <Router>
       <nav className="bg-1 navbar border-bottom border-primary">
-        <ul className="d-flex flex-row align-items-center py-3 px-5 mb-0 navbar-nav">
+        <ul className="d-flex flex-row align-items-center py-2 px-5 mb-0 navbar-nav">
           {Links.map((link) => {
             return (
               <li>
-                <Link className="nav-item mr-3 py-2 px-2" to={link.path}>
+                <Link className="nav-item mr-3 py-5 px-2 text-9 font-weight-normal text-decoration-none" to={link.path}>
                   {link.name}
                 </Link>
               </li>
@@ -127,6 +133,7 @@ function App() {
           <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
           <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
           <ProtectedRoute component={WashesIndex} path="/wash_types" />
+          <ProtectedRoute component={Settings} path="/settings" />
           <Route path="/reports/washes">
             <WashesReport />
           </Route>
