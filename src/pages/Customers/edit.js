@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getCustomer, saveCustomer } from '../../services/customersApi.js'
-import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
+import {CustomerForm, schema }from './form'
 
 const CustomersEdit = () => {
   let [localCustomer, setLocalCustomer] = useState({})
@@ -17,9 +17,12 @@ const CustomersEdit = () => {
   }
 
   const save = async () => {
+    let valid = await schema.validate(localCustomer).catch((err) => {alert(err.errors)})
     // eslint-disable-next-line no-unused-vars
-    let res = await saveCustomer(localCustomer.id, localCustomer)
-    history.push('/')
+    if (valid){
+      let res = await saveCustomer(localCustomer.id, localCustomer)
+      history.push(`/customers/${localCustomer.id}`)
+    }
   }
 
   useEffect(() => {
@@ -34,11 +37,10 @@ const CustomersEdit = () => {
   return (
     <div>
       {!loading ? (
-        <BasicForm
-          editRecordMethod={editRecordMethod}
-          record={localCustomer}
-          saveFormData={save}
-          editableKeys={['name', 'email', 'contact_number']}
+        <CustomerForm
+        editRecordMethod={editRecordMethod}
+        localCustomer={localCustomer}
+        save={save}
         />
       ) : (
         ''

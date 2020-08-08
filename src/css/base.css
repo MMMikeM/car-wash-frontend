@@ -193,9 +193,10 @@ div > input:active {
 
 .wash-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: minmax(6rem, 10rem);
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  grid-auto-rows: minmax(3rem, 10rem);
 }
+
 
 .highlighted {
   border: 4px solid #b4f997;
