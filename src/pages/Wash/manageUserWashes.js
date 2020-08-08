@@ -42,14 +42,9 @@ const ManageUserWashes = () => {
     setData(tempRecord)
   }
 
-  // const proceedCard = () => {
-  //   debugger
-  //   return (
-
-  //   )
-  // }
 
   const washCard = ({ name, price, points, id }, key, isWashSelected) => {
+    console.log(name, price, points, key, isWashSelected)
     let cardClass =
       'text-white bg-1 d-flex justify-content-center align-items-center m-2 p-2'
     if (isWashSelected) {
@@ -101,8 +96,11 @@ const ManageUserWashes = () => {
           let isWashSelected = wash.id === selectedWashId
           return washCard(wash, key, isWashSelected)
         })}
-        <div onClick={handleProceed}>
-          <p className="py-0 my-0 text-white">Proceed</p>
+        <div
+          onClick={handleProceed}
+          className="text-black bg-primary d-flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
+        >
+          <p className="py-0 my-0">Proceed</p>
         </div>
       </div>
       {!loading ? (

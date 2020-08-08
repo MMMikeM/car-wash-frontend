@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { postCustomer } from '../../services/customersApi.js'
-import BasicForm from '../../components/Forms/BasicForm'
+import { CustomerForm, schema} from './form'
 import { useHistory } from 'react-router-dom'
 
 const CustomersNew = () => {
@@ -14,11 +14,14 @@ const CustomersNew = () => {
   const history = useHistory()
 
   const save = async () => {
-    setLoading(true)
-    // eslint-disable-next-line no-unused-vars
-    let res = await postCustomer(localCustomer)
-    setLoading(false)
-    history.push(`/customers/${res.id}`)
+    let valid = await schema.validate(localCustomer).catch((err) => {alert(err.errors)})
+    if (valid){ 
+      setLoading(true)
+      // eslint-disable-next-line no-unused-vars
+      let res = await postCustomer(localCustomer)
+      setLoading(false)
+      history.push(`/customers/${res.id}`)
+    }
   }
 
   const editRecordMethod = (record, key, value) => {
@@ -30,12 +33,10 @@ const CustomersNew = () => {
   return (
     <div className="w-50 mx-auto d-flex flex-column">
       {!loading ? (
-        <BasicForm
+        <CustomerForm
           editRecordMethod={editRecordMethod}
-          record={localCustomer}
-          saveFormData={save}
-          editableKeys={['name', 'email', 'contact_number']}
-          valueTransformations={['', '', '']}
+          localCustomer={localCustomer}
+          save={save}
         />
       ) : (
         ''
