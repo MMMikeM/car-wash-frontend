@@ -92,7 +92,7 @@ const WashesReport = () => {
       </div>
       <div className="col-md-6"></div>
       <div className="col-md-6 mt-4 text-right">
-        <h1 className="text-white">{`Total: ${mainTotal}`}</h1>
+        <h3 className="text-white">{`Total: ${mainTotal}`}</h3>
       </div>
     </div>
   )

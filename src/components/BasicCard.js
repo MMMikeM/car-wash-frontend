@@ -25,11 +25,11 @@ const Card = (props) => {
                   />
                   <h5 className="card-text align-bottom font-heading font-weight-semiBold mb-0 mx-2 pt-1">{`Earn ${wash.points} coins`}</h5>
                 </div>
-                <h2 className="card-text h1 text-primary align-bottom pt-1 lh-1 font-heading font-weight-black">{`R${wash.price}.00`}</h2>
+                <h2 className="card-text h1 text-primary align-bottom pt-1 lh-1 font-heading font-weight-black">{`${wash.price}`}</h2>
               </div>
             ) : (
               <div className="d-flex align-items-end justify-content-end">
-                <h2 className="card-text h1 text-primary align-bottom pt-1 lh-1 font-heading font-weight-black">{`R${wash.price}.00`}</h2>
+                <h2 className="card-text h1 text-primary align-bottom pt-1 lh-1 font-heading font-weight-black">{`${wash.price}`}</h2>
               </div>
             )}
           </div>
