@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getCustomer, saveCustomer } from '../../services/customersApi.js'
 import { useParams, useHistory } from 'react-router-dom'
-import {CustomerForm, schema }from './form'
+import { CustomerForm, schema } from './form'
 
 const CustomersEdit = () => {
   let [localCustomer, setLocalCustomer] = useState({})
@@ -17,9 +17,11 @@ const CustomersEdit = () => {
   }
 
   const save = async () => {
-    let valid = await schema.validate(localCustomer).catch((err) => {alert(err.errors)})
+    let valid = await schema.validate(localCustomer).catch((err) => {
+      alert(err.errors)
+    })
     // eslint-disable-next-line no-unused-vars
-    if (valid){
+    if (valid) {
       let res = await saveCustomer(localCustomer.id, localCustomer)
       history.push(`/customers/${localCustomer.id}`)
     }
@@ -34,14 +36,25 @@ const CustomersEdit = () => {
     handleFetchCustomer()
   }, [id])
 
+  let handleClick = () => {
+    history.push(`/settings/users/${id}/edit`)
+  }
+
   return (
-    <div>
+    <div className="w-100">
       {!loading ? (
-        <CustomerForm
-        editRecordMethod={editRecordMethod}
-        localCustomer={localCustomer}
-        save={save}
-        />
+        <div className="max-sm mx-auto">
+          <div className="d-flex justify-content-end">
+            <button className="btn btn-primary" onClick={handleClick}>
+              Convert To User
+            </button>
+          </div>
+          <CustomerForm
+            editRecordMethod={editRecordMethod}
+            localCustomer={localCustomer}
+            save={save}
+          />
+        </div>
       ) : (
         ''
       )}
