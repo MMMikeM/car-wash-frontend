@@ -1,48 +1,58 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
+import { getWash, saveWash } from '../../services/washTypesApi.js'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useHistory } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
+import { centsToRands } from '../../helpers'
 
+const WashFreeEdit = () => {
+  let [localWash, setLocalWash] = useState({})
+  let [loading, setLoading] = useState(true)
 
-const Settings = () => {
-    let [freeWashPoints, setFreeWashPoints] = useState(0)
-    let [loading, setLoading] = useState(false)
-    const history = useHistory()
-
-    // useEffect(() => {
-    //     const handleFetchFreeWash = async () => {
-    //       let res = await getFreePoints()
-    //       setFreeWashPoints(res)
-    //       setLoading(false)
-    //     }
-    //     handleFetchFreeWash()
-    //   }, [])
-
-
-    // const save = async () => {
-    //     setLoading(true)
-    //     // eslint-disable-next-line no-unused-vars
-    //     let res = await postFreeWashPoints(freeWashPoints)
-    //     setLoading(false)
-    //     history.push(`/settings`)
-    // }
+  const history = useHistory()
+  let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
-    tempRecord[key] = value
-    setFreeWashPoints(tempRecord)
+    if (['price', 'cost'].includes(key)) {
+      tempRecord[key] = value * 100
+    } else {
+      tempRecord[key] = value
+    }
+    setLocalWash(tempRecord)
   }
 
+  const save = async () => {
+    // eslint-disable-next-line no-unused-vars
+    let res = await saveWash(localWash.id, localWash)
+    history.push(`/wash_types/${id}`)
+  }
 
-    return (
-      <h1>hi</h1>
-      //   <BasicForm
-      //   editRecordMethod={editRecordMethod}
-      //   record={freeWashPoints}
-      //   saveFormData={save}
-      //   editableKeys={['points']}
-      //   valueTransformations={['']}
-      // />
-    )
+  useEffect(() => {
+    const handleFetchWash = async () => {
+      let res = await getWash(id)
+      setLocalWash(res)
+      setLoading(false)
+    }
+    handleFetchWash()
+  }, [id])
+
+  return (
+    <div className="w-100">
+      <div className="max-sm mx-auto bg-3 p-5 rounded">
+        {!loading ? (
+          <BasicForm
+            editRecordMethod={editRecordMethod}
+            record={localWash}
+            saveFormData={save}
+            editableKeys={['name', 'cost', 'points', 'description']}
+            valueTransformations={['', centsToRands, '', '']}
+          />
+        ) : (
+          ''
+        )}
+      </div>
+    </div>
+  )
 }
 
-export default Settings
+export default WashFreeEdit

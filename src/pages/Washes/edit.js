@@ -14,7 +14,7 @@ const WashEdit = () => {
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
     if (['price', 'cost'].includes(key)) {
-      tempRecord[key] = (value * 100)
+      tempRecord[key] = value * 100
     } else {
       tempRecord[key] = value
     }
@@ -37,18 +37,27 @@ const WashEdit = () => {
   }, [id])
 
   return (
-    <div>
-      {!loading ? (
-        <BasicForm
-          editRecordMethod={editRecordMethod}
-          record={localWash}
-          saveFormData={save}
-          editableKeys={['name', 'cost', 'price', 'points', 'description', 'order']}
-          valueTransformations={['', centsToRands, centsToRands, '', '', '']}
-        />
-      ) : (
-        ''
-      )}
+    <div className="w-100">
+      <div className="max-sm mx-auto bg-3 p-5 rounded">
+        {!loading ? (
+          <BasicForm
+            editRecordMethod={editRecordMethod}
+            record={localWash}
+            saveFormData={save}
+            editableKeys={[
+              'name',
+              'cost',
+              'price',
+              'points',
+              'description',
+              'order',
+            ]}
+            valueTransformations={['', centsToRands, centsToRands, '', '', '']}
+          />
+        ) : (
+          ''
+        )}
+      </div>
     </div>
   )
 }

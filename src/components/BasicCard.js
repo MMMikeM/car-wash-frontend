@@ -6,9 +6,9 @@ const Card = (props) => {
     .map((wash, y) => {
       return (
         <div
-          className=" card border-0 bg-3 border-custom font-weight-bold text-7 shadow-custom m-2 "
+          className="w-lg-50 card border-0 bg-3 border-custom font-weight-bold text-7 shadow-custom m-2 "
           key={y}
-          style={{ width: '20rem' }}
+          style={{ width: '22rem' }}
         >
           <div className="card-body px-4 py-3 bg-3 border-custom d-flex flex-column justify-content-between">
             <h3 className="card-title text-grey font-heading font-weight-black mb-3  ">
