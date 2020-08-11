@@ -87,7 +87,7 @@ const UserEdit = () => {
               className={selected == 'salesperson' ? active : inactive}
               onClick={handleSalespersonClick}
             >
-              SalesPerson
+              Salesperson
             </button>
             <button
               className={selected == 'manager' ? active : inactive}
