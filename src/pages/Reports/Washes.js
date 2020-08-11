@@ -29,7 +29,7 @@ const WashesReport = () => {
     let res = await getWashesReport(startDate, endDate)
     setReportData(res)
     res.map((washType) => {
-      localTotal += washType.total_price
+      localTotal += parseFloat(washType.total_price)
       washType.total_cost = formatRands(centsToRands(washType.total_cost))
       washType.total_price = formatRands(centsToRands(washType.total_price))
     })
@@ -47,7 +47,7 @@ const WashesReport = () => {
     getWashesReport(localStartDate, localEndDate).then((res) => {
       setReportData(res)
       res.map((washType) => {
-        localTotal += washType.total_price
+        localTotal += parseFloat(washType.total_price)
         washType.total_cost = formatRands(centsToRands(washType.total_cost))
         washType.total_price = formatRands(centsToRands(washType.total_price))
       })
