@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Login from './pages/Login/Login'
 import Logout from './pages/Logout/Logout'
 
+import CustomerHome from './pages/Customer/index'
+
 import CustomersIndex from './pages/Customers/index'
 import CustomersEdit from './pages/Customers/edit'
 import CustomersNew from './pages/Customers/new'
@@ -16,7 +18,6 @@ import Settings from './pages/Settings/index'
 
 import WashesIndex from './pages/Washes/index'
 import WashesShow from './pages/Washes/show'
-import Washes from './pages/Washes/customerIndex'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
 
@@ -34,6 +35,10 @@ import UserEdit from './pages/Users/edit'
 import UserIndex from './pages/Users/index'
 import AdminHome from './pages/Admin/index'
 import SalesHome from './pages/Sales/index'
+
+import SearchNum from './pages/Sales/searchNumber'
+import SearchReg from './pages/Sales/searchRegistration'
+import SalesNew from './pages/Sales/newCustomer'
 
 import './css/main.css'
 import './css/base.css'
@@ -149,6 +154,12 @@ function App() {
             component={ManageUserWashes}
             path="/customers/:id/washes/new"
           />
+          <ProtectedRoute component={SalesNew} path="/new_customer/" />
+          <ProtectedRoute component={SearchReg} path="/search/q" />
+          <ProtectedRoute
+            component={SearchNum}
+            path="/search/:registrationNumber/"
+          />
           <ProtectedRoute component={CustomersShow} path="/customers/:id" />
           <ManagerRoute component={CustomersIndex} path="/customers" />
           <ProtectedRoute component={WashNew} path="/wash_types/new" />
@@ -165,7 +176,7 @@ function App() {
           <HomeRoute
             manager={AdminHome}
             sales={SalesHome}
-            customer={Washes}
+            customer={CustomerHome}
             path="/"
           />
         </Switch>

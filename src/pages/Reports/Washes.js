@@ -80,7 +80,7 @@ const WashesReport = () => {
       </div>
       <div className="form-group col-md-6">
         <button
-          className="btn btn-primary mt-4 px-4"
+          className="btn btn-primary mt-4  px-4 py-2"
           onClick={() => {
             handleFetchReport()
           }}

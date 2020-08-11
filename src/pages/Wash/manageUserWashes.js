@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { postWash, deleteWash } from '../../services/washesApi'
 import { getWashes } from '../../services/washTypesApi'
 import { getCustomer } from '../../services/customersApi.js'
-import BasicForm from '../../components/Forms/BasicForm'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory, useParams } from 'react-router-dom'
 import Modal from '../../components/Modals/Modal'
+import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 
 const ManageUserWashes = () => {
   const history = useHistory()
@@ -44,7 +44,7 @@ const ManageUserWashes = () => {
 
   const washCard = ({ name, price, points, id }, key, isWashSelected) => {
     let cardClass =
-      'text-white bg-1 d-flex justify-content-center align-items-center m-2 p-2'
+      'text-white bg-3 d-flex justify-content-center align-items-center m-2 p-2'
     if (isWashSelected) {
       cardClass += ' highlighted'
     }
@@ -57,7 +57,7 @@ const ManageUserWashes = () => {
     }
     return (
       <div className={cardClass} key={id} onClick={handleClick}>
-        <p className="py-0 my-0">{name}</p>
+        <h5 className="py-0 my-0">{name}</h5>
       </div>
     )
   }
@@ -84,7 +84,35 @@ const ManageUserWashes = () => {
         visible={modalIsVisible}
         hideModal={() => setModalIsVisible(false)}
       />
-      <h3 className="text-white ml-3 pb-2">User: {localCustomer.name}</h3>
+
+      <div className=" py-3 mb-3 bg-3 text-8">
+        <h2 className="px-4 pb-3 w-100 border-bottom border-primary text-white">
+          User Profile
+        </h2>
+        <div className="px-4 pt-2">
+          <p>
+            <FaUser className="mr-2 mb-1 " />
+            Name:{' '}
+            <span className=" ml-1 mt-1 font-weight-black">
+              {localCustomer.name}
+            </span>
+          </p>
+          <p>
+            <FaCar className="mr-2 mb-1 " />
+            Registration number:{' '}
+            <span className=" ml-1 mt-1 font-weight-black">
+              {localCustomer.vehicles?.join(' ')}
+            </span>
+          </p>
+          <p>
+            <FaCoins className="mr-2 mb-1 " />
+            Total Points:{' '}
+            <span className=" ml-1 mt-1 font-weight-black">
+              {localCustomer.total_points}
+            </span>
+          </p>
+        </div>
+      </div>
 
       <div className="wash-grid">
         {washes?.map((wash, key) => {
@@ -96,7 +124,7 @@ const ManageUserWashes = () => {
             onClick={handleProceed}
             className="text-black bg-primary d-flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
           >
-            <p className="py-0 my-0">Proceed</p>
+            <h5 className="py-0 my-0">Proceed</h5>
           </div>
         ) : (
           ''
