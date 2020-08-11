@@ -48,18 +48,15 @@ const ManageUserWashes = () => {
     if (isWashSelected) {
       cardClass += ' highlighted'
     }
+    const handleClick = () => {
+      if (selectedWashId === id && !loading) {
+        setSelectedWashId('')
+      } else {
+        setSelectedWashId(id)
+      }
+    }
     return (
-      <div
-        className={cardClass}
-        key={id}
-        onClick={() => {
-          if (selectedWashId === id) {
-            setSelectedWashId('')
-          } else {
-            setSelectedWashId(id)
-          }
-        }}
-      >
+      <div className={cardClass} key={id} onClick={handleClick}>
         <p className="py-0 my-0">{name}</p>
       </div>
     )
@@ -94,12 +91,16 @@ const ManageUserWashes = () => {
           let isWashSelected = wash.id === selectedWashId
           return washCard(wash, key, isWashSelected)
         })}
-        <div
-          onClick={handleProceed}
-          className="text-black bg-primary d-flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
-        >
-          <p className="py-0 my-0">Proceed</p>
-        </div>
+        {selectedWashId != '' ? (
+          <div
+            onClick={handleProceed}
+            className="text-black bg-primary d-flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
+          >
+            <p className="py-0 my-0">Proceed</p>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       {!loading && localCustomer.washes.length > 0 ? (
         <div className="max-md mx-auto">

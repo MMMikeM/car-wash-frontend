@@ -41,7 +41,7 @@ const WashNew = () => {
 
   return (
     <div className="w-50 mx-auto d-flex flex-column">
-      {!loading && newWash.length > 1 ? (
+      {!loading ? (
         <WashForm
           editRecordMethod={editRecordMethod}
           record={newWash}
