@@ -64,7 +64,7 @@ const CustomersShow = () => {
           </Link>
         </div>
       </div>
-      {localCustomer.washes.length > 0 ? (
+      {localCustomer?.washes.length > 0 ? (
         <div className="mt-4">
           <BasicTable
             rowType={'washes'}
