@@ -45,11 +45,11 @@ const Login = () => {
 
       let roles = loginResponse.data.user.roles
       if (roles.includes('manager')) {
-        window.location.href = `${process.env.REACT_APP_URL}/customers`
+        window.location.href = `${process.env.REACT_APP_URL}/`
       } else if (roles.includes('salesperson')) {
-        window.location.assign(`${process.env.REACT_APP_URL}/customers/search`)
+        window.location.assign(`${process.env.REACT_APP_URL}/`)
       } else {
-        window.location.assign(`${process.env.REACT_APP_URL}/profile`)
+        window.location.assign(`${process.env.REACT_APP_URL}/`)
       }
 
       // history.push('/')

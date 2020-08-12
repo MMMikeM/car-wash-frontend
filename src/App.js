@@ -61,14 +61,13 @@ function App() {
     path: '/logout',
   }
 
-  let salespersonLinks = [
+  let salespersonLinks = []
+
+  let managerLinks = [
     {
       name: 'Search Customers',
       path: '/customers/search',
     },
-  ]
-
-  let managerLinks = [
     {
       name: 'List Customers',
       path: '/customers',
