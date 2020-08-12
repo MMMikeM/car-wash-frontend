@@ -23,3 +23,13 @@ export const searchCustomer = async (searchTerm, searchValue) => {
   let response = await request('GET', `/customers?${searchTerm}=${searchValue}`)
   return response.json()
 }
+
+export const getSystemUsers = async () => {
+  let response = await request('GET', `/system_users`)
+  return response.json()
+}
+
+export const saveSystemUsers = async (id, body) => {
+  let response = await request('PUT', `/system_users/${id}/roles`, body)
+  return response.json()
+}

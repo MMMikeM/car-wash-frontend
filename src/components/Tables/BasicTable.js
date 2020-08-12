@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
 
 const column = (property, key) => {
+  if (Array.isArray(property)){
+    return(<td key={key}>{snakeToSpace(property[0])}</td>)
+  }
   return <td key={key}>{property}</td>
 }
 

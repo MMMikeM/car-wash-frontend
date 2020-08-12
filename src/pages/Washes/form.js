@@ -1,7 +1,7 @@
 import React from 'react'
 import * as yup from 'yup';
 import BasicForm from '../../components/Forms/BasicForm'
-import { centsToRands, formatRands } from '../../helpers'
+import { centsToRands } from '../../helpers'
 
 
 export const schema = yup.object().shape({
