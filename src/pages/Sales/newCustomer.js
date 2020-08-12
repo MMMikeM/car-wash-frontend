@@ -7,11 +7,16 @@ import { useLocation, useHistory } from 'react-router-dom'
 const SalesNew = () => {
   const history = useHistory()
   let [loading, setLoading] = useState(false)
+  let [inputValue, setInputValue] = useState('')
   let [localCustomer, setLocalCustomer] = useState({
     name: '',
     email: '',
     contact_number: '',
-    registration_number: '',
+    vehicles_attributes: [
+      {
+        registration_number: '',
+      },
+    ],
   })
 
   function useQuery() {
@@ -23,7 +28,7 @@ const SalesNew = () => {
     setLocalCustomer({
       name: query.get('name'),
       contact_number: query.get('contact'),
-      registration_number: query.get('registration'),
+      vehicles_attributes: [{ registration_number: query.get('registration') }],
     })
   }, [])
 
@@ -54,21 +59,33 @@ const SalesNew = () => {
       .matches(/0\d{9}/g, 'Numbers must begin with 0 and be 10 digits long'),
   })
 
+  let update = (e) => {
+    setInputValue(e.target.value)
+    let registration = { registration_number: e.target.value }
+    localCustomer.vehicles_attributes[0] = registration
+    console.log(localCustomer)
+  }
+
   return (
     <div className="w-50 mx-auto d-flex flex-column">
       {!loading ? (
-        <BasicForm
-          editRecordMethod={editRecordMethod}
-          record={localCustomer}
-          saveFormData={save}
-          editableKeys={[
-            'name',
-            'email',
-            'contact_number',
-            'registration_number',
-          ]}
-          valueTransformations={['', '', '', '']}
-        />
+        <div>
+          <div className="mb-2">
+            <label className="text-9">Registration Number:</label>
+            <input
+              value={localCustomer.vehicles_attributes[0].registration_number}
+              onChange={(e) => update(e)}
+              className="form-control bg-2 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+            ></input>
+          </div>
+          <BasicForm
+            editRecordMethod={editRecordMethod}
+            record={localCustomer}
+            saveFormData={save}
+            editableKeys={['name', 'email', 'contact_number']}
+            valueTransformations={['', '', '']}
+          />
+        </div>
       ) : (
         ''
       )}

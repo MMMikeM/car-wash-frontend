@@ -101,7 +101,7 @@ const ManageUserWashes = () => {
             <FaCar className="mr-2 mb-1 " />
             Registration number:{' '}
             <span className=" ml-1 mt-1 font-weight-black">
-              {localCustomer.vehicles?.join(' ')}
+              {localCustomer.vehicles?.map((key) => key.registration_number)}
             </span>
           </p>
           <p>
