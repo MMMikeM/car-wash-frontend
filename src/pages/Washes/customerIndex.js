@@ -43,7 +43,7 @@ const Washes = () => {
       <div className="text-small pt-5 max-md mx-auto mb-5">
         <p className="text-9">
           *T’s & C’s. Complimentary Disinfectant Fogging Included in Full House
-          And CARBON Treatment When Available. Carbon Loyalty Prpgramme Is
+          And CARBON Treatment When Available. Carbon Loyalty Programme Is
           Subject To Change.
         </p>
         <p className="text-9">
