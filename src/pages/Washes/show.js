@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getWash, saveWash } from '../../services/washTypesApi.js'
 import { useParams, Link } from 'react-router-dom'
-import { centsToRands } from '../../helpers'
+import { centsToRands, transformCentsToRands } from '../../helpers'
 
 const WashShow = () => {
   let [localWash, setLocalWash] = useState({})
@@ -18,14 +18,41 @@ const WashShow = () => {
     handleFetchWash()
   }, [id])
 
-  return loading ? "" :(
-    <div className="text-white">
-      <p>Name: {localWash.name}</p>
-      <p>Description: {localWash.description}</p>
-      <p>Cost: {centsToRands(localWash.cost)}</p>
-      <p>Selling Price: {centsToRands(localWash.price)}</p>
-      <p>Points awarded: {localWash.points}</p>
-      <Link className="btn btn-primary" to='/wash_types'>Back to washes</Link>
+  return loading ? (
+    ''
+  ) : (
+    <div className="bg-3 px-4 py-3 w-50 text-8 max-sm rounded">
+      <p>
+        Name:{' '}
+        <span className="text-white font-weight-black">{localWash.name}</span>
+      </p>
+      <p>
+        Description:{' '}
+        <span className="text-white font-weight-black">
+          {localWash.description}
+        </span>
+      </p>
+      <p>
+        Cost:{' '}
+        <span className="text-white font-weight-black">
+          {transformCentsToRands(localWash.cost)}
+        </span>
+      </p>
+      <p>
+        Selling Price:{' '}
+        <span className="text-white font-weight-black">
+          {transformCentsToRands(localWash.price)}
+        </span>
+      </p>
+      <p>
+        Points awarded:{' '}
+        <span className="text-white font-weight-black">{localWash.points}</span>
+      </p>
+      <div className="d-flex justify-content-end">
+        <Link className="btn btn-primary" to="/wash_types">
+          Back to washes
+        </Link>
+      </div>
     </div>
   )
 }

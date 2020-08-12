@@ -33,14 +33,19 @@ const CustomersIndex = () => {
   }
 
   return (
-    <div>
+    <div className="w-100">
       {!loading ? (
         <div className="row">
           <div className="col-md-9"></div>
-          <div className="col-md-3 text-right"> 
-            <Link className="btn btn-primary mb-2" to="/customers/new">Add customer</Link> 
+          <div className="col-md-3 text-right">
+            <Link
+              className="btn btn-primary mb-2 px-4 py-2"
+              to="/customers/new"
+            >
+              Add customer
+            </Link>
           </div>
-          <div className="col-md-12"> 
+          <div className="col-md-12">
             <BasicTable
               rowType={'customers'}
               records={localCustomers}

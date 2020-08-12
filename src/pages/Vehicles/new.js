@@ -21,13 +21,16 @@ const VehiclesNew = () => {
   }
 
   return (
-    <div>
-      <BasicForm
-        editRecordMethod={editRecordMethod}
-        record={data}
-        saveFormData={save}
-        editableKeys={['registration_number']}
-      />
+    <div className="w-100">
+      <div className="max-sm mx-auto">
+        <BasicForm
+          editRecordMethod={editRecordMethod}
+          record={data}
+          saveFormData={save}
+          editableKeys={['registration_number']}
+          valueTransformations={['']}
+        />
+      </div>
     </div>
   )
 }

@@ -12,6 +12,8 @@ import CustomersShow from './pages/Customers/show'
 
 import VehicleNew from './pages/Vehicles/new'
 
+import Settings from './pages/Settings/index'
+
 import WashesIndex from './pages/Washes/index'
 import WashesShow from './pages/Washes/show'
 import Washes from './pages/Washes/customerIndex'
@@ -24,12 +26,26 @@ import WashesReport from './pages/Reports/Washes'
 
 import ManagerRoute from './pages/Layouts/ManagerRoute'
 import ProtectedRoute from './pages/Layouts/ProtectedRoute'
+import CustomerRoute from './pages/Layouts/CustomerRoute'
+import HomeRoute from './pages/Layouts/HomeRoute'
+
+import UserEdit from './pages/Users/edit'
+
+import UserIndex from './pages/Users/index'
+import AdminHome from './pages/Admin/index'
+import SalesHome from './pages/Sales/index'
 
 import './css/main.css'
 import './css/base.css'
+import WashFreeEdit from './pages/Settings/edit'
 
 function App() {
   let [Links, setLinks] = useState([])
+
+  let home = {
+    name: 'Home',
+    path: '/',
+  }
 
   let loginLink = {
     name: 'Login',
@@ -60,6 +76,14 @@ function App() {
       name: 'Washes Report',
       path: '/reports/washes',
     },
+    {
+      name: 'Users',
+      path: '/settings/users',
+    },
+    {
+      name: 'Settings',
+      path: '/settings',
+    },
   ]
 
   useEffect(() => {
@@ -68,12 +92,13 @@ function App() {
       roles = []
     }
     let tempLinks = [...Links]
-    roles.map((role) => {
-      if (role === 'salesperson') {
-        tempLinks = [...tempLinks, ...salespersonLinks]
-      }
+    tempLinks.push(home)
+    roles.reverse().map((role) => {
       if (role === 'manager') {
         tempLinks = [...tempLinks, ...managerLinks]
+      }
+      if (role === 'salesperson') {
+        tempLinks = [...tempLinks, ...salespersonLinks]
       }
     })
 
@@ -88,11 +113,14 @@ function App() {
   return (
     <Router>
       <nav className="bg-1 navbar border-bottom border-primary">
-        <ul className="d-flex flex-row align-items-center py-3 px-5 mb-0 navbar-nav">
+        <ul className="d-flex flex-row align-items-center py-2 px-5 mb-0 navbar-nav">
           {Links.map((link) => {
             return (
               <li>
-                <Link className="nav-item mr-3 py-2 px-2" to={link.path}>
+                <Link
+                  className="nav-item mr-3 py-2 px-2 text-9 font-weight-normal text-decoration-none"
+                  to={link.path}
+                >
                   {link.name}
                 </Link>
               </li>
@@ -100,7 +128,7 @@ function App() {
           })}
         </ul>
       </nav>
-      <div className="container lg-w-75 mt-5">
+      <div className="container-sm mt-4 d-flex justify-content-center">
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />
@@ -127,17 +155,23 @@ function App() {
           <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
           <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
           <ProtectedRoute component={WashesIndex} path="/wash_types" />
+          <ManagerRoute component={UserEdit} path="/settings/users/:id/edit" />
+          <ManagerRoute component={WashFreeEdit} path="/settings/:id/edit" />
+          <ManagerRoute component={UserIndex} path="/settings/users" />
+          <ManagerRoute component={Settings} path="/settings" />
           <Route path="/reports/washes">
             <WashesReport />
           </Route>
-          <Route path="/">
-            <Washes />
-          </Route>
+          <HomeRoute
+            manager={AdminHome}
+            sales={SalesHome}
+            customer={Washes}
+            path="/"
+          />
         </Switch>
       </div>
     </Router>
   )
-
 }
 
 export default App

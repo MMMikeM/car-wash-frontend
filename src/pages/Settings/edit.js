@@ -4,7 +4,7 @@ import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
 import { centsToRands } from '../../helpers'
 
-const WashEdit = () => {
+const WashFreeEdit = () => {
   let [localWash, setLocalWash] = useState({})
   let [loading, setLoading] = useState(true)
 
@@ -44,15 +44,8 @@ const WashEdit = () => {
             editRecordMethod={editRecordMethod}
             record={localWash}
             saveFormData={save}
-            editableKeys={[
-              'name',
-              'cost',
-              'price',
-              'points',
-              'description',
-              'order',
-            ]}
-            valueTransformations={['', centsToRands, centsToRands, '', '', '']}
+            editableKeys={['name', 'cost', 'points', 'description']}
+            valueTransformations={['', centsToRands, '', '']}
           />
         ) : (
           ''
@@ -62,4 +55,4 @@ const WashEdit = () => {
   )
 }
 
-export default WashEdit
+export default WashFreeEdit

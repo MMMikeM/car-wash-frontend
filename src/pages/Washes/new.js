@@ -17,20 +17,22 @@ const WashNew = () => {
   const history = useHistory()
 
   const save = async () => {
-    let valid = await schema.validate(newWash).catch((err) => {alert(err.errors)})
-    if (valid){ 
-
-    setLoading(true)
-    // eslint-disable-next-line no-unused-vars
-    let res = await postWash(newWash)
-    setLoading(false)
-    history.push(`/wash_types/${res.id}`)}
+    let valid = await schema.validate(newWash).catch((err) => {
+      alert(err.errors)
+    })
+    if (valid) {
+      setLoading(true)
+      // eslint-disable-next-line no-unused-vars
+      let res = await postWash(newWash)
+      setLoading(false)
+      history.push(`/wash_types/${res.id}`)
+    }
   }
 
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
     if (['price', 'cost'].includes(key)) {
-      tempRecord[key] = (value * 100)
+      tempRecord[key] = value * 100
     } else {
       tempRecord[key] = value
     }
