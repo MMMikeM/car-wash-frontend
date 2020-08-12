@@ -30,7 +30,6 @@ const ManageUserWashes = () => {
       let resWashes = await getWashes()
       setLocalCustomer(resCustomer)
       setWashes(resWashes)
-      setSelectedWashId(resWashes[0].id)
       setLoading(false)
     }
     handleFetchData()
@@ -55,6 +54,7 @@ const ManageUserWashes = () => {
         setSelectedWashId(id)
       }
     }
+    console.log(selectedWashId)
     return (
       <div className={cardClass} key={id} onClick={handleClick}>
         <h5 className="py-0 my-0">{name}</h5>
