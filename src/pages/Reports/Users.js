@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import {
-  getWashesReport,
-  getWashesReportDownload,
-} from '../../services/reportsApi.js'
+import { getUsersReport } from '../../services/reportsApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
 //import { Link, useHistory } from 'react-router-dom'
 
-const WashesReport = () => {
+const UsersReport = () => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState('')
   let [endDate, setEndDate] = useState('')
@@ -26,15 +23,10 @@ const WashesReport = () => {
     return [year, month, day].join('-')
   }
 
-  const handleDownloadReport = async () => {
-    let res = await getWashesReportDownload(startDate, endDate)
-    handleDownload(res, 'WashReport')
-  }
-
   const handleFetchReport = async () => {
     setLoading(true)
     let localTotal = 0
-    let res = await getWashesReport(startDate, endDate)
+    let res = await getUsersReport(startDate, endDate)
     setReportData(res)
     res.map((washType) => {
       localTotal += parseFloat(washType.total_price)
@@ -52,7 +44,7 @@ const WashesReport = () => {
     let localTotal = 0
     setStartDate(localStartDate)
     setEndDate(localEndDate)
-    getWashesReport(localStartDate, localEndDate).then((res) => {
+    getUsersReport(localStartDate, localEndDate).then((res) => {
       setReportData(res)
       res.map((washType) => {
         localTotal += parseFloat(washType.total_price)
@@ -95,19 +87,13 @@ const WashesReport = () => {
           >
             Generate Report
         </button>
-          <button
-            className="btn btn-primary mt-4  px-4 py-2"
-            onClick={handleDownloadReport}
-          >
-            Download Report
-        </button>
         </div>
         <div className="col-md-12 mt-4">
           <BasicTable
             rowType={'customers'}
             records={reportData}
-            fields={['name', 'wash_count', 'total_cost', 'total_price']}
-            headings={['name', 'Quantity', 'Cost Price', 'Total']}
+            fields={['name', 'vehicles/registration_number', 'contact_number']}
+            headings={['name', 'vehicles/registration_number', 'contact_number']}
             crudEnabled={false}
             extraButtons={[]}
           />
@@ -120,4 +106,4 @@ const WashesReport = () => {
     )
 }
 
-export default WashesReport
+export default UsersReport

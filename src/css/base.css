@@ -171,10 +171,6 @@ div > input:active {
   background-image: var(--grey-6) !important;
 }
 
-.card {
-  min-width: 300px;
-}
-
 .button-to-link {
   height: 19.2px;
 }
@@ -207,6 +203,10 @@ div > input:active {
   font-size: 12px !important;
 }
 
+div > .max-xs {
+  max-width: 480px !important;
+}
+
 div > .max-sm {
   max-width: 640px !important;
 }
@@ -225,4 +225,40 @@ div > .max-lg {
     HSL(102deg, 89%, 78%),
     #a9f85b /* HSL(90deg, 95%, 72%) */
   ) !important;
+}
+
+@media (min-width: 320px) and (max-width: 575.98px) {
+  .responsive-card {
+    width: 22rem;
+  }
+}
+@media (min-width: 578px) and (max-width: 767.98px) {
+  .responsive-card {
+    width: 26rem;
+  }
+}
+@media (min-width: 768px) {
+  .responsive-card {
+    width: 24rem;
+  }
+}
+
+.footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  margin: 0;
+  height: 60px;
+  left: 0;
+  right: 0;
+}
+
+.search > table > tbody >  tr {
+  border-width: 10px !important;
+  border-color: var(--grey-2) !important;
+}
+
+.search > table > tbody > tr >  td {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
 }

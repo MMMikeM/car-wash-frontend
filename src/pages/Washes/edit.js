@@ -38,7 +38,7 @@ const WashEdit = () => {
 
   return (
     <div className="w-100">
-      <div className="max-sm mx-auto bg-3 p-5 rounded">
+      <div className="max-sm mx-auto rounded">
         {!loading ? (
           <BasicForm
             editRecordMethod={editRecordMethod}

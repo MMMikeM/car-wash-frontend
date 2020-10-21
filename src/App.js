@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
-import Login from './pages/Login/Login'
-import Logout from './pages/Logout/Logout'
+import Login from './pages/Auth/Login'
+import Logout from './pages/Auth/Logout'
+import PasswordReset from './pages/Auth/PasswordReset'
+import ForgotPassword from './pages/Auth/ForgotPassword'
 
 import CustomerHome from './pages/Customer/index'
 
@@ -23,7 +25,9 @@ import WashNew from './pages/Washes/new'
 
 import ManageUserWashes from './pages/Wash/manageUserWashes'
 
+import UsersReport from './pages/Reports/Users'
 import WashesReport from './pages/Reports/Washes'
+import DailyWashes from './pages/Reports/DailyWashes'
 
 import ManagerRoute from './pages/Layouts/ManagerRoute'
 import ProtectedRoute from './pages/Layouts/ProtectedRoute'
@@ -31,13 +35,17 @@ import CustomerRoute from './pages/Layouts/CustomerRoute'
 import HomeRoute from './pages/Layouts/HomeRoute'
 
 import UserEdit from './pages/Users/edit'
+import UserNew from './pages/Users/new'
 
 import UserIndex from './pages/Users/index'
 import AdminHome from './pages/Admin/index'
 import SalesHome from './pages/Sales/index'
 
-import SearchNum from './pages/Sales/searchNumber'
-import SearchReg from './pages/Sales/searchRegistration'
+import Public from './pages/Public/index'
+import SignUp from './pages/Public/new'
+
+import SalesNewVehicles from './pages/Sales/newVehicle'
+import SearchCustomer from './pages/Sales/search'
 import SalesNew from './pages/Sales/newCustomer'
 
 import './css/main.css'
@@ -52,6 +60,10 @@ function App() {
     path: '/',
   }
 
+  let signUpLink = {
+    name: 'Sign Up',
+    path: '/sign_up',
+  }
   let loginLink = {
     name: 'Login',
     path: '/login',
@@ -61,7 +73,12 @@ function App() {
     path: '/logout',
   }
 
-  let salespersonLinks = []
+  let salespersonLinks = [
+    {
+      name: 'Customers Today',
+      path: '/customers/report'
+    }
+  ]
 
   let managerLinks = [
     {
@@ -71,6 +88,10 @@ function App() {
     {
       name: 'List Customers',
       path: '/customers',
+    },
+    {
+      name: 'Daily Washes',
+      path: '/reports/daily_washes',
     },
     {
       name: 'Wash Prices',
@@ -110,6 +131,7 @@ function App() {
       tempLinks.push(logoutLink)
     } else {
       tempLinks.push(loginLink)
+      tempLinks.push(signUpLink)
     }
     setLinks(tempLinks)
   }, [])
@@ -117,10 +139,10 @@ function App() {
   return (
     <Router>
       <nav className="bg-1 navbar border-bottom border-primary">
-        <ul className="d-flex flex-row align-items-center py-2 px-5 mb-0 navbar-nav">
-          {Links.map((link) => {
+        <ul className="d-flex flex-row align-items-center py-2 px-3 mb-0 navbar-nav">
+          {Links.map((link, key) => {
             return (
-              <li>
+              <li key={key}>
                 <Link
                   className="nav-item mr-3 py-2 px-2 text-9 font-weight-normal text-decoration-none"
                   to={link.path}
@@ -154,28 +176,33 @@ function App() {
             path="/customers/:id/washes/new"
           />
           <ProtectedRoute component={SalesNew} path="/new_customer/" />
-          <ProtectedRoute component={SearchReg} path="/search/q" />
+          <ProtectedRoute component={SearchCustomer} path="/search/q" />
           <ProtectedRoute
-            component={SearchNum}
-            path="/search/:registrationNumber/"
+            component={SalesNewVehicles}
+            path="/sales/:id/vehicles/new"
           />
+          <ProtectedRoute component={UsersReport} path="/customers/report" />
           <ProtectedRoute component={CustomersShow} path="/customers/:id" />
           <ManagerRoute component={CustomersIndex} path="/customers" />
           <ProtectedRoute component={WashNew} path="/wash_types/new" />
           <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
           <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
           <ProtectedRoute component={WashesIndex} path="/wash_types" />
+          <ManagerRoute component={UserNew} path="/settings/users/new" />
           <ManagerRoute component={UserEdit} path="/settings/users/:id/edit" />
           <ManagerRoute component={WashFreeEdit} path="/settings/:id/edit" />
           <ManagerRoute component={UserIndex} path="/settings/users" />
           <ManagerRoute component={Settings} path="/settings" />
-          <Route path="/reports/washes">
-            <WashesReport />
-          </Route>
+          <ManagerRoute component={WashesReport} path="/reports/washes" />
+          <ManagerRoute component={DailyWashes} path="/reports/daily_washes" />
+          <Route component={PasswordReset} path="/:id/password_reset" />
+          <Route component={ForgotPassword} path="/forgot_password" />
+          <Route component={SignUp} path="/sign_up" />
           <HomeRoute
             manager={AdminHome}
             sales={SalesHome}
             customer={CustomerHome}
+            public={Public}
             path="/"
           />
         </Switch>

@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
+import { boolean } from 'yargs'
 
 const column = (property, key) => {
-  if (Array.isArray(property)){
-    return(<td key={key}>{snakeToSpace(property[0])}</td>)
+  if (Array.isArray(property)) {
+    return <td key={key}>{snakeToSpace(property[0])}</td>
   }
   return <td key={key}>{property}</td>
 }
@@ -37,10 +38,21 @@ const row = (
   return (
     <tr key={key}>
       {properties.map((property, key) => {
-        if (property.includes('/')) {
+        if (property === 'email') {
+          let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
+          if (regex.test(element.email)) {
+            return column('No email provided', key)
+          } else return column(element[property], key)
+        } else if (property.includes('/')) {
           let [a, b] = property.split('/')
-          let content = element[a].map((row) => row[b]).join(',')
-          return column(content, key)
+          if (element[a]?.length < 3) {
+            let content = element[a]
+              .map((row) => row[b])
+              .filter(Boolean)
+              .join(', ')
+              .toUpperCase()
+            return column(content, key)
+          } else return column('Multiple', key)
         } else return column(element[property], key)
       })}
       {buttons.map((button, key) => buttonColumn(button, key, element['id']))}
@@ -52,13 +64,13 @@ const row = (
           <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}/edit`}>
             <FaEdit />
           </Link>
-            <a className="px-2 mt-n1" onClick={() => deleteMethod(element.id)}>
+          <a className="px-2 mt-n1" onClick={() => deleteMethod(element.id)}>
             <FaTrash />
           </a>
         </td>
       ) : (
-        ''
-      )}
+          ''
+        )}
     </tr>
   )
 }

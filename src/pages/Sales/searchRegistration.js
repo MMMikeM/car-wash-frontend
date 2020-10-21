@@ -29,69 +29,76 @@ const SearchReg = () => {
 
   const schema = yup
     .string()
-    .matches(
-      /0\d{9}/g,
-      'Contact numbers must begin with 0 and be 10 digits long'
+    .matches(/^0\d{9}$/g, 'Numbers must begin with 0 and be 10 digits long and contain no spaces')
+    .strict()
     )
 
-  const redirect = async () => {
-    let valid = await schema.validate(inputValue).catch((err) => {
-      alert(err.errors)
-    })
-    if (valid) {
-      history.push(`/search/${registration}/q?contact=${inputValue}`)
-    }
+const redirect = async () => {
+  let valid = await schema.validate(inputValue).catch((err) => {
+    alert(err.errors)
+  })
+  if (valid) {
+    history.push(`/search/${registration}/q?contact=${inputValue}`)
   }
+}
 
-  return (
-    <div className="w-100 mt-4">
-      {isLoaded ? (
-        <div className="max-sm mx-auto">
-          {localCustomers.length === 0 ? (
-            <h4 className="text-white">No user found</h4>
-          ) : (
+return (
+  <div className="w-100 mt-4">
+    <div className="d-flex flex-row justify-content-center flex-wrap">
+      <img
+        alt="Company logo"
+        src="/public/logo.png"
+        style={{ width: '200px' }}
+        className="mx-auto mb-5"
+      />
+    </div>
+    {isLoaded ? (
+      <div className="max-sm mx-auto">
+        {localCustomers.length === 0 ? (
+          <h4 className="text-white">No user found</h4>
+        ) : (
             ''
           )}
-          {localCustomers.map((customer) => {
-            return (
-              <div className="text-white d-flex justify-content-between align-items-center mb-3 bg-3 px-4 py-2">
-                <h5 className="mt-2">{customer.name}</h5>
-                <button
-                  className={'btn btn-primary'}
-                  onClick={() =>
-                    history.push(`/customers/${customer.id}/washes/new`)
-                  }
-                >
-                  Add Wash
+        {localCustomers.map((customer) => {
+          return (
+            <div className="text-white d-flex justify-content-between align-items-center mb-3 bg-3 px-4 py-2">
+              <h5 className="mt-2">{customer.name}</h5>
+              <button
+                className={'btn btn-primary'}
+                onClick={() =>
+                  history.push(`/customers/${customer.id}/washes/new`)
+                }
+              >
+                Add Wash
                 </button>
-              </div>
-            )
-          })}
+            </div>
+          )
+        })}
 
-          <input
-            placeholder={'Search customer contact number'}
-            className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
-            onChange={(e) => setInputValue(e.target.value)}
-          />
+        <input
+          placeholder={'Search customer contact number'}
+          className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+          onChange={(e) => setInputValue(e.target.value)}
+        />
 
-          <div className="d-flex justify-content-between mt-2">
-            <button className="btn btn-primary px-5" onClick={redirect}>
-              Search
+        <div className="d-flex justify-content-between mt-2">
+          <button className="btn btn-primary px-5" onClick={redirect}>
+            Search
             </button>
 
-            <button
-              className="btn btn-primary px-5"
-              onClick={() => alert('fix me')}
-            >
-              Create new customer
+          <button
+            className="btn btn-primary px-5"
+            onClick={() => history.push('/new_customer/')}
+          >
+            Create new customer
             </button>
-          </div>
         </div>
-      ) : (
+      </div>
+    ) : (
         ''
       )}
-    </div>
-  )
+  </div>
+)
 }
 
 export default SearchReg

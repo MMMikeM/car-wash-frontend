@@ -21,35 +21,39 @@ const WashShow = () => {
   return loading ? (
     ''
   ) : (
-    <div className="bg-3 px-4 py-3 w-50 text-8 max-sm rounded">
-      <p>
-        Name:{' '}
-        <span className="text-white font-weight-black">{localWash.name}</span>
-      </p>
-      <p>
-        Description:{' '}
-        <span className="text-white font-weight-black">
-          {localWash.description}
-        </span>
-      </p>
-      <p>
-        Cost:{' '}
-        <span className="text-white font-weight-black">
-          {transformCentsToRands(localWash.cost)}
-        </span>
-      </p>
-      <p>
-        Selling Price:{' '}
-        <span className="text-white font-weight-black">
-          {transformCentsToRands(localWash.price)}
-        </span>
-      </p>
-      <p>
-        Points awarded:{' '}
-        <span className="text-white font-weight-black">{localWash.points}</span>
-      </p>
+    <div className="bg-3 px-4 pt-4 pb-3 w-50 text-8 max-sm rounded">
+      <div className="px-2 pt-2">
+        <p>
+          Name:{' '}
+          <span className="text-white font-weight-black">{localWash.name}</span>
+        </p>
+        <p>
+          Description:{' '}
+          <span className="text-white font-weight-black">
+            {localWash.description}
+          </span>
+        </p>
+        <p>
+          Cost:{' '}
+          <span className="text-white font-weight-black">
+            {transformCentsToRands(localWash.cost)}
+          </span>
+        </p>
+        <p>
+          Selling Price:{' '}
+          <span className="text-white font-weight-black">
+            {transformCentsToRands(localWash.price)}
+          </span>
+        </p>
+        <p>
+          Points awarded:{' '}
+          <span className="text-white font-weight-black">
+            {localWash.points}
+          </span>
+        </p>
+      </div>
       <div className="d-flex justify-content-end">
-        <Link className="btn btn-primary" to="/wash_types">
+        <Link className="btn btn-primary mb-2" to="/wash_types">
           Back to washes
         </Link>
       </div>

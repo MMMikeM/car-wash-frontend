@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
-import { searchCustomer } from '../../services/customersApi.js'
+import { searchCustomer, deleteCustomer } from '../../services/customersApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
+import Modal from '../Sales/modal'
 
 const CustomersSearch = () => {
   let [searchTerm, setSearchTerm] = useState('')
-  let [selectValue, setSelectValue] = useState('registration_number')
+  let [selectValue, setSelectValue] = useState('name')
   let [localCustomers, setLocalCustomers] = useState([])
   let [isLoaded, setIsLoaded] = useState(false)
+  let [modalIsVisible, setModalIsVisible] = useState(false)
+  let [deleteId, setDeleteId] = useState('')
+  let [loading, setLoading] = useState(true)
+  let [selectedCustomer, setSelectedCustomer] = useState({})
 
   const history = useHistory()
 
@@ -29,9 +34,29 @@ const CustomersSearch = () => {
     history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)
   }
 
+  const handleSubmit = async () => {
+    setLoading(!loading)
+    await deleteCustomer(deleteId)
+    search()
+    setModalIsVisible(false)
+    // history.go(0)
+  }
+
+  const handleDeleteCustomer = async (elementId) => {
+    setSelectedCustomer(localCustomers.find((x) => x.id === elementId))
+    setModalIsVisible(true)
+    setDeleteId(elementId)
+  }
+
   return (
     <React.Fragment>
       <div className="w-100 px-3">
+        <Modal
+          selectedCustomer={selectedCustomer}
+          onClick={handleSubmit}
+          visible={modalIsVisible}
+          hideModal={() => setModalIsVisible(false)}
+        />
         <div className="d-flex justify-content-center max-sm mx-auto flex-column">
           <div className="d-flex flex-column w-100">
             <label className="text-6">Search by field</label>
@@ -39,30 +64,30 @@ const CustomersSearch = () => {
               className="text-9 d-flex flex-column"
               onChange={(e) => setSelectValue(e.target.value)}
             >
-              <label className="form-check-label mt-2" htmlfor="iR1">
+              <label className="form-check-label mt-2" htmlFor="iR1">
                 <input
                   className="form-check-input mr-2"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR1"
                   value="name"
+                  checked={selectValue == 'name'}
                 />
                 Name
               </label>
 
-              <label className="form-check-label mt-2" htmlfor="iR2">
+              <label className="form-check-label mt-2" htmlFor="iR2">
                 <input
                   className="form-check-input mr-2"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR2"
                   value="registration_number"
-                  checked
                 />
                 Registration Number
               </label>
 
-              <label className="form-check-label mt-2" htmlfor="iR3">
+              <label className="form-check-label mt-2" htmlFor="iR3">
                 <input
                   className="form-check-input mr-2"
                   type="radio"
@@ -73,7 +98,7 @@ const CustomersSearch = () => {
                 Email
               </label>
 
-              <label className="form-check-label mt-2" htmlfor="iR4">
+              <label className="form-check-label mt-2" htmlFor="iR4">
                 <input
                   className="form-check-input mr-2"
                   type="radio"
@@ -128,7 +153,8 @@ const CustomersSearch = () => {
                     'contact_number',
                     'vehicles/registration_number',
                   ]}
-                  crudEnabled={false}
+                  crudEnabled={true}
+                  deleteMethod={handleDeleteCustomer}
                   extraButtons={[
                     <button
                       className="link-primary btn btn-link py-0 border-0 d-block"
@@ -141,12 +167,6 @@ const CustomersSearch = () => {
                       onClick={(e) => addWash(e)}
                     >
                       Add Wash
-                    </button>,
-                    <button
-                      className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
-                      onClick={(e) => showCustomer(e)}
-                    >
-                      View
                     </button>,
                   ]}
                 />
