@@ -30,10 +30,10 @@ const AdminHome = () => {
     },
   ]
 
-  const card = (name, img, path) => {
+  const card = (name, img, path, index) => {
     const capitalise = (input) => input.charAt(0).toUpperCase() + input.slice(1)
     return (
-      <Link to={path} className="text-decoration-none">
+      <Link to={path} className="text-decoration-none" key={index}>
         <div className="text-8 bg-4 m-3 rounded">
           <img
             src={img}
@@ -57,7 +57,9 @@ const AdminHome = () => {
         />
       </div>
       <div className="d-flex flex-row justify-content-center flex-wrap">
-        {cards.map((item) => card(item.name, item.img, item.path))}
+        {cards.map((item, index) =>
+          card(item.name, item.img, item.path, index)
+        )}
       </div>
     </div>
   )

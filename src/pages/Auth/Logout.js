@@ -9,6 +9,7 @@ const Logout = () => {
     sessionStorage.removeItem('roles')
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('email')
+    sessionStorage.removeItem('id')
     // history.push('')
     window.location.assign(`${process.env.REACT_APP_URL}`)
   }, [])

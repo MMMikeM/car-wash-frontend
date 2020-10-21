@@ -10,7 +10,7 @@ const request = async (method, path, body) => {
   const url = `${baseUrl}${path}`
   const response = await fetch(url, fetchOptions)
 
-  const validStatuses = [200, 201, 302]
+  const validStatuses = [200, 201, 204, 302]
   const invalidStatuses = [401, 404, 422, 400, 500]
 
   if (validStatuses.includes(response.status)) {

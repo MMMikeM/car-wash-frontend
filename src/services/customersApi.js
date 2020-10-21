@@ -5,6 +5,11 @@ export const getCustomers = async () => {
   return response.json()
 }
 
+export const getCustomersCSV = async () => {
+  let response = await request('GET', '/customers.csv')
+  return response.blob()
+}
+
 export const getCustomer = async (id) => {
   let response = await request('GET', `/customers/${id}`)
   return response.json()
@@ -21,6 +26,11 @@ export const saveCustomer = async (id, body) => {
 }
 export const searchCustomer = async (searchTerm, searchValue) => {
   let response = await request('GET', `/customers?${searchTerm}=${searchValue}`)
+  return response.json()
+}
+
+export const deleteCustomer = async (id) => {
+  let response = await request('DELETE', `/customers/${id}`)
   return response.json()
 }
 

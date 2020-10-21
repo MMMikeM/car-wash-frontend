@@ -73,42 +73,48 @@ const UserEdit = () => {
   return (
     <div className="w-100">
       {!loading ? (
-        <div className="max-sm mx-auto d-flex justify-content-center flex-column">
-          <h2 className="text-7 mb-4">{localCustomer.name}</h2>
-          <h3 className="text-7 mb-5">Select user level</h3>
-          <div className="text-7 mb-3 d-flex flex-row justify-content-around">
-            <button
-              className={selected == 'customer' ? active : inactive}
-              onClick={handleCustomerClick}
-            >
-              Customer
-            </button>
-            <button
-              className={selected == 'salesperson' ? active : inactive}
-              onClick={handleSalespersonClick}
-            >
-              Salesperson
-            </button>
-            <button
-              className={selected == 'manager' ? active : inactive}
-              onClick={handleManagerClick}
-            >
-              Manager
-            </button>
+        <div className="max-xs mx-auto d-flex justify-content-center flex-column bg-3 py-4 rounded">
+          <div className="px-2 border-bottom border-primary mb-4">
+            <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
           </div>
-          <button
-            className="btn btn-primary w-25 my-5 mx-auto"
-            onClick={handleSubmitClick}
-          >
-            Submit
-          </button>
-          {/* <BasicForm
+          <div className="px-2">
+            <h4 className="text-9 mb-4 px-4">Select user level</h4>
+            <div className="text-7 pt-3 d-flex flex-row justify-content-around">
+              <button
+                className={selected == 'customer' ? active : inactive}
+                onClick={handleCustomerClick}
+              >
+                Customer
+              </button>
+              <button
+                className={selected == 'salesperson' ? active : inactive}
+                onClick={handleSalespersonClick}
+              >
+                Salesperson
+              </button>
+              <button
+                className={selected == 'manager' ? active : inactive}
+                onClick={handleManagerClick}
+              >
+                Manager
+              </button>
+            </div>
+            <div className="px-3">
+              <button
+                className="btn btn-primary w-100 mx-5 mt-5 mb-2 mx-auto"
+                onClick={handleSubmitClick}
+              >
+                Submit
+              </button>
+            </div>
+            {/* <BasicForm
             editRecordMethod={editRecordMethod}
             record={localCustomer}
             saveFormData={save}
             editableKeys={['name', 'email']}
             valueTransformations={['', '']}
           /> */}
+          </div>
         </div>
       ) : (
         ''

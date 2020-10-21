@@ -4,7 +4,7 @@ import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory, useParams } from 'react-router-dom'
 import * as yup from 'yup'
 
-const VehiclesNew = () => {
+const SalesNewVehicles = () => {
   const history = useHistory()
   let { id } = useParams()
   let [data, setData] = useState({ user_id: id, registration_number: '' })
@@ -16,7 +16,7 @@ const VehiclesNew = () => {
     if (valid) {
       // eslint-disable-next-line no-unused-vars
       let res = await postVehicle(data)
-      history.push('/')
+      history.push(`/customers/${id}/washes/new`)
     }
   }
 
@@ -48,4 +48,4 @@ const VehiclesNew = () => {
   )
 }
 
-export default VehiclesNew
+export default SalesNewVehicles

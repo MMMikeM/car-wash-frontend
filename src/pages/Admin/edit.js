@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-// import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'

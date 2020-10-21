@@ -11,6 +11,7 @@ const CustomersEdit = () => {
   let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
+    console.log(record, key, value)
     let tempRecord = { ...record }
     tempRecord[key] = value
     setLocalCustomer(tempRecord)
@@ -22,6 +23,8 @@ const CustomersEdit = () => {
     })
     // eslint-disable-next-line no-unused-vars
     if (valid) {
+      let tempCustomer = localCustomer
+      console.log(tempCustomer)
       let res = await saveCustomer(localCustomer.id, localCustomer)
       history.push(`/customers/${localCustomer.id}`)
     }
@@ -45,7 +48,7 @@ const CustomersEdit = () => {
       {!loading ? (
         <div className="max-sm mx-auto">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-primary" onClick={handleClick}>
+            <button className="btn btn-primary my-3 mr-4" onClick={handleClick}>
               Convert To User
             </button>
           </div>
@@ -56,8 +59,8 @@ const CustomersEdit = () => {
           />
         </div>
       ) : (
-        ''
-      )}
+          ''
+        )}
     </div>
   )
 }
