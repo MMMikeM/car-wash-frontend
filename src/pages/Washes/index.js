@@ -45,8 +45,8 @@ const WashesIndex = () => {
             <BasicTable
               rowType={'wash_types'}
               records={washes
-                .filter((wash) => wash.free == false)
-                .sort((wash_a, wash_b) => wash_a.order > wash_b.order)}
+                .filter((wash) => wash.free === false)
+                .sort((a, b) => (a.order > b.order ? 1 : -1))}
               crudEnabled={true}
               deleteMethod={handleDeleteWash}
               headings={['name', 'cost', 'price', 'points', 'order']}

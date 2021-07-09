@@ -90,7 +90,7 @@ const BasicTable = (props) => {
         </tr>
       </thead>
       <tbody>
-        {props.records.map((record, key) =>
+        {props.records.reverse().map((record, key) =>
           row(
             props.rowType,
             record,

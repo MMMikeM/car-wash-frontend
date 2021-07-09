@@ -20,6 +20,11 @@ export const saveWash = async (id, body) => {
   return response.json()
 }
 
+export const updateWashOrder = async (body) => {
+  let response = await request('POST', `/wash_types/bulk_update`, {wash_types: body})
+  return response.json()
+}
+
 export const deleteWash = async (id) => {
   let response = await request('DELETE', `/wash_types/${id}`)
   return response.json()

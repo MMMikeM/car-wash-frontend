@@ -14,9 +14,11 @@ const ManageUserWashes = () => {
   let [localCustomer, setLocalCustomer] = useState({})
   let [washes, setWashes] = useState([])
   let [loading, setLoading] = useState(true)
+  let [submitted, setSubmitted] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWashId, setSelectedWashId] = useState('')
   let [fogging, setFogging] = useState(false)
+  let [hasInsurance, setHasInsurance] = useState(false)
 
   const freeWashPoints = -washes?.filter((wash) => wash.free == true)[0]?.points
   let qualifies = localCustomer.total_points >= freeWashPoints
@@ -63,27 +65,53 @@ const ManageUserWashes = () => {
       </div>
     )
   }
+  const InsuranceCard = () => {
+    let cardClass =
+      'text-white bg-3 d-flex justify-content-center align-items-center m-2 p-2'
+    if (hasInsurance) {
+      cardClass += ' highlighted'
+    }
+    const handleClick = () => {
+      setHasInsurance(!hasInsurance)
+    }
+    return (
+      <div className={cardClass} key={id} onClick={handleClick}>
+        <h5 className="py-0 my-0">Wash Insurance</h5>
+      </div>
+    )
+  }
 
   let handleProceed = (input) => {
     setModalIsVisible(true)
   }
 
   const handleSubmit = async () => {
-    let res = await postWash({ user_id: id, wash_type_id: selectedWashId })
-    setModalIsVisible(false)
-    let resCustomer = await getCustomer(id)
-    setLocalCustomer(resCustomer)
-    setSelectedWashId('')
-    history.push(`/customers/${id}`)
+    if (submitted === false) {
+      setSubmitted(true)
+      let res = await postWash({
+        user_id: id,
+        wash_type_id: selectedWashId,
+        insurance: hasInsurance,
+      })
+      setModalIsVisible(false)
+      let resCustomer = await getCustomer(id)
+      setLocalCustomer(resCustomer)
+      setSelectedWashId('')
+      history.push(`/customers/${id}`)
+    }
   }
 
   let registration_list = []
 
   if (localCustomer.vehicles) {
-    let unique_registrations = [...new Set(localCustomer.vehicles.map((x) => x.registration_number.toUpperCase()))]
+    let unique_registrations = [
+      ...new Set(
+        localCustomer.vehicles.map((x) => x.registration_number.toUpperCase())
+      ),
+    ]
     registration_list = unique_registrations.map((vehicle, index) => {
       if (index > 0 && vehicle) {
-        return (`, ${vehicle}`)
+        return `, ${vehicle}`
       } else {
         return vehicle
       }
@@ -139,45 +167,47 @@ const ManageUserWashes = () => {
       <div className="wash-grid">
         {!qualifies
           ? washes
-            .filter((wash) => wash.free === false)
-            .map((wash, key) => {
-              let isWashSelected = wash.id === selectedWashId
-              return washCard(wash, key, isWashSelected)
-            })
+              .filter((wash) => wash.free === false)
+              .sort((a, b) => (a.order > b.order ? 1 : -1))
+              .map((wash, key) => {
+                let isWashSelected = wash.id === selectedWashId
+                return washCard(wash, key, isWashSelected)
+              })
           : washes
-            .sort((washa, washb) => washa.order - washb.order)
-            .sort((washa, washb) => Number(washa.free < washb.free))
-            .map((wash, key) => {
-              let isWashSelected = wash.id === selectedWashId
-              return washCard(wash, key, isWashSelected)
-            })}
+              .sort((a, b) => (a.order > b.order ? 1 : -1))
+              .sort((washa, washb) => Number(washa.free < washb.free))
+              .map((wash, key) => {
+                let isWashSelected = wash.id === selectedWashId
+                return washCard(wash, key, isWashSelected)
+              })}
+        <InsuranceCard />
 
         {selectedWashId != '' ? (
           <div
             onClick={handleProceed}
             className="text-black bg-primary d-flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
           >
-            <h5 className="py-0 my-0">Proceed</h5>
+            <h5 className="py-0 my-0">
+              {!submitted ? 'Proceed' : 'Processing...'}
+            </h5>
           </div>
         ) : (
-            ''
-          )}
+          ''
+        )}
       </div>
-      {
-        !loading && localCustomer.washes.length > 0 ? (
-          <div className="max-md mx-auto">
-            <BasicTable
-              rowType={'washes'}
-              records={localCustomer.washes}
-              fields={['wash_type', 'created_at']}
-              headings={['wash_type', 'created_at']}
-            />
-          </div>
-        ) : (
-            ''
-          )
-      }
-    </div >
+      {!loading && localCustomer.washes.length > 0 ? (
+        <div className="max-md mx-auto">
+          <BasicTable
+            rowType={'washes'}
+            records={localCustomer.washes}
+            fields={['wash_type', 'created_at']}
+            headings={['wash_type', 'created_at']}
+          />
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
   )
 }
 

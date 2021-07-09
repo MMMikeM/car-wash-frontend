@@ -49,12 +49,12 @@ const SalesHome = () => {
             No loyalty programme
           </button>
 
-          <button
+          {/* <button
             className="btn btn-primary px-4 py-2"
             onClick={() => history.push('/new_customer/')}
           >
             Create new customer
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
