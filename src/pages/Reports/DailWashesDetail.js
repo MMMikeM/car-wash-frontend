@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import {
-  getWashesReport,
-  getWashesReportDownload,
+  getDailyWashesDetail
 } from '../../services/reportsApi.js'
 import BasicTable from '../../components/Tables/BasicTable'
+import dayjs from 'dayjs'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
 //import { Link, useHistory } from 'react-router-dom'
 
-const WashesReport = () => {
+const DailyWashesDetail = () => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState('')
   let [endDate, setEndDate] = useState('')
-  let [mainTotal, setMainTotal] = useState(0)
+  // let [mainTotal, setMainTotal] = useState(0)
   let [loading, setLoading] = useState(true)
 
   const todaysDate = () => {
@@ -26,40 +26,43 @@ const WashesReport = () => {
     return [year, month, day].join('-')
   }
 
-  const handleDownloadReport = async () => {
-    let res = await getWashesReportDownload(startDate, endDate)
-    handleDownload(res, 'WashReport')
-  }
+
 
   const handleFetchReport = async () => {
     setLoading(true)
-    let localTotal = 0
-    let res = await getWashesReport(startDate, endDate)
-    setReportData(res)
-    res.map((washType) => {
-      localTotal += parseFloat(washType.total_price)
-      washType.total_cost = formatRands(centsToRands(washType.total_cost))
-      washType.total_price = formatRands(centsToRands(washType.total_price))
+    // let localTotal = 0
+    // let res = await getDailyWashesDetail(startDate, endDate)
+    
+    let tempArray = []
+    getDailyWashesDetail(startDate, endDate).then((res) => {
+    // eslint-disable-next-line
+    res.map((item) => {
+      let tempObject = item
+      let date = new Date(item.created_at)
+      tempObject.created_at = dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+      tempArray.push(tempObject)
     })
-    setMainTotal(formatRands(centsToRands(localTotal)))
-    setLoading(false)
-  }
+      setReportData(tempArray)
+      setLoading(false)
+    })
+   }
 
   useEffect(() => {
     setLoading(true)
     let localStartDate = todaysDate()
     let localEndDate = todaysDate()
-    let localTotal = 0
     setStartDate(localStartDate)
     setEndDate(localEndDate)
-    getWashesReport(localStartDate, localEndDate).then((res) => {
-      setReportData(res)
-      res.map((washType) => {
-        localTotal += parseFloat(washType.total_price)
-        washType.total_cost = formatRands(centsToRands(washType.total_cost))
-        washType.total_price = formatRands(centsToRands(washType.total_price))
-      })
-      setMainTotal(formatRands(centsToRands(localTotal)))
+    let tempArray = []
+    getDailyWashesDetail(localStartDate, localEndDate).then((res) => {
+    // eslint-disable-next-line
+    res.map((item) => {
+      let tempObject = item
+      let date = new Date(item.created_at)
+      tempObject.created_at = dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+      tempArray.push(tempObject)
+    })
+      setReportData(tempArray)
       setLoading(false)
     })
   }, [])
@@ -95,30 +98,23 @@ const WashesReport = () => {
           >
             Generate Report
         </button>
-          <button
-            className="btn btn-primary mt-4  px-4 py-2"
-            onClick={handleDownloadReport}
-          >
-            Download Report
-        </button>
         </div>
         <div className="col-md-12 mt-4">
           <BasicTable
             rowType={'customers'}
-
             records={reportData}
-            fields={['name', 'wash_count', 'total_cost', 'total_price']}
-            headings={['name', 'Quantity', 'Cost Price', 'Total']}
+            fields={['wash_type_name', 'name', 'contact_number', 'created_at']}
+            headings={['Wash', 'Name', 'Contact Number', 'Created Time']}
             crudEnabled={false}
             extraButtons={[]}
           />
         </div>
         <div className="col-md-6"></div>
-        <div className="col-md-6 mt-4 text-right">
+        {/* <div className="col-md-6 mt-4 text-right">
           <h3 className="text-white">{`Total: ${mainTotal}`}</h3>
-        </div>
+        </div> */}
       </div>
     )
 }
 
-export default WashesReport
+export default DailyWashesDetail

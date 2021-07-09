@@ -22,12 +22,16 @@ import WashesIndex from './pages/Washes/index'
 import WashesShow from './pages/Washes/show'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
+import WashesOrder from './pages/Washes/order'
 
 import ManageUserWashes from './pages/Wash/manageUserWashes'
 
 import UsersReport from './pages/Reports/Users'
 import WashesReport from './pages/Reports/Washes'
 import DailyWashes from './pages/Reports/DailyWashes'
+import InsuredWashes from './pages/Reports/InsuredWashes'
+import DailyWashesDetail from './pages/Reports/DailWashesDetail'
+import ActiveUsersReport from './pages/Reports/ActiveUsers'
 
 import ManagerRoute from './pages/Layouts/ManagerRoute'
 import ProtectedRoute from './pages/Layouts/ProtectedRoute'
@@ -77,7 +81,12 @@ function App() {
     {
       name: 'Customers Today',
       path: '/customers/report'
-    }
+    },
+    {
+      name: 'Daily Washes',
+      path: '/customers/daily_wash_list'
+    },
+
   ]
 
   let managerLinks = [
@@ -90,12 +99,20 @@ function App() {
       path: '/customers',
     },
     {
-      name: 'Daily Washes',
+      name: 'Daily Wash Summary',
       path: '/reports/daily_washes',
+    },
+    {
+      name: 'Active Users',
+      path: '/reports/active_users',
     },
     {
       name: 'Wash Prices',
       path: '/wash_types',
+    },
+    {
+      name: 'Wash Order',
+      path: '/wash_order',
     },
     {
       name: 'Washes Report',
@@ -182,11 +199,13 @@ function App() {
             path="/sales/:id/vehicles/new"
           />
           <ProtectedRoute component={UsersReport} path="/customers/report" />
+          <ProtectedRoute component={DailyWashesDetail} path="/customers/daily_wash_list" />
           <ProtectedRoute component={CustomersShow} path="/customers/:id" />
           <ManagerRoute component={CustomersIndex} path="/customers" />
           <ProtectedRoute component={WashNew} path="/wash_types/new" />
           <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
           <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
+          <ProtectedRoute component={WashesOrder} path="/wash_order" />
           <ProtectedRoute component={WashesIndex} path="/wash_types" />
           <ManagerRoute component={UserNew} path="/settings/users/new" />
           <ManagerRoute component={UserEdit} path="/settings/users/:id/edit" />
@@ -195,6 +214,7 @@ function App() {
           <ManagerRoute component={Settings} path="/settings" />
           <ManagerRoute component={WashesReport} path="/reports/washes" />
           <ManagerRoute component={DailyWashes} path="/reports/daily_washes" />
+          <ManagerRoute component={ActiveUsersReport} path="/reports/active_users" />
           <Route component={PasswordReset} path="/:id/password_reset" />
           <Route component={ForgotPassword} path="/forgot_password" />
           <Route component={SignUp} path="/sign_up" />

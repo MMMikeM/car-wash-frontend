@@ -1,4 +1,4 @@
-image = car-wash-frontend:0.0.41
+image = car-wash-frontend:0.0.60
 deploy:
 	npm run build
 	docker build . -t $(image)

@@ -2,7 +2,7 @@ import React from 'react'
 
 const Card = (props) => {
   let content = props.data
-    .sort((a, b) => a.price - b.price)
+    .sort((a, b) => a.order > b.order  ? 1 : -1)
     .map((wash, y) => {
       return (
         <div
