@@ -20,22 +20,17 @@ const inputs = (
     }
 
     return inputTypes[index] == 'checkbox' ? (
-      <div key={key} className="form-check mt-4 mb-3  text-9">
+      <div key={key} className="form-check mt-4 mb-3 text-9">
         <input
           onChange={(e) => updateValueMethod(record, key, !value)}
           checked={value}
           className="form-check-input"
           type="checkbox"
-          // value={value}
-          id="defaultCheck1"
+          id={`checkbox-${key}`}
         />
-        <label className="form-check-label mb-2" htmlFor="defaultCheck1">
-          Opt in for Carbon Car Wash marketing
+        <label className="form-check-label mb-2" htmlFor={`checkbox-${key}`}>
+          {snakeToSpace(key)}
         </label>
-        <h6 className="text-6 mt-3">
-          Carbon Car Wash values your privacy and will not share or sell your
-          data.
-        </h6>
       </div>
     ) : (
       <div className="form-group" key={key}>

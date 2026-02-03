@@ -22,8 +22,8 @@ const WashFreeEdit = () => {
   }
 
   const save = async () => {
-    // eslint-disable-next-line no-unused-vars
-    let res = await saveWash(localWash.id, localWash)
+    const { name, cost, points, description } = localWash
+    await saveWash(localWash.id, { name, cost, points, description })
     history.push(`/wash_types/${id}`)
   }
 

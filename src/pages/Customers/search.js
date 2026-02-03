@@ -13,13 +13,35 @@ const CustomersSearch = () => {
   let [deleteId, setDeleteId] = useState('')
   let [loading, setLoading] = useState(true)
   let [selectedCustomer, setSelectedCustomer] = useState({})
+  let [page, setPage] = useState(0)
+  let [perPage] = useState(20)
+  let [total, setTotal] = useState(0)
 
   const history = useHistory()
 
-  const search = async (term, value) => {
-    let res = await searchCustomer(term, value)
-    setLocalCustomers(res)
+  const totalPages = Math.ceil(total / perPage)
+
+  const search = async (term, value, pageNum = 0) => {
+    let res = await searchCustomer(term, value, pageNum, perPage)
+    setLocalCustomers(res.data)
+    setTotal(res.total)
     setIsLoaded(true)
+  }
+
+  const handlePrevPage = () => {
+    if (page > 0) {
+      const newPage = page - 1
+      setPage(newPage)
+      search(selectValue, searchTerm, newPage)
+    }
+  }
+
+  const handleNextPage = () => {
+    if (page < totalPages - 1) {
+      const newPage = page + 1
+      setPage(newPage)
+      search(selectValue, searchTerm, newPage)
+    }
   }
 
   let addWash = (e) => {
@@ -117,7 +139,10 @@ const CustomersSearch = () => {
             <div className="d-flex justify-content-center mt-2">
               <button
                 className="btn btn-primary px-5 mx-auto"
-                onClick={() => search(selectValue, searchTerm)}
+                onClick={() => {
+                  setPage(0)
+                  search(selectValue, searchTerm, 0)
+                }}
               >
                 Search
               </button>
@@ -138,38 +163,59 @@ const CustomersSearch = () => {
                   </Link>
                 </div>
               ) : (
-                <BasicTable
-                  rowType={'customers'}
-                  records={localCustomers}
-                  headings={[
-                    'name',
-                    'email',
-                    'contact_number',
-                    'vehicles/registration_number',
-                  ]}
-                  fields={[
-                    'name',
-                    'email',
-                    'contact_number',
-                    'vehicles/registration_number',
-                  ]}
-                  crudEnabled={true}
-                  deleteMethod={handleDeleteCustomer}
-                  extraButtons={[
+                <>
+                  <BasicTable
+                    rowType={'customers'}
+                    records={localCustomers}
+                    headings={[
+                      'name',
+                      'email',
+                      'contact_number',
+                      'vehicles/registration_number',
+                    ]}
+                    fields={[
+                      'name',
+                      'email',
+                      'contact_number',
+                      'vehicles/registration_number',
+                    ]}
+                    crudEnabled={true}
+                    deleteMethod={handleDeleteCustomer}
+                    extraButtons={[
+                      <button
+                        className="link-primary btn btn-link py-0 border-0 d-block"
+                        onClick={(e) => addVehicle(e)}
+                      >
+                        Add Vehicle
+                      </button>,
+                      <button
+                        className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                        onClick={(e) => addWash(e)}
+                      >
+                        Add Wash
+                      </button>,
+                    ]}
+                  />
+                  <div className="d-flex justify-content-between align-items-center mt-3">
                     <button
-                      className="link-primary btn btn-link py-0 border-0 d-block"
-                      onClick={(e) => addVehicle(e)}
+                      className="btn btn-secondary"
+                      onClick={handlePrevPage}
+                      disabled={page === 0}
                     >
-                      Add Vehicle
-                    </button>,
+                      Previous
+                    </button>
+                    <span className="text-white">
+                      Page {page + 1} of {totalPages || 1} ({total} total)
+                    </span>
                     <button
-                      className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
-                      onClick={(e) => addWash(e)}
+                      className="btn btn-secondary"
+                      onClick={handleNextPage}
+                      disabled={page >= totalPages - 1}
                     >
-                      Add Wash
-                    </button>,
-                  ]}
-                />
+                      Next
+                    </button>
+                  </div>
+                </>
               )}
             </>
           ) : (

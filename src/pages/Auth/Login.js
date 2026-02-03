@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { login } from '../../services/authApi'
 import { useHistory, Link } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 
 const Login = () => {
   let [loginCredsEmail, setLoginCredsEmail] = useState('')
@@ -13,11 +14,11 @@ const Login = () => {
     if (sessionStorage.getItem('token')) {
       let roles = JSON.parse(sessionStorage.getItem('roles'))
       if (roles.includes('manager')) {
-        window.location.assign(`${process.env.REACT_APP_URL}/customers`)
+        window.location.assign(`${import.meta.env.REACT_APP_URL}/customers`)
       } else if (roles.includes('salesperson')) {
-        window.location.assign(`${process.env.REACT_APP_URL}/customers/search`)
+        window.location.assign(`${import.meta.env.REACT_APP_URL}/customers/search`)
       } else {
-        window.location.assign(`${process.env.REACT_APP_URL}/profile`)
+        window.location.assign(`${import.meta.env.REACT_APP_URL}/profile`)
       }
     }
   }, [])
@@ -47,11 +48,11 @@ const Login = () => {
 
       let roles = loginResponse.data.user.roles
       if (roles.includes('manager')) {
-        window.location.href = `${process.env.REACT_APP_URL}/`
+        window.location.href = `${import.meta.env.REACT_APP_URL}/`
       } else if (roles.includes('salesperson')) {
-        window.location.assign(`${process.env.REACT_APP_URL}/`)
+        window.location.assign(`${import.meta.env.REACT_APP_URL}/`)
       } else {
-        window.location.assign(`${process.env.REACT_APP_URL}/`)
+        window.location.assign(`${import.meta.env.REACT_APP_URL}/`)
       }
 
       // history.push('/')
@@ -106,12 +107,12 @@ const Login = () => {
             </div>
 
             <div className="mt-2 d-flex justify-content-between">
-              <button
-                className="btn btn-primary w-100 my-3"
+              <Button
+                className="w-full my-3"
                 onClick={handleLogin}
               >
                 Login
-              </button>
+              </Button>
             </div>
           </div>
         </div>

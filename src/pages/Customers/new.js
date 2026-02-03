@@ -8,6 +8,7 @@ const CustomersNew = () => {
     name: '',
     email: '',
     contact_number: '',
+    loyalty_enabled: true,
   })
   let [loading, setLoading] = useState(false)
 

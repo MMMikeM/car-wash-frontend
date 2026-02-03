@@ -8,6 +8,8 @@
 
 # testing
 /coverage
+/cypress/videos
+/cypress/screenshots
 
 # production
 /build
@@ -22,3 +24,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+car-wash-app/
+cypress/screenshots*

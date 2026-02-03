@@ -8,6 +8,7 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
 import { handleDownload } from '../../helpers'
 import Modal from '../Sales/modal'
+import { Button } from '@/components/ui/button'
 
 
 const CustomersIndex = () => {
@@ -17,11 +18,15 @@ const CustomersIndex = () => {
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [deleteId, setDeleteId] = useState('')
   let [selectedCustomer, setSelectedCustomer] = useState({})
+  let [page, setPage] = useState(0)
+  let [perPage] = useState(20)
+  let [total, setTotal] = useState(0)
 
-
-  const handleFetchCustomers = async () => {
-    let res = await getCustomers()
-    setLocalCustomers(res)
+  const handleFetchCustomers = async (pageNum = page) => {
+    setLoading(true)
+    let res = await getCustomers(pageNum, perPage)
+    setLocalCustomers(res.data)
+    setTotal(res.total)
     setLoading(false)
   }
 
@@ -31,8 +36,18 @@ const CustomersIndex = () => {
   }
 
   useEffect(() => {
-    handleFetchCustomers()
-  }, [])
+    handleFetchCustomers(page)
+  }, [page])
+
+  const totalPages = Math.ceil(total / perPage)
+
+  const handlePrevPage = () => {
+    if (page > 0) setPage(page - 1)
+  }
+
+  const handleNextPage = () => {
+    if (page < totalPages - 1) setPage(page + 1)
+  }
 
   const addVehicle = (e) => {
     history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)
@@ -72,11 +87,8 @@ const CustomersIndex = () => {
           <div className="row">
             <div className="col-md-9"></div>
             <div className="col-md-3 text-right">
-              <Link
-                className="btn btn-primary mb-2 px-4 py-2 w-100"
-                to="/customers/new"
-              >
-                Add customer
+              <Link to="/customers/new" className="w-full mb-2 block">
+                <Button className="w-full">Add customer</Button>
               </Link>
             </div>
             <div className="col-md-12">
@@ -114,15 +126,36 @@ const CustomersIndex = () => {
               />
             </div>
           </div>
+          <div className="row mt-3">
+            <div className="col-md-12 d-flex justify-content-between align-items-center">
+              <Button
+                size="sm"
+                onClick={handlePrevPage}
+                disabled={page === 0}
+              >
+                Previous
+              </Button>
+              <span className="text-white">
+                Page {page + 1} of {totalPages} ({total} total)
+              </span>
+              <Button
+                size="sm"
+                onClick={handleNextPage}
+                disabled={page >= totalPages - 1}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
           <div className="row mt-5">
             <div className="col-md-9"></div>
             <div className="col-md-3 text-right">
-              <button
-                className="btn btn-primary mb-2 px-4 py-2 w-100"
+              <Button
+                className="w-full mb-2"
                 onClick={handleDownloadCustomers}
               >
                 Download Customer List
-              </button>
+              </Button>
             </div>
           </div>
         </div>

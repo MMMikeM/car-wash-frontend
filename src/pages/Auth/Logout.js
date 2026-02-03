@@ -11,7 +11,7 @@ const Logout = () => {
     sessionStorage.removeItem('email')
     sessionStorage.removeItem('id')
     // history.push('')
-    window.location.assign(`${process.env.REACT_APP_URL}`)
+    window.location.assign(`${import.meta.env.REACT_APP_URL}`)
   }, [])
 
   return <div></div>

@@ -11,7 +11,6 @@ const CustomersEdit = () => {
   let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
-    console.log(record, key, value)
     let tempRecord = { ...record }
     tempRecord[key] = value
     setLocalCustomer(tempRecord)
@@ -21,11 +20,9 @@ const CustomersEdit = () => {
     let valid = await schema.validate(localCustomer).catch((err) => {
       alert(err.errors)
     })
-    // eslint-disable-next-line no-unused-vars
     if (valid) {
-      let tempCustomer = localCustomer
-      console.log(tempCustomer)
-      let res = await saveCustomer(localCustomer.id, localCustomer)
+      const { name, email, contact_number, total_points, loyalty_enabled } = localCustomer
+      await saveCustomer(localCustomer.id, { name, email, contact_number, total_points, loyalty_enabled })
       history.push(`/customers/${localCustomer.id}`)
     }
   }

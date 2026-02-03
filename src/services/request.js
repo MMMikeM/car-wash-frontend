@@ -5,7 +5,7 @@ const request = async (method, path, body) => {
   headers.set('X-User-Email', sessionStorage.getItem('email'))
   headers.set('X-User-Token', sessionStorage.getItem('token'))
 
-  const baseUrl = process.env.REACT_APP_API_URL
+  const baseUrl = import.meta.env.REACT_APP_API_URL
   const fetchOptions = { method, headers, body: JSON.stringify(body) }
   const url = `${baseUrl}${path}`
   const response = await fetch(url, fetchOptions)

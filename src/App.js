@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { MobileNav, NavToggle } from './components/MobileNav'
 
 import Login from './pages/Auth/Login'
 import Logout from './pages/Auth/Logout'
@@ -58,6 +59,7 @@ import WashFreeEdit from './pages/Settings/edit'
 
 function App() {
   let [Links, setLinks] = useState([])
+  let [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   let home = {
     name: 'Home',
@@ -155,23 +157,31 @@ function App() {
 
   return (
     <Router>
-      <nav className="bg-1 navbar border-bottom border-primary">
-        <ul className="d-flex flex-row align-items-center py-2 px-3 mb-0 navbar-nav">
-          {Links.map((link, key) => {
-            return (
-              <li key={key}>
-                <Link
-                  className="nav-item mr-3 py-2 px-2 text-9 font-weight-normal text-decoration-none"
-                  to={link.path}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
-      <div className="container-sm mt-4 d-flex justify-content-center">
+      <div className="dark">
+        <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
+        <nav className="bg-1 navbar border-bottom border-primary">
+          <div className="d-flex align-items-center w-100">
+            <div className="d-flex d-md-none align-items-center px-2">
+              <NavToggle onClick={() => setMobileNavOpen(true)} />
+              <span className="text-primary ml-2 font-weight-bold">Carbon Car Wash</span>
+            </div>
+            <ul className="d-none d-md-flex flex-row align-items-center py-2 px-3 mb-0 navbar-nav">
+              {Links.map((link, key) => {
+                return (
+                  <li key={key}>
+                    <Link
+                      className="nav-item mr-3 py-2 px-2 text-9 font-weight-normal text-decoration-none"
+                      to={link.path}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </nav>
+        <div className="container-sm mt-4 d-flex justify-content-center">
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />
@@ -226,6 +236,7 @@ function App() {
             path="/"
           />
         </Switch>
+        </div>
       </div>
     </Router>
   )
