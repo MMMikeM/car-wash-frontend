@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
-import { boolean } from 'yargs'
 
 const column = (property, key) => {
   if (Array.isArray(property)) {

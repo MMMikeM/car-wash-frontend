@@ -1,4 +1,4 @@
-var numeral = require('numeral')
+import numeral from 'numeral'
 
 numeral.register('locale', 'za', {
   delimiters: {

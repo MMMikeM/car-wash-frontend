@@ -2,8 +2,6 @@ import React from 'react'
 import * as yup from 'yup'
 import BasicForm from '../../components/Forms/BasicForm'
 
-
-
 export const schema = yup.object().shape({
   name: yup.string().required('Please enter a valid name'),
   email: yup.string().email('Please enter a valid email address'),
@@ -20,8 +18,9 @@ export const CustomerForm = (props) => {
       editRecordMethod={props.editRecordMethod}
       record={props.localCustomer}
       saveFormData={props.save}
-      editableKeys={['name', 'email', 'contact_number', 'total_points']}
-      valueTransformations={['', '', '', '']}
+      editableKeys={['name', 'email', 'contact_number', 'total_points', 'loyalty_enabled']}
+      valueTransformations={['', '', '', '', '']}
+      inputTypes={['text', 'email', 'text', 'number', 'checkbox']}
     />
   )
 }
