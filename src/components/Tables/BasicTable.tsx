@@ -9,21 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Card, CardContent } from '@/components/ui/card'
+import { useIsDesktop } from '@/lib/useMediaQuery'
 
-const column = (property, key) => {
-  if (Array.isArray(property)) {
-    return <TableCell key={key}>{snakeToSpace(property[0])}</TableCell>
-  }
-  return <TableCell key={key}>{property}</TableCell>
-}
-
-const buttonColumn = (button, key, id) => {
-  return (
-    <TableCell key={key} id={id}>
-      {button}
-    </TableCell>
-  )
-}
+const actionClass =
+  'rounded-md p-2 text-muted-foreground! no-underline! transition-colors hover:bg-accent hover:text-primary! cursor-pointer'
 
 const snakeToSpace = (input) => {
   input = input.replace('_', ' ')
@@ -31,92 +21,147 @@ const snakeToSpace = (input) => {
   return input
 }
 
-const row = (
-  rowType,
-  element,
-  properties,
-  key,
-  extraButtons = [],
-  crudEnabled = false,
-  deleteMethod
-) => {
-  let buttons = [...extraButtons]
+const heading = (input) =>
+  input.includes('/') ? snakeToSpace(input).split('/')[0] : snakeToSpace(input)
 
-  return (
-    <TableRow
-      key={key}
-      className="border-0 bg-[var(--grey-3)] hover:bg-[var(--grey-4)] [&>td:first-of-type]:pl-6 [&_a:hover]:bg-[var(--grey-4)]"
-    >
-      {properties.map((property, key) => {
-        if (property === 'email') {
-          let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
-          if (regex.test(element.email)) {
-            return column('No email provided', key)
-          } else return column(element[property], key)
-        } else if (property.includes('/')) {
-          let [a, b] = property.split('/')
-          if (element[a]?.length < 3) {
-            let content = element[a]
-              .map((row) => row[b])
-              .filter(Boolean)
-              .join(', ')
-              .toUpperCase()
-            return column(content, key)
-          } else return column('Multiple', key)
-        } else return column(element[property], key)
-      })}
-      {buttons.map((button, key) => buttonColumn(button, key, element['id']))}
-      {crudEnabled ? (
-        <TableCell>
-          <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}`}>
-            <FaInfo />
-          </Link>
-          <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}/edit`}>
-            <FaEdit />
-          </Link>
-          <a className="px-2 mt-n1" onClick={() => deleteMethod(element.id)}>
-            <FaTrash />
-          </a>
-        </TableCell>
-      ) : (
-          ''
-        )}
-    </TableRow>
-  )
+// A field may name a nested collection as "vehicles/registration_number", which
+// lists the values up to a count the row can show and says "Multiple" past it.
+const displayValue = (element, property) => {
+  if (property === 'email') {
+    let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
+    if (regex.test(element.email)) {
+      return 'No email provided'
+    }
+    return element[property]
+  }
+
+  if (property.includes('/')) {
+    let [collection, field] = property.split('/')
+    if (element[collection]?.length < 3) {
+      return element[collection]
+        .map((row) => row[field])
+        .filter(Boolean)
+        .join(', ')
+        .toUpperCase()
+    }
+    return 'Multiple'
+  }
+
+  let value = element[property]
+  return Array.isArray(value) ? snakeToSpace(value[0]) : value
 }
 
-const BasicTable = (props) => {
+const Actions = ({ rowType, element, deleteMethod }) => (
+  <div className="flex items-center gap-1">
+    <Link className={actionClass} to={`/${rowType}/${element.id}`}>
+      <FaInfo />
+    </Link>
+    <Link className={actionClass} to={`/${rowType}/${element.id}/edit`}>
+      <FaEdit />
+    </Link>
+    <a className={actionClass} onClick={() => deleteMethod(element.id)}>
+      <FaTrash />
+    </a>
+  </div>
+)
+
+const BasicTable = ({
+  rowType,
+  records,
+  fields,
+  headings,
+  extraButtons = [],
+  crudEnabled = false,
+  deleteMethod,
+}) => {
+  const rows = [...records].reverse()
+  const isDesktop = useIsDesktop()
+
+  // Narrow screens get a card per record: a four-column report scrolled
+  // sideways is unusable on the phones the wash bay runs on.
+  if (!isDesktop) {
+    return (
+      <div className="flex flex-col gap-3">
+        {rows.map((element, key) => (
+          <Card key={key} className="py-0">
+            <CardContent className="flex flex-col gap-2 p-4">
+              {fields.map((field, index) => (
+                <div key={field} className="flex justify-between gap-4">
+                  <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                    {heading(headings[index] ?? field)}
+                  </span>
+                  <span className="text-right">
+                    {displayValue(element, field)}
+                  </span>
+                </div>
+              ))}
+              {(extraButtons.length > 0 || crudEnabled) && (
+                <div className="mt-2 flex items-center justify-between gap-2 border-t border-border pt-3">
+                  <div className="flex items-center gap-2">
+                    {/* Callers read the record id off the button's parentNode,
+                        so each one needs the same wrapper the table cell gives
+                        it. */}
+                    {extraButtons.map((button, index) => (
+                      <span key={index} id={element.id}>
+                        {button}
+                      </span>
+                    ))}
+                  </div>
+                  {crudEnabled && (
+                    <Actions
+                      rowType={rowType}
+                      element={element}
+                      deleteMethod={deleteMethod}
+                    />
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
+  }
+
   return (
-    <Table className="text-9 border-separate border-spacing-y-[3px]">
-      <TableHeader>
-        <TableRow className="border-0 hover:bg-transparent [&>th:first-of-type]:pl-6">
-          {props.headings.map((heading, key) => {
-            if (heading.includes('/')) {
-              return (
-                <TableHead key={key}>
-                  {snakeToSpace(heading).split('/')[0]}
-                </TableHead>
-              )
-            } else {
-              return <TableHead key={key}>{snakeToSpace(heading)}</TableHead>
-            }
-          })}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {props.records.reverse().map((record, key) =>
-          row(
-            props.rowType,
-            record,
-            props.fields,
-            key,
-            props.extraButtons,
-            props.crudEnabled,
-            props.deleteMethod
-          )
-        )}
-      </TableBody>
-    </Table>
+    <Card className="w-full py-0">
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              {headings.map((value, key) => (
+                <TableHead key={key}>{heading(value)}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((element, key) => (
+              <TableRow key={key}>
+                {fields.map((field, index) => (
+                  <TableCell key={index}>
+                    {displayValue(element, field)}
+                  </TableCell>
+                ))}
+                {extraButtons.map((button, index) => (
+                  <TableCell key={index} id={element.id}>
+                    {button}
+                  </TableCell>
+                ))}
+                {crudEnabled && (
+                  <TableCell>
+                    <Actions
+                      rowType={rowType}
+                      element={element}
+                      deleteMethod={deleteMethod}
+                    />
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+    </CardContent>
+    </Card>
   )
 }
 

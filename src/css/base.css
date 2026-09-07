@@ -235,13 +235,3 @@ div > .max-lg {
   left: 0;
   right: 0;
 }
-
-.search > table > tbody >  tr {
-  border-width: 10px !important;
-  border-color: var(--grey-2) !important;
-}
-
-.search > table > tbody > tr >  td {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
-}
