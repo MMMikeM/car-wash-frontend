@@ -25,9 +25,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "analyze": "source-map-explorer 'build/static/js/*.js' --html result.html",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "cy:run:headed": "cypress run --headed"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "browserslist": {
     "production": [
@@ -42,13 +41,13 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.4.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^5.1.3",
     "autoprefixer": "^10.4.24",
-    "cypress": "^15.9.0",
     "postcss": "^8.5.6",
     "source-map-explorer": "^2.5.3",
     "tailwindcss": "^4.3.3",
@@ -58,7 +57,6 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "cypress",
       "esbuild"
     ]
   }
