@@ -53,7 +53,7 @@ import SalesNewVehicles from './pages/Sales/newVehicle'
 import SearchCustomer from './pages/Sales/search'
 import SalesNew from './pages/Sales/newCustomer'
 
-import './css/main.css'
+import './css/bootstrap-subset.css'
 import './css/base.css'
 import WashFreeEdit from './pages/Settings/edit'
 
