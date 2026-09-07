@@ -3,6 +3,11 @@ import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-rou
 import { MobileNav, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
 import { Toaster } from '@/components/ui/toast'
+
+// Each of these is the only user of a dependency worth ~14kB and ~4kB, so they
+// are the two routes where splitting pays for itself.
+const WashesOrder = React.lazy(() => import('./pages/Washes/order'))
+const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
 
@@ -11,7 +16,6 @@ import Logout from './pages/Auth/Logout'
 import PasswordReset from './pages/Auth/PasswordReset'
 import ForgotPassword from './pages/Auth/ForgotPassword'
 
-import CustomerHome from './pages/Customer/index'
 
 import CustomersIndex from './pages/Customers/index'
 import CustomersEdit from './pages/Customers/edit'
@@ -27,7 +31,6 @@ import WashesIndex from './pages/Washes/index'
 import WashesShow from './pages/Washes/show'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
-import WashesOrder from './pages/Washes/order'
 
 import ManageUserWashes from './pages/Wash/manageUserWashes'
 
@@ -198,6 +201,7 @@ function App() {
             isStaff ? 'pb-28' : ''
           }`}
         >
+        <React.Suspense fallback={null}>
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />
@@ -252,6 +256,7 @@ function App() {
             path="/"
           />
         </Switch>
+        </React.Suspense>
         </div>
         {isStaff ? (
           <BottomNav links={Links} onMore={() => setMobileNavOpen(true)} />
