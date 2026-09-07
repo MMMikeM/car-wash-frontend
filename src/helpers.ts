@@ -20,6 +20,22 @@ export const transformWashesCentsToRands = (washes) =>
     return wash
   })
 
+// The total is summed off the raw cents before formatReportMoney rewrites the
+// rows in place, so the two run in that order.
+export const sumReportTotal = (rows) =>
+  formatRands(
+    centsToRands(
+      rows.reduce((total, row) => total + parseFloat(row.total_price), 0)
+    )
+  )
+
+export const formatReportMoney = (rows) =>
+  rows.map((row) => {
+    row.total_cost = formatRands(centsToRands(row.total_cost))
+    row.total_price = formatRands(centsToRands(row.total_price))
+    return row
+  })
+
 export const handleDownload = async (res, filename) => {
   const url = window.URL.createObjectURL(new Blob([res]))
   const link = document.createElement('a')
