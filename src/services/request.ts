@@ -1,6 +1,19 @@
 const headers = new Headers({})
 
+// Compiled out of builds: import.meta.env.DEV is replaced with false, which
+// drops the branch and the dynamically imported fixtures with it.
+const useMocks =
+  import.meta.env.DEV && import.meta.env.VITE_MOCK_API === 'true'
+
 const request = async (method, path, body?) => {
+  if (useMocks) {
+    const { mockRequest } = await import('./mocks')
+    const mocked = mockRequest(method, path)
+    if (mocked) {
+      return mocked
+    }
+  }
+
   headers.set('Content-Type', 'application/json')
   headers.set('X-User-Email', sessionStorage.getItem('email'))
   headers.set('X-User-Token', sessionStorage.getItem('token'))
