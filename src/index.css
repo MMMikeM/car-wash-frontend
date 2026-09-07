@@ -94,44 +94,44 @@ code {
 }
 
 .dark {
-  /* CAR WASH VIBES - Fresh, clean, bold! Cool greys = clean! */
-  --background: oklch(0.12 0.015 250);
-  --foreground: oklch(0.95 0.01 250);
-  --card: oklch(0.17 0.02 250);
-  --card-foreground: oklch(0.95 0.01 250);
-  --popover: oklch(0.17 0.02 250);
-  --popover-foreground: oklch(0.95 0.01 250);
-  /* BRIGHT lime green - punchy and fresh like a clean car */
+  /* Matching original Bootstrap neutral greys */
+  --background: #222222;
+  --foreground: #dddddd;
+  --card: #333333;
+  --card-foreground: #dddddd;
+  --popover: #333333;
+  --popover-foreground: #dddddd;
+  /* Lime green primary - keeping the car wash vibe */
   --primary: oklch(0.87 0.22 125);
-  --primary-foreground: oklch(0.15 0.02 250);
-  /* Cool secondary */
-  --secondary: oklch(0.24 0.02 250);
-  --secondary-foreground: oklch(0.95 0.01 250);
-  --muted: oklch(0.24 0.02 250);
-  --muted-foreground: oklch(0.60 0.02 250);
-  /* Accent matches primary - keep it bold */
-  --accent: oklch(0.87 0.22 125);
-  --accent-foreground: oklch(0.15 0.02 250);
-  /* Bright red for destructive - attention grabbing */
+  --primary-foreground: #222222;
+  /* Neutral secondary */
+  --secondary: #333333;
+  --secondary-foreground: #dddddd;
+  --muted: #333333;
+  --muted-foreground: #999999;
+  /* Accent matches primary */
+  --accent: #444444;
+  --accent-foreground: #dddddd;
+  /* Destructive red */
   --destructive: oklch(0.65 0.28 25);
-  /* Cool borders */
-  --border: oklch(0.32 0.02 250);
-  --input: oklch(0.22 0.02 250);
+  /* Subtle borders - matching body bg for minimal look */
+  --border: #444444;
+  --input: #333333;
   --ring: oklch(0.87 0.22 125);
-  /* Fun chart colors */
+  /* Chart colors */
   --chart-1: oklch(0.87 0.22 125);
   --chart-2: oklch(0.75 0.20 200);
   --chart-3: oklch(0.80 0.18 60);
   --chart-4: oklch(0.70 0.22 280);
   --chart-5: oklch(0.75 0.25 30);
   /* Sidebar */
-  --sidebar: oklch(0.14 0.015 250);
-  --sidebar-foreground: oklch(0.95 0.01 250);
+  --sidebar: #1a1a1a;
+  --sidebar-foreground: #dddddd;
   --sidebar-primary: oklch(0.87 0.22 125);
-  --sidebar-primary-foreground: oklch(0.15 0.02 250);
-  --sidebar-accent: oklch(0.24 0.02 250);
-  --sidebar-accent-foreground: oklch(0.95 0.01 250);
-  --sidebar-border: oklch(0.32 0.02 250);
+  --sidebar-primary-foreground: #222222;
+  --sidebar-accent: #333333;
+  --sidebar-accent-foreground: #dddddd;
+  --sidebar-border: #333333;
   --sidebar-ring: oklch(0.87 0.22 125);
 }
 
