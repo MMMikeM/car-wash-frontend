@@ -60,7 +60,7 @@ const CustomerHome = () => {
                 <div>
                   <img
                     style={{ width: '180px', marginTop: 0 }}
-                    src="/public/coin.png"
+                    src="/coin.png"
                     alt="coin"
                   />
                 </div>

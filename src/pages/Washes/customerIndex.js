@@ -22,7 +22,7 @@ const Washes = () => {
       <div className="d-flex flex-column align-items-center justify-content-center">
         <img
           alt="Company logo"
-          src="/public/logo.png"
+          src="/logo.png"
           style={{ width: '200px', height: '116px' }}
           className="mx-auto mb-5 mt-2"
         />
@@ -37,7 +37,7 @@ const Washes = () => {
             With Our Carbon Loyalty Program
           <img
             alt="icon"
-            src="/public/coin.png"
+            src="/coin.png"
             style={{ width: '24px', height: '24px', marginLeft: '6px'  }}
             />
           </h4>

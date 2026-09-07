@@ -5,27 +5,27 @@ const AdminHome = () => {
   const cards = [
     {
       name: 'List Customers',
-      img: 'public/customers.jpg',
+      img: '/customers.jpg',
       path: '/customers',
     },
     {
       name: 'Search Customers',
-      img: 'public/search.jpg',
+      img: '/search.jpg',
       path: '/customers/search',
     },
     {
       name: 'Washes Report',
-      img: 'public/reports.jpg',
+      img: '/reports.jpg',
       path: '/reports/washes',
     },
     {
       name: 'Wash Prices',
-      img: 'public/prices.jpg',
+      img: '/prices.jpg',
       path: '/wash_types',
     },
     {
       name: 'Users',
-      img: 'public/users.jpg',
+      img: '/users.jpg',
       path: '/settings/users',
     },
   ]
@@ -51,7 +51,7 @@ const AdminHome = () => {
       <div className="d-flex flex-row justify-content-center flex-wrap">
         <img
           alt="Company logo"
-          src="public/logo.png"
+          src="/logo.png"
           style={{ width: '200px' }}
           className="mx-auto mb-5"
         />

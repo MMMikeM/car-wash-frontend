@@ -69,7 +69,7 @@ const Login = () => {
       <div className="max-xs mx-auto d-flex flex-column justify-content-center flex-wrap">
         <img
           alt="Company logo"
-          src="public/logo.png"
+          src="/logo.png"
           style={{ width: '200px' }}
           className="mx-auto mb-3 mt-3"
         />
