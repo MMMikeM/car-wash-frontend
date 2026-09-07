@@ -97,7 +97,9 @@ describe('Customer Show Page', () => {
     cy.visit('/customers/cust-123')
     cy.wait(['@getCustomer', '@getWashTypes'])
 
-    cy.contains('Delete Wash').click()
+    // Both the mobile card and desktop table layouts are in the DOM; only one
+    // is visible at a given width.
+    cy.contains('button:visible', 'Delete Wash').click()
 
     // Modal should appear - check for modal content instead of class
     cy.contains('Are you sure').should('exist')

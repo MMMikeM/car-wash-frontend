@@ -198,7 +198,6 @@ const ManageUserWashes = () => {
       {!loading && localCustomer.washes.length > 0 ? (
         <div className="max-md mx-auto">
           <BasicTable
-            rowType={'washes'}
             records={localCustomer.washes}
             fields={['wash_type', 'created_at']}
             headings={['wash_type', 'created_at']}

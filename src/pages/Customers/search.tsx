@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { searchCustomer, deleteCustomer } from '../../services/customersApi'
-import BasicTable from '../../components/Tables/BasicTable'
+import BasicTable, { CrudActions } from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
 import Modal from '../Sales/modal'
 import type { Customer } from '../../types'
@@ -46,16 +46,12 @@ const CustomersSearch = () => {
     }
   }
 
-  let addWash = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/new`)
+  let addWash = (customer) => {
+    history.push(`/customers/${customer.id}/washes/new`)
   }
 
-  let showCustomer = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}`)
-  }
-
-  const addVehicle = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)
+  const addVehicle = (customer) => {
+    history.push(`/customers/${customer.id}/vehicles/new`)
   }
 
   const handleSubmit = async () => {
@@ -164,7 +160,6 @@ const CustomersSearch = () => {
               ) : (
                 <>
                   <BasicTable
-                    rowType={'customers'}
                     records={localCustomers}
                     headings={[
                       'name',
@@ -178,22 +173,24 @@ const CustomersSearch = () => {
                       'contact_number',
                       'vehicles/registration_number',
                     ]}
-                    crudEnabled={true}
-                    deleteMethod={handleDeleteCustomer}
-                    extraButtons={[
-                      <Button variant="link"
-                        className="text-primary hover:text-primary/80 py-0 border-0 d-block"
-                        onClick={(e) => addVehicle(e)}
-                      >
-                        Add Vehicle
-                      </Button>,
-                      <Button variant="link"
-                        className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
-                        onClick={(e) => addWash(e)}
-                      >
-                        Add Wash
-                      </Button>,
-                    ]}
+                    renderActions={(customer) => (
+                      <>
+                        <Button
+                          variant="link"
+                          onClick={() => addVehicle(customer)}
+                        >
+                          Add Vehicle
+                        </Button>
+                        <Button variant="link" onClick={() => addWash(customer)}>
+                          Add Wash
+                        </Button>
+                        <CrudActions
+                          rowType="customers"
+                          record={customer}
+                          onDelete={handleDeleteCustomer}
+                        />
+                      </>
+                    )}
                   />
                   <div className="flex justify-between items-center mt-3">
                     <Button variant="secondary"
