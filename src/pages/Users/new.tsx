@@ -20,7 +20,8 @@ const UserNew = () => {
 
   const save = async () => {
     if (!selected) {
-      alert('Please select a user level')
+      // TODO: replace with a toast
+      // alert('Please select a user level')
     } else {
       let valid = validate(schema, localCustomer)
       if (valid) {

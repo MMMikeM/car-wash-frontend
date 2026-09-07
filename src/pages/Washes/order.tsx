@@ -39,7 +39,8 @@ const WashesOrder = () => {
 
   const handleClick = () => {
     updateWashOrder(washes)
-    alert('Wash order updated')
+    // TODO: replace with a toast
+    // alert('Wash order updated')
   }
 
   return (

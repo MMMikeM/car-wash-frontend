@@ -32,7 +32,8 @@ const Login = () => {
       loginCredsPassword
     ).catch(() => {})
     if (!loginResponse?.is_success) {
-      alert('Login Failed')
+      // TODO: replace with a toast
+      // alert('Login Failed')
       setIsLoading(false)
     } else {
       sessionStorage.setItem('id', loginResponse.data.user.id)
