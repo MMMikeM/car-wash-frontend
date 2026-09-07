@@ -64,6 +64,20 @@ class Api {
     return customer
   }
 
+  /**
+   * Counts calls to `method url` and answers them with `status`, so a test can
+   * assert both that a destructive call was made and that one was not.
+   */
+  track(method: string, url: string, status = 200) {
+    const calls: string[] = []
+    const ready = this.page.route(url, (route) => {
+      if (route.request().method() !== method) return route.fallback()
+      calls.push(route.request().url())
+      return route.fulfill({ ...json({}), status })
+    })
+    return { calls, ready }
+  }
+
   // Captures the request body of the next matching call so a test can assert
   // on what the app actually sends.
   capture(method: string, url: string) {

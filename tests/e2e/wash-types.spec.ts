@@ -71,3 +71,40 @@ test('saves free wash settings without the read-only fields', async ({ page, api
     expect(save.seen.body!).toHaveProperty(field)
   }
 })
+
+test('deletes a wash type through the confirmation dialog', async ({ page, api }) => {
+  await api.washTypes()
+  const deleted = api.track('DELETE', '**/api/v1/wash_types/wt-2')
+  await deleted.ready
+
+  await page.goto('/wash_types')
+  await page
+    .getByRole('button', { name: 'Delete wash type' })
+    .filter({ visible: true })
+    .first()
+    .click()
+
+  // Previously a native window.confirm, which Playwright auto-dismissed and no
+  // test could assert on.
+  await expect(page.getByText('Wash & Go', { exact: false }).last()).toBeVisible()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click()
+
+  await expect.poll(() => deleted.calls).toHaveLength(1)
+})
+
+test('cancelling the confirmation leaves the wash type alone', async ({ page, api }) => {
+  await api.washTypes()
+  const deleted = api.track('DELETE', '**/api/v1/wash_types/wt-2')
+  await deleted.ready
+
+  await page.goto('/wash_types')
+  await page
+    .getByRole('button', { name: 'Delete wash type' })
+    .filter({ visible: true })
+    .first()
+    .click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Cancel' }).click()
+
+  await expect(page.getByRole('alertdialog')).toBeHidden()
+  expect(deleted.calls).toHaveLength(0)
+})
