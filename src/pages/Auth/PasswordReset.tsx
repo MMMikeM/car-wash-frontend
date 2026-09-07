@@ -22,7 +22,8 @@ const PasswordReset = () => {
         localUser.password_confirmation
       )
 
-      alert('Your password has been updated')
+      // TODO: replace with a toast
+      // alert('Your password has been updated')
       history.push('/')
     }
   }

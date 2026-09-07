@@ -18,7 +18,8 @@ const ForgotPassword = () => {
     let valid = validate(schema, localUser)
     if (valid) {
       await forgotPassword(localUser.contact_number)
-      alert('Your should receive an sms with a link to reset your password')
+      // TODO: replace with a toast
+      // alert('Your should receive an sms with a link to reset your password')
       history.push('/')
     }
   }

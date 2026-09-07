@@ -1,11 +1,12 @@
 import type { ZodType } from 'zod'
 
-/** Alerts every failure message, and reports whether the value passed. */
+/** Reports whether the value passed. Failure messages are not surfaced yet. */
 export const validate = (schema: ZodType, value: unknown): boolean => {
   const result = schema.safeParse(value)
   if (result.success) {
     return true
   }
-  alert(result.error.issues.map((issue) => issue.message).join('\n'))
+  // TODO: replace with a toast - the failures are silent until then.
+  // alert(result.error.issues.map((issue) => issue.message).join('\n'))
   return false
 }
