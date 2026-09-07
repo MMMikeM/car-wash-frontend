@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { getWash, saveWash } from '../../services/washTypesApi.js'
+import { getWash } from '../../services/washTypesApi.js'
 import { useParams, Link } from 'react-router-dom'
-import { centsToRands, transformCentsToRands } from '../../helpers'
+import { transformCentsToRands } from '../../helpers'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { FaArrowLeft, FaEdit } from 'react-icons/fa'
 
 const WashShow = () => {
   let [localWash, setLocalWash] = useState({})
@@ -18,45 +21,65 @@ const WashShow = () => {
     handleFetchWash()
   }, [id])
 
-  return loading ? (
-    ''
-  ) : (
-    <div className="bg-3 px-4 pt-4 pb-3 w-50 text-8 max-sm rounded">
-      <div className="px-2 pt-2">
-        <p>
-          Name:{' '}
-          <span className="text-white font-weight-black">{localWash.name}</span>
-        </p>
-        <p>
-          Description:{' '}
-          <span className="text-white font-weight-black">
-            {localWash.description}
-          </span>
-        </p>
-        <p>
-          Cost:{' '}
-          <span className="text-white font-weight-black">
-            {transformCentsToRands(localWash.cost)}
-          </span>
-        </p>
-        <p>
-          Selling Price:{' '}
-          <span className="text-white font-weight-black">
-            {transformCentsToRands(localWash.price)}
-          </span>
-        </p>
-        <p>
-          Points awarded:{' '}
-          <span className="text-white font-weight-black">
-            {localWash.points}
-          </span>
-        </p>
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-muted-foreground">Loading...</div>
       </div>
-      <div className="d-flex justify-content-end">
-        <Link className="btn btn-primary mb-2" to="/wash_types">
-          Back to washes
-        </Link>
-      </div>
+    )
+  }
+
+  return (
+    <div className="w-full max-w-lg mx-auto">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl">{localWash.name}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {localWash.description && (
+            <p className="text-muted-foreground mb-4">{localWash.description}</p>
+          )}
+
+          <div className="space-y-3">
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-muted-foreground">Cost</span>
+              <span className="font-medium">{transformCentsToRands(localWash.cost)}</span>
+            </div>
+
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-muted-foreground">Selling Price</span>
+              <span className="font-semibold text-lg text-primary">
+                {transformCentsToRands(localWash.price)}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center py-2 border-b border-border">
+              <span className="text-muted-foreground">Points Awarded</span>
+              <span className="font-medium">{localWash.points || 0}</span>
+            </div>
+
+            <div className="flex justify-between items-center py-2">
+              <span className="text-muted-foreground">Display Order</span>
+              <span className="font-medium">{localWash.order}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 mt-6 pt-4 border-t border-border">
+            <Link to="/wash_types" className="flex-1">
+              <Button variant="outline" className="w-full">
+                <FaArrowLeft className="mr-2" />
+                Back to Washes
+              </Button>
+            </Link>
+            <Link to={`/wash_types/${id}/edit`} className="flex-1">
+              <Button className="w-full">
+                <FaEdit className="mr-2" />
+                Edit
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
