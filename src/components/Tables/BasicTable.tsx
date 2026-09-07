@@ -54,12 +54,15 @@ export const CrudActions = ({ rowType, record, onDelete }) => (
   <>
     <Link className={actionClass} to={`/${rowType}/${record.id}`}>
       <FaInfo />
+      <span className="sr-only">View details</span>
     </Link>
     <Link className={actionClass} to={`/${rowType}/${record.id}/edit`}>
       <FaEdit />
+      <span className="sr-only">Edit</span>
     </Link>
     <a className={actionClass} onClick={() => onDelete(record.id)}>
       <FaTrash />
+      <span className="sr-only">Delete</span>
     </a>
   </>
 )
