@@ -10,7 +10,7 @@ const DailyWashes = () => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState('')
   let [endDate, setEndDate] = useState('')
-  let [mainTotal, setMainTotal] = useState(0)
+  let [mainTotal, setMainTotal] = useState('')
   let [loading, setLoading] = useState(true)
 
   const todaysDate = () => {
