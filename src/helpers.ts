@@ -1,5 +1,5 @@
-// Matches what numeral's '$0.00' produced: no thousands separator, a dot
-// decimal, and the sign outside the symbol. en-ZA would render R1 234,56.
+// No thousands separator, a dot decimal, and the sign outside the symbol -
+// what this app has always displayed. Real en-ZA renders R1 234,56.
 const amount = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
