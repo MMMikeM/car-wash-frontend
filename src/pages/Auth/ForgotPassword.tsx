@@ -2,14 +2,11 @@ import React, { useState } from 'react'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory } from 'react-router-dom'
 import { forgotPassword } from '../../services/authApi'
-import * as yup from 'yup'
+import { z } from 'zod'
+import { validate } from '../../lib/validate'
+import { contactNumberSchema } from '../../lib/schemas'
 
-export const schema = yup.object().shape({
-  contact_number: yup
-    .string()
-    .matches(/^0\d{9}$/g, 'Numbers must begin with 0 and be 10 digits long and contain no spaces')
-    .strict()
-})
+export const schema = z.object({ contact_number: contactNumberSchema.optional() })
 
 const ForgotPassword = () => {
   const history = useHistory()
@@ -18,9 +15,7 @@ const ForgotPassword = () => {
   })
 
   const resetPassword = async () => {
-    let valid = await schema.validate(localUser).catch((err) => {
-      alert(err.errors)
-    })
+    let valid = validate(schema, localUser)
     if (valid) {
       await forgotPassword(localUser.contact_number)
       alert('Your should receive an sms with a link to reset your password')

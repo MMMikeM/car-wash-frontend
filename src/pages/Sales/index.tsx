@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import * as yup from 'yup'
+import { z } from 'zod'
+import { validate } from '../../lib/validate'
 import { useHistory } from 'react-router-dom'
 
 const SalesHome = () => {
@@ -7,18 +8,15 @@ const SalesHome = () => {
   const history = useHistory()
 
   const redirect = async () => {
-    let valid = await schema.validate(inputValue).catch((err) => {
-      alert(err.errors)
-    })
+    let valid = validate(schema, inputValue)
     if (valid) {
       history.push(`/search/q?contact_number=${inputValue}`)
     }
   }
 
-  const schema = yup
-    .string()
+  const schema = z
+    .string({ error: 'Please enter a valid registration number' })
     .min(3, 'Please enter at least 3 characters')
-    .required('Please enter a valid registration number')
 
   return (
     <div className="w-100 mt-5">

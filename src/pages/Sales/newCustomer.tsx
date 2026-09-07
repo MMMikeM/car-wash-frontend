@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import * as yup from 'yup'
+import { validate } from '../../lib/validate'
+import { customerSchema } from '../../lib/schemas'
 import BasicForm from '../../components/Forms/BasicForm'
 import { postCustomer } from '../../services/customersApi'
 import { useLocation, useHistory } from 'react-router-dom'
+import type { Customer } from '../../types'
 
 const SalesNew = () => {
   const history = useHistory()
   let [loading, setLoading] = useState(false)
   let [inputValue, setInputValue] = useState('')
-  let [localCustomer, setLocalCustomer] = useState({
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
     name: '',
     email: '',
     contact_number: '',
@@ -27,12 +29,9 @@ const SalesNew = () => {
   }, [])
 
   const save = async () => {
-    let valid = await schema.validate(localCustomer).catch((err) => {
-      alert(err.errors)
-    })
+    let valid = validate(schema, localCustomer)
     if (valid) {
       setLoading(true)
-      // eslint-disable-next-line no-unused-vars
       let res = await postCustomer(localCustomer)
       setLoading(false)
       history.push(`/sales/${res.id}/vehicles/new`)
@@ -45,14 +44,7 @@ const SalesNew = () => {
     setLocalCustomer(tempRecord)
   }
 
-  const schema = yup.object().shape({
-    name: yup.string().required('Please enter a valid name'),
-    email: yup.string().email('Please enter a valid email address'),
-    contact_number: yup
-      .string()
-      .matches(/^0\d{9}$/g, 'Numbers must begin with 0 and be 10 digits long and contain no spaces')
-      .strict()
-  })
+  const schema = customerSchema
 
   return (
     <div className="w-50 mx-auto d-flex flex-column">

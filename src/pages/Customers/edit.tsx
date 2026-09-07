@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { getCustomer, saveCustomer } from '../../services/customersApi'
 import { useParams, useHistory } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
+import type { Customer } from '../../types'
+import { validate } from '../../lib/validate'
 
 const CustomersEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState({})
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [loading, setLoading] = useState(true)
 
   const history = useHistory()
@@ -17,9 +19,7 @@ const CustomersEdit = () => {
   }
 
   const save = async () => {
-    let valid = await schema.validate(localCustomer).catch((err) => {
-      alert(err.errors)
-    })
+    let valid = validate(schema, localCustomer)
     if (valid) {
       const { name, email, contact_number, total_points, loyalty_enabled } = localCustomer
       await saveCustomer(localCustomer.id, { name, email, contact_number, total_points, loyalty_enabled })
