@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
 import { MobileNav, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
+import { Toaster } from '@/components/ui/toast'
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
 
@@ -255,6 +256,7 @@ function App() {
         {isStaff ? (
           <BottomNav links={Links} onMore={() => setMobileNavOpen(true)} />
         ) : null}
+        <Toaster />
       </div>
     </Router>
   )
