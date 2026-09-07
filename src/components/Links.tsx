@@ -10,8 +10,8 @@ import {
 const Links = () => {
   return (
     <div className="mb-4">
-      <div className="d-flex flex-row justify-content-center mb-2">
-        <div className="w-100 d-flex justify-content-center flex-wrap">
+      <div className="flex flex-row justify-content-center mb-2">
+        <div className="w-100 flex justify-content-center flex-wrap">
           <a
             href="https://www.facebook.com/Carbon-Car-Wash-106707361113638/"
             className="h6 mx-3"

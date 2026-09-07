@@ -3,6 +3,7 @@ import { getWashes, deleteWash } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useParams, useHistory } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
+import { Button } from '@/components/ui/button'
 
 const Settings = () => {
   let [washes, setWashes] = useState([])
@@ -55,12 +56,12 @@ const Settings = () => {
               fields={['name', 'cost', 'points']}
               crudEnabled={false}
               extraButtons={[
-                <button
-                  className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                <Button variant="link"
+                  className="link-primary py-0 border-0 d-block button-to-link"
                   onClick={(e) => editFreeWash(e)}
                 >
                   Edit Free Wash
-                </button>,
+                </Button>,
               ]}
             />
           </div>

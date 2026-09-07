@@ -1,5 +1,6 @@
 import React from 'react'
 import { transformCentsToRands } from '../../helpers'
+import { Button } from '@/components/ui/button'
 
 const Modal = (props) => {
   return (
@@ -21,13 +22,13 @@ const Modal = (props) => {
             <p className="mb-4">
               Wash Type: <strong>{props.wash.name}</strong>
             </p>
-            <div className="d-flex justify-content-around">
-              <button className="btn btn-danger" onClick={props.hideModal}>
+            <div className="flex justify-content-around">
+              <Button variant="destructive" onClick={props.hideModal}>
                 Close
-              </button>
-              <button className="btn btn-primary" onClick={props.onClick}>
+              </Button>
+              <Button onClick={props.onClick}>
                 Accept
-              </button>
+              </Button>
             </div>
           </div>
         </div>

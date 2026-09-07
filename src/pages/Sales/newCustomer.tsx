@@ -47,7 +47,7 @@ const SalesNew = () => {
   const schema = customerSchema
 
   return (
-    <div className="w-50 mx-auto d-flex flex-column">
+    <div className="w-50 mx-auto flex flex-column">
       {!loading ? (
         <div>
           <BasicForm

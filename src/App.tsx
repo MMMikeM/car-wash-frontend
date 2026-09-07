@@ -160,12 +160,12 @@ function App() {
       <div className="dark">
         <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
         <nav className="bg-1 navbar border-bottom border-primary">
-          <div className="d-flex align-items-center w-100">
-            <div className="d-flex d-md-none align-items-center px-2">
+          <div className="flex align-items-center w-100">
+            <div className="flex md:hidden align-items-center px-2">
               <NavToggle onClick={() => setMobileNavOpen(true)} />
               <span className="text-primary ml-2 font-weight-bold">Carbon Car Wash</span>
             </div>
-            <ul className="d-none d-md-flex flex-row align-items-center py-2 px-3 mb-0 navbar-nav">
+            <ul className="hidden md:flex flex-row align-items-center py-2 px-3 mb-0 navbar-nav">
               {Links.map((link, key) => {
                 return (
                   <li key={key}>
@@ -181,7 +181,7 @@ function App() {
             </ul>
           </div>
         </nav>
-        <div className="container-sm mt-4 d-flex justify-content-center">
+        <div className="container-sm mt-4 flex justify-content-center">
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />

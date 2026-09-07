@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { getCustomer, saveSystemUsers } from '../../services/customersApi'
 import BasicForm from '../../components/Forms/BasicForm'
 import type { Customer } from '../../types'
+import { Button } from '@/components/ui/button'
 
 const UserEdit = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
@@ -43,10 +44,8 @@ const UserEdit = () => {
     // }
   }
 
-  let inactive =
-    'text-white btn bg-4 d-flex justify-content-center align-items-center px-4 py-2'
-  let active =
-    'text-1 btn btn-primary d-flex justify-content-center align-items-center px-4 py-2 highlighted'
+  let inactive = 'text-white bg-4 px-4 py-2'
+  let active = 'text-1 px-4 py-2 highlighted'
 
   let handleCustomerClick = () => {
     setSelected('customer')
@@ -73,39 +72,42 @@ const UserEdit = () => {
   return (
     <div className="w-100">
       {!loading ? (
-        <div className="max-xs mx-auto d-flex justify-content-center flex-column bg-3 py-4 rounded">
+        <div className="max-xs mx-auto flex justify-content-center flex-column bg-3 py-4 rounded">
           <div className="px-2 border-bottom border-primary mb-4">
             <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
           </div>
           <div className="px-2">
             <h4 className="text-9 mb-4 px-4">Select user level</h4>
-            <div className="text-7 pt-3 d-flex flex-row justify-content-around">
-              <button
+            <div className="text-7 pt-3 flex flex-row justify-content-around">
+              <Button
+                variant={selected == 'customer' ? 'default' : 'ghost'}
                 className={selected == 'customer' ? active : inactive}
                 onClick={handleCustomerClick}
               >
                 Customer
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={selected == 'salesperson' ? 'default' : 'ghost'}
                 className={selected == 'salesperson' ? active : inactive}
                 onClick={handleSalespersonClick}
               >
                 Salesperson
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={selected == 'manager' ? 'default' : 'ghost'}
                 className={selected == 'manager' ? active : inactive}
                 onClick={handleManagerClick}
               >
                 Manager
-              </button>
+              </Button>
             </div>
             <div className="px-3">
-              <button
-                className="btn btn-primary w-100 mx-5 mt-5 mb-2 mx-auto"
+              <Button
+                className="w-100 mx-5 mt-5 mb-2 mx-auto"
                 onClick={handleSubmitClick}
               >
                 Submit
-              </button>
+              </Button>
             </div>
             {/* <BasicForm
             editRecordMethod={editRecordMethod}

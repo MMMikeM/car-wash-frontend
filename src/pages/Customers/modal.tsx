@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from '@/components/ui/button'
 
 const Modal = (props) => {
   console.log(props)
@@ -31,13 +32,13 @@ const Modal = (props) => {
             <p className="description">
               Are you sure you would like to delete this wash?
             </p>
-            <div className="d-flex justify-content-around">
-              <button className="btn btn-danger" onClick={props.hideModal}>
+            <div className="flex justify-content-around">
+              <Button variant="destructive" onClick={props.hideModal}>
                 Close
-              </button>
-              <button className="btn btn-primary" onClick={props.onClick}>
+              </Button>
+              <Button onClick={props.onClick}>
                 Accept
-              </button>
+              </Button>
             </div>
           </div>
         </div>

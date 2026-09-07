@@ -4,6 +4,7 @@ import { CustomerForm, schema } from './form'
 import { useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
+import { Button } from '@/components/ui/button'
 
 const UserNew = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
@@ -37,10 +38,8 @@ const UserNew = () => {
     setLocalCustomer(tempRecord)
   }
 
-  let inactive =
-    'text-white btn bg-4 d-flex justify-content-center align-items-center px-4 py-2'
-  let active =
-    'text-1 btn btn-primary d-flex justify-content-center align-items-center px-4 py-2 highlighted'
+  let inactive = 'text-white bg-4 px-4 py-2'
+  let active = 'text-1 px-4 py-2 highlighted'
 
   let handleSalespersonClick = () => {
     setRoles({ roles: ['salesperson'] })
@@ -56,22 +55,24 @@ const UserNew = () => {
   }
 
   return (
-    <div className="w-50 mx-auto d-flex flex-column">
+    <div className="w-50 mx-auto flex flex-column">
       {!loading ? (
         <div>
-          <div className="text-7 mb-3 d-flex flex-row justify-content-around">
-            <button
-              className={selected == 'salesperson' ? active : inactive}
+          <div className="text-7 mb-3 flex flex-row justify-content-around">
+            <Button
+                variant={selected == 'salesperson' ? 'default' : 'ghost'}
+                className={selected == 'salesperson' ? active : inactive}
               onClick={handleSalespersonClick}
             >
               Salesperson
-            </button>
-            <button
-              className={selected == 'manager' ? active : inactive}
+            </Button>
+            <Button
+                variant={selected == 'manager' ? 'default' : 'ghost'}
+                className={selected == 'manager' ? active : inactive}
               onClick={handleManagerClick}
             >
               Manager
-            </button>
+            </Button>
           </div>
 
           <CustomerForm

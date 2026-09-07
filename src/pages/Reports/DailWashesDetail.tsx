@@ -5,6 +5,7 @@ import {
 import BasicTable from '../../components/Tables/BasicTable'
 import dayjs from 'dayjs'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
+import { Button } from '@/components/ui/button'
 //import { Link, useHistory } from 'react-router-dom'
 
 const DailyWashesDetail = () => {
@@ -92,15 +93,15 @@ const DailyWashesDetail = () => {
                 value={endDate}
               />
             </div>
-            <div className="form-group col-md-6 d-flex justify-content-end">
-              <button
-                className="btn btn-primary mt-4 mr-4 px-4 py-2"
+            <div className="form-group col-md-6 flex justify-content-end">
+              <Button
+                className="mt-4 mr-4 px-4 py-2"
                 onClick={() => {
                   handleFetchReport()
                 }}
               >
                 Generate Report
-              </button>
+              </Button>
             </div>
           </>
         )}

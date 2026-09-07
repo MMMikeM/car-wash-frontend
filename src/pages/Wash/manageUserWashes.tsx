@@ -48,7 +48,7 @@ const ManageUserWashes = () => {
 
   const washCard = ({ name, price, points, id }, key, isWashSelected) => {
     let cardClass =
-      'text-white bg-3 d-flex justify-content-center align-items-center m-2 p-2'
+      'text-white bg-3 flex justify-content-center align-items-center m-2 p-2'
     if (isWashSelected) {
       cardClass += ' highlighted'
     }
@@ -67,7 +67,7 @@ const ManageUserWashes = () => {
   }
   const InsuranceCard = () => {
     let cardClass =
-      'text-white bg-3 d-flex justify-content-center align-items-center m-2 p-2'
+      'text-white bg-3 flex justify-content-center align-items-center m-2 p-2'
     if (hasInsurance) {
       cardClass += ' highlighted'
     }
@@ -185,7 +185,7 @@ const ManageUserWashes = () => {
         {selectedWashId != '' ? (
           <div
             onClick={handleProceed}
-            className="text-black bg-primary d-flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
+            className="text-black bg-primary flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
           >
             <h5 className="py-0 my-0">
               {!submitted ? 'Proceed' : 'Processing...'}

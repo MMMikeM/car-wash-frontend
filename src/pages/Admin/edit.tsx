@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
+import { Button } from '@/components/ui/button'
 
 const Settings = () => {
   let [systemUsers, setSystemUsers] = useState([])
@@ -34,12 +35,12 @@ const Settings = () => {
               headings={['name', 'email', 'roles']}
               crudEnabled={false}
               extraButtons={[
-                <button
-                  className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                <Button variant="link"
+                  className="link-primary py-0 border-0 d-block button-to-link"
                   onClick={(e) => editUser(e)}
                 >
                   Edit User
-                </button>,
+                </Button>,
               ]}
             />
           </div>

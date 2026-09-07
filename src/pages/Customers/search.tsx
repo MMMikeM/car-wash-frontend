@@ -4,6 +4,7 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
 import Modal from '../Sales/modal'
 import type { Customer } from '../../types'
+import { Button } from '@/components/ui/button'
 
 const CustomersSearch = () => {
   let [searchTerm, setSearchTerm] = useState('')
@@ -80,11 +81,11 @@ const CustomersSearch = () => {
           visible={modalIsVisible}
           hideModal={() => setModalIsVisible(false)}
         />
-        <div className="d-flex justify-content-center max-sm mx-auto flex-column">
-          <div className="d-flex flex-column w-100">
+        <div className="flex justify-content-center max-sm mx-auto flex-column">
+          <div className="flex flex-column w-100">
             <label className="text-6">Search by field</label>
             <form
-              className="text-9 d-flex flex-column"
+              className="text-9 flex flex-column"
               onChange={(e) => setSelectValue(e.target.value)}
             >
               <label className="form-check-label mt-2" htmlFor="iR1">
@@ -137,16 +138,16 @@ const CustomersSearch = () => {
               className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
               onChange={(e) => setSearchTerm(e.target.value)}
             ></input>
-            <div className="d-flex justify-content-center mt-2">
-              <button
-                className="btn btn-primary px-5 mx-auto"
+            <div className="flex justify-content-center mt-2">
+              <Button
+                className="px-5 mx-auto"
                 onClick={() => {
                   setPage(0)
                   search(selectValue, searchTerm, 0)
                 }}
               >
                 Search
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -156,12 +157,9 @@ const CustomersSearch = () => {
               {localCustomers.length === 0 ? (
                 <div className="text-center">
                   <p className="text-white">No customers found</p>
-                  <Link
-                    className="btn btn-primary py-2 px-4"
-                    to="/customers/new"
-                  >
-                    Add customer
-                  </Link>
+                  <Button asChild className="py-2 px-4">
+                    <Link to="/customers/new">Add customer</Link>
+                  </Button>
                 </div>
               ) : (
                 <>
@@ -183,38 +181,38 @@ const CustomersSearch = () => {
                     crudEnabled={true}
                     deleteMethod={handleDeleteCustomer}
                     extraButtons={[
-                      <button
-                        className="link-primary btn btn-link py-0 border-0 d-block"
+                      <Button variant="link"
+                        className="link-primary py-0 border-0 d-block"
                         onClick={(e) => addVehicle(e)}
                       >
                         Add Vehicle
-                      </button>,
-                      <button
-                        className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                      </Button>,
+                      <Button variant="link"
+                        className="link-primary py-0 border-0 d-block button-to-link"
                         onClick={(e) => addWash(e)}
                       >
                         Add Wash
-                      </button>,
+                      </Button>,
                     ]}
                   />
-                  <div className="d-flex justify-content-between align-items-center mt-3">
-                    <button
-                      className="btn btn-secondary"
-                      onClick={handlePrevPage}
-                      disabled={page === 0}
-                    >
+                  <div className="flex justify-content-between align-items-center mt-3">
+                    <Button variant="secondary"
+           
+           onClick={handlePrevPage}
+           disabled={page === 0}
+          >
                       Previous
-                    </button>
+                    </Button>
                     <span className="text-white">
                       Page {page + 1} of {totalPages || 1} ({total} total)
                     </span>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={handleNextPage}
-                      disabled={page >= totalPages - 1}
-                    >
+                    <Button variant="secondary"
+           
+           onClick={handleNextPage}
+           disabled={page >= totalPages - 1}
+          >
                       Next
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}

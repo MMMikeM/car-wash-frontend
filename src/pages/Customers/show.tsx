@@ -8,6 +8,7 @@ import { deleteWash } from '../../services/washesApi'
 import Modal from './modal'
 import dayjs from 'dayjs'
 import type { Customer, WashType } from '../../types'
+import { Button } from '@/components/ui/button'
 
 
 const CustomersShow = () => {
@@ -101,7 +102,7 @@ const CustomersShow = () => {
         hideModal={() => setModalIsVisible(false)}
       />
 
-      <div className="text-8 d-flex justify-content-center flex-column max-sm bg-3 px-4 pt-4 pb-3 rounded">
+      <div className="text-8 flex justify-content-center flex-column max-sm bg-3 px-4 pt-4 pb-3 rounded">
         <div className="row px-2 pt-2">
           <p>
             <FaUser className="mr-2 mb-1 text-white" />
@@ -139,19 +140,13 @@ const CustomersShow = () => {
             </span>
           </p>
         </div>
-        <div className="d-flex justify-content-between mt-2">
-          <Link
-            className="btn btn-primary mb-2 mr-2"
-            to={`/${localCustomer.id}/password_reset`}
-          >
-            Reset password
-          </Link>
-          <Link
-            className="btn btn-primary mb-2"
-            to={`/customers/${localCustomer.id}/washes/new`}
-          >
-            Add wash
-          </Link>
+        <div className="flex justify-content-between mt-2">
+          <Button asChild className="mb-2 mr-2">
+            <Link to={`/${localCustomer.id}/password_reset`}>Reset password</Link>
+          </Button>
+          <Button asChild className="mb-2">
+            <Link to={`/customers/${localCustomer.id}/washes/new`}>Add wash</Link>
+          </Button>
         </div>
       </div>
       {localCustomer?.washes.length > 0 ? (
@@ -163,12 +158,12 @@ const CustomersShow = () => {
             headings={['Wash Type', 'created_at']}
             extraButtons={[
               roles.includes('manager') ? (
-                <button
-                  className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
+                <Button variant="link"
+                  className="link-primary py-0 border-0 d-block button-to-link"
                   onClick={(e) => handleClick(e)}
                 >
                   Delete Wash
-                </button>
+                </Button>
               ) : (
                 ''
               ),
