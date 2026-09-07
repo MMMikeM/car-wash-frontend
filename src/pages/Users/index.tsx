@@ -31,9 +31,9 @@ const Settings = () => {
     <>
       {!loading ? (
         <div className="w-full">
-          <div className="row max-md mx-auto">
-            <div className="col-md-9"></div>
-            <div className="col-md-3 text-right">
+          <div className="flex flex-wrap max-md mx-auto">
+            <div className="w-full md:w-3/4"></div>
+            <div className="w-full md:w-1/4 text-right">
               <Button
                 className="mb-2 px-4 py-2 w-full"
                 onClick={handleAdd}
@@ -42,8 +42,8 @@ const Settings = () => {
               </Button>
             </div>
           </div>
-          <div className="row max-md mx-auto">
-            <div className="col-md-12">
+          <div className="flex flex-wrap max-md mx-auto">
+            <div className="w-full">
               <BasicTable
                 records={systemUsers}
                 fields={['name', 'email', 'roles']}

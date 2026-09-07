@@ -73,7 +73,7 @@ const UserEdit = () => {
     <div className="w-full">
       {!loading ? (
         <div className="max-xs mx-auto flex justify-center flex-col bg-3 py-4 rounded">
-          <div className="px-2 border-bottom border-primary mb-4">
+          <div className="px-2 border-b border-primary mb-4">
             <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
           </div>
           <div className="px-2">

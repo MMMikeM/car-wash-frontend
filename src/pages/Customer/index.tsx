@@ -30,10 +30,10 @@ const CustomerHome = () => {
   return (
     <div>
       {!isViewingPrice ? (
-        <div className="container flex flex-col justify-items-between">
+        <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 justify-items-between">
           <div className="flex justify-center">
             <div className="flex flex-col items-center">
-              <h4 className="text-9 my-3 mx-3 ">
+              <h4 className="text-9 my-3 mx-3">
                 Welcome {localCustomer.name}!
               </h4>
               <h4 className="text-7 my-3 mx-3">

@@ -74,7 +74,7 @@ return (
 
         <input
           placeholder={'Search customer contact number'}
-          className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+          className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-b rounded-none border-primary"
           onChange={(e) => setInputValue(e.target.value)}
         />
 

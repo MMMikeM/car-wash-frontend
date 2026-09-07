@@ -6,7 +6,7 @@ import {
 } from '../../services/customersApi'
 import { Link, useHistory } from 'react-router-dom'
 import { handleDownload } from '../../helpers'
-import Modal from '../Sales/modal'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -48,30 +48,42 @@ const CustomerCard = ({ customer, onAddWash, history }) => {
 
   return (
     <div
-      className="bg-card rounded-lg mb-2 px-4 py-3 cursor-pointer active:bg-muted/50 flex justify-between items-start gap-3"
+      className="bg-card mb-2 flex flex-col gap-1 rounded-lg px-4 py-3 cursor-pointer active:bg-muted/50"
       onClick={handleCardClick}
     >
-      <div className="min-w-0 flex-1">
-        <h3 className="font-semibold text-foreground leading-tight">{customer.name}</h3>
-        <div className="text-sm text-muted-foreground leading-tight mt-0.5">
-          {email && <span>{email}</span>}
-          {email && customer.contact_number && <span className="mx-1.5">·</span>}
-          {customer.contact_number && <span>{customer.contact_number}</span>}
-        </div>
-        {vehicles && (
-          <div className="text-xs font-mono text-muted-foreground mt-0.5">{vehicles}</div>
-        )}
-      </div>
+      <h3 className="font-semibold text-foreground leading-tight">
+        {customer.name}
+      </h3>
 
-      <Button
-        size="sm"
-        onClick={(e) => {
-          e.stopPropagation()
-          onAddWash(customer.id)
-        }}
-      >
-        Add wash
-      </Button>
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          {email && (
+            <span className="text-sm break-words text-muted-foreground">
+              {email}
+            </span>
+          )}
+          {customer.contact_number && (
+            <span className="text-sm text-muted-foreground">
+              {customer.contact_number}
+            </span>
+          )}
+          {vehicles && (
+            <span className="font-mono text-xs break-words text-muted-foreground">
+              {vehicles}
+            </span>
+          )}
+        </div>
+
+        <Button
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation()
+            onAddWash(customer.id)
+          }}
+        >
+          Add wash
+        </Button>
+      </div>
     </div>
   )
 }
@@ -176,11 +188,14 @@ const CustomersIndex = () => {
 
   return (
     <div className="w-full">
-      <Modal
-        selectedCustomer={selectedCustomer}
-        onClick={handleSubmit}
-        visible={modalIsVisible}
-        hideModal={() => setModalIsVisible(false)}
+      <ConfirmDialog
+        open={modalIsVisible}
+        onOpenChange={setModalIsVisible}
+        onConfirm={handleSubmit}
+        title="Delete customer"
+        description={`Are you sure you would like to delete ${selectedCustomer?.name ?? 'this customer'}?`}
+        confirmLabel="Delete"
+        destructive
       />
 
       <Link to="/customers/new" className="block mb-4">

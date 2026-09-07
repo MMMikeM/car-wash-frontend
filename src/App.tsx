@@ -56,7 +56,6 @@ import SalesNewVehicles from './pages/Sales/newVehicle'
 import SearchCustomer from './pages/Sales/search'
 import SalesNew from './pages/Sales/newCustomer'
 
-import './css/bootstrap-subset.css'
 import './css/base.css'
 import WashFreeEdit from './pages/Settings/edit'
 
@@ -164,7 +163,7 @@ function App() {
 
   return (
     <Router>
-      <div className="dark page-glow min-h-screen">
+      <div className="page-glow min-h-screen">
         <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
         <header className="sticky top-0 z-40 border-b-[1px] border-primary/40 bg-[#181818]/90 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2">
@@ -194,7 +193,7 @@ function App() {
           </div>
         </header>
         <div
-          className={`container-sm flex justify-center pt-6 ${
+          className={`mx-auto w-full max-w-5xl px-4 flex justify-center pt-6 ${
             isStaff ? 'pb-28' : ''
           }`}
         >

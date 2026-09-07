@@ -155,10 +155,6 @@ div > input:active {
   margin-top: -0.25rem;
 }
 
-.container {
-  height: 100vh;
-}
-
 .form-check-input:active,
 .form-check-input {
   background-color: var(--grey-3) !important;
@@ -171,18 +167,6 @@ div > input:active {
 
 .button-to-link {
   height: 19.2px;
-}
-
-.modal-wrapper {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: hsla(295, 15%, 10%, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .wash-grid {
