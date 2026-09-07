@@ -95,12 +95,17 @@ body {
 
 .d-flex > input::placeholder:active,
 .d-flex > input::placeholder:focus,
-.d-flex > input::placeholder {
+.d-flex > input::placeholder,
+.flex > input::placeholder:active,
+.flex > input::placeholder:focus,
+.flex > input::placeholder {
   color: var(--grey-6);
 }
 
 .d-flex > input:active,
-.d-flex > input:focus {
+.d-flex > input:focus,
+.flex > input:active,
+.flex > input:focus {
   background-color: var(--grey-2);
   color: var(--grey-6);
 }
@@ -219,7 +224,8 @@ div > .max-lg {
   max-width: 1200px !important;
 }
 
-.btn-primary {
+.btn-primary,
+[data-slot='button'][data-variant='default'] {
   background: linear-gradient(
     100deg,
     HSL(102deg, 89%, 78%),
