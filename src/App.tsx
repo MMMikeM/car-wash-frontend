@@ -10,6 +10,7 @@ const WashesOrder = React.lazy(() => import('./pages/Washes/order'))
 const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
+import { PageLoading } from './components/Loading'
 
 import Login from './pages/Auth/Login'
 import Logout from './pages/Auth/Logout'
@@ -202,7 +203,7 @@ function App() {
             isStaff ? 'pb-28' : ''
           }`}
         >
-        <React.Suspense fallback={null}>
+        <React.Suspense fallback={<PageLoading label="Loading the page" />}>
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />

@@ -3,6 +3,7 @@ import BasicTable from '../Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatDate } from '../../helpers'
+import { ListSkeleton } from '../Loading'
 import { reportError } from '@/lib/reportError'
 
 const ReportPage = ({
@@ -42,7 +43,7 @@ const ReportPage = ({
   }, [])
 
   return loading ? (
-    ''
+    <ListSkeleton rows={6} columns={4} actions={false} label="Loading the report" />
   ) : (
     <div className="grid w-full grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-4">
       {showFilters ? (

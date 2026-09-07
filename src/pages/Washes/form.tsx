@@ -32,6 +32,7 @@ export const WashForm = (props) => {
         editRecordMethod={props.editRecordMethod}
         record={props.record}
         saveFormData={props.save}
+      saving={props.saving}
         editableKeys={['name', 'cost', 'price', 'points', 'description']}
         valueTransformations={['', centsToRands, centsToRands, '', '', '']}
       />

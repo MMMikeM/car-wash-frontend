@@ -39,15 +39,12 @@ const CustomersNew = () => {
 
   return (
     <div className="w-1/2 mx-auto flex flex-col">
-      {!loading ? (
         <CustomerForm
+          saving={loading}
           editRecordMethod={editRecordMethod}
           localCustomer={localCustomer}
           save={save}
         />
-      ) : (
-        ''
-      )}
     </div>
   )
 }

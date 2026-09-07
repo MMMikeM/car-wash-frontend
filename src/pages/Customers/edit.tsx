@@ -6,6 +6,7 @@ import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
+import { FormSkeleton } from '../../components/Loading'
 
 const CustomersEdit = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
@@ -54,7 +55,9 @@ const CustomersEdit = () => {
 
   return (
     <div className="w-full">
-      {!loading ? (
+      {loading ? (
+        <FormSkeleton fields={5} label="Loading the customer" />
+      ) : (
         <div className="max-sm mx-auto">
           <div className="flex justify-end">
             <Button className="my-3 mr-4" onClick={handleClick}>
@@ -67,8 +70,6 @@ const CustomersEdit = () => {
             save={save}
           />
         </div>
-      ) : (
-          ''
         )}
     </div>
   )

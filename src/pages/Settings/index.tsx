@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
 import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
+import { ListSkeleton } from '../../components/Loading'
 
 const Settings = () => {
   let [washes, setWashes] = useState([])
@@ -32,7 +33,9 @@ const Settings = () => {
 
   return (
     <div className="w-full">
-      {!loading ? (
+      {loading ? (
+        <ListSkeleton rows={2} columns={3} label="Loading the free washes" />
+      ) : (
         <div className="flex flex-wrap max-md mx-auto">
           {/* <div className="w-full md:w-3/4"></div>
           <div className="w-full md:w-1/4 text-right">
@@ -53,8 +56,6 @@ const Settings = () => {
             />
           </div>
         </div>
-      ) : (
-        ''
       )}
     </div>
   )

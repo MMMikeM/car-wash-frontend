@@ -5,6 +5,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { reportError } from '@/lib/reportError'
 import { centsToRands } from '../../helpers'
 import type { WashType } from '../../types'
+import { FormSkeleton } from '../../components/Loading'
 
 const WashFreeEdit = () => {
   let [localWash, setLocalWash] = useState<Partial<WashType>>({})
@@ -51,7 +52,9 @@ const WashFreeEdit = () => {
   return (
     <div className="w-full">
       <div className="max-sm mx-auto bg-3 p-5 rounded">
-        {!loading ? (
+        {loading ? (
+          <FormSkeleton fields={4} label="Loading the wash type" />
+        ) : (
           <BasicForm
             editRecordMethod={editRecordMethod}
             record={localWash}
@@ -59,8 +62,6 @@ const WashFreeEdit = () => {
             editableKeys={['name', 'cost', 'points', 'description']}
             valueTransformations={['', centsToRands, '', '']}
           />
-        ) : (
-          ''
         )}
       </div>
     </div>

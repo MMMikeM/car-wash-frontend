@@ -5,6 +5,7 @@ import type { WashType } from '../../types'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 import { reportError } from '@/lib/reportError'
+import { ListSkeleton } from '../../components/Loading'
 
 const WashesOrder = () => {
   let [washes, setWashes] = useState<WashType[]>([])
@@ -45,7 +46,9 @@ const WashesOrder = () => {
 
   return (
     <div className="w-full">
-      {!loading ? (
+      {loading ? (
+        <ListSkeleton rows={8} columns={2} actions={false} label="Loading the wash order" />
+      ) : (
         <>
           <div
             style={{ margin: 'auto', display: 'flex', justifyContent: 'start' }}
@@ -81,8 +84,6 @@ const WashesOrder = () => {
             Save order
           </Button>
         </>
-      ) : (
-        ''
       )}
     </div>
   )

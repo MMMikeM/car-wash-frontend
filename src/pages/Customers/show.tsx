@@ -8,6 +8,7 @@ import { deleteWash } from '../../services/washesApi'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
+import { DetailSkeleton } from '../../components/Loading'
 import { currentRoles } from '@/lib/auth'
 import { formatDateTime, isAnonymousEmail } from '../../helpers'
 import { reportError } from '@/lib/reportError'
@@ -97,7 +98,7 @@ const CustomersShow = () => {
   let roles = currentRoles()
 
   return loading ? (
-    ''
+    <DetailSkeleton label="Loading the customer" />
   ) : (
     <div>
       <ConfirmDialog

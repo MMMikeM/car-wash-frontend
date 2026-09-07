@@ -46,15 +46,12 @@ const Signup = () => {
         <h4 className="text-8 mb-5">
           Sign up for the Carbon Car Wash Loyalty programme
         </h4>
-        {!loading ? (
           <SignUpForm
+          saving={loading}
             editRecordMethod={editRecordMethod}
             localCustomer={localCustomer}
             save={save}
           />
-        ) : (
-            ''
-          )}
       </div>
     </div>
   )

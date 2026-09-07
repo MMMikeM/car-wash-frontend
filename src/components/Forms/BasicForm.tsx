@@ -69,9 +69,20 @@ const BasicForm = (props) => {
       )}
       <Button
         className="w-full mt-4"
+        disabled={props.saving}
         onClick={() => props.saveFormData()}
       >
-        {props.buttonName ? props.buttonName : 'Save'}
+        {props.saving ? (
+          <>
+            <span
+              aria-hidden="true"
+              className="size-4 animate-spin rounded-full border-2 border-current/30 border-t-current"
+            />
+            Saving...
+          </>
+        ) : (
+          props.buttonName ?? 'Save'
+        )}
       </Button>
     </div>
   )

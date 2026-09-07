@@ -4,6 +4,7 @@ import Links, { MAPS_URL } from '../../components/Links'
 import { getWashes } from '../../services/washTypesApi'
 import { transformWashesCentsToRands } from '../../helpers'
 import { reportError } from '@/lib/reportError'
+import { CardGridSkeleton } from '../../components/Loading'
 
 const Washes = () => {
   let [washes, setWashes] = useState([])
@@ -69,9 +70,7 @@ const Washes = () => {
           Our Washes
         </h2>
         {loading ? (
-          <p className="text-center text-sm text-muted-foreground">
-            Loading prices…
-          </p>
+          <CardGridSkeleton cards={9} label="Loading the wash prices" />
         ) : (
           <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
             <BasicCard data={priced} />

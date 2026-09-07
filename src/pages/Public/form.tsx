@@ -7,6 +7,7 @@ export const SignUpForm = (props) => {
       editRecordMethod={props.editRecordMethod}
       record={props.localCustomer}
       saveFormData={props.save}
+      saving={props.saving}
       editableKeys={[
         'name',
         'email',

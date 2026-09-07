@@ -61,7 +61,6 @@ const UserNew = () => {
 
   return (
     <div className="w-1/2 mx-auto flex flex-col">
-      {!loading ? (
         <div>
           <div className="text-7 mb-3 flex flex-row justify-around">
             <Button
@@ -84,11 +83,9 @@ const UserNew = () => {
             editRecordMethod={editRecordMethod}
             localCustomer={localCustomer}
             save={save}
+            saving={loading}
           />
         </div>
-      ) : (
-        ''
-      )}
     </div>
   )
 }

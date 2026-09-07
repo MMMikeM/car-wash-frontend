@@ -53,19 +53,16 @@ const SalesNew = () => {
 
   return (
     <div className="w-1/2 mx-auto flex flex-col">
-      {!loading ? (
         <div>
           <BasicForm
             editRecordMethod={editRecordMethod}
             record={localCustomer}
             saveFormData={save}
+            saving={loading}
             editableKeys={['name', 'email', 'contact_number']}
             valueTransformations={['', '', '', '']}
           />
         </div>
-      ) : (
-          ''
-        )}
     </div>
   )
 }

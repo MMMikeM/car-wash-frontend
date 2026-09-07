@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
 import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
+import { WashListSkeleton } from '../../components/Loading'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import ConfirmDialog from '../../components/ConfirmDialog'
@@ -138,9 +139,7 @@ const WashesIndex = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
+      <WashListSkeleton rows={9} label="Loading the wash types" />
     )
   }
 

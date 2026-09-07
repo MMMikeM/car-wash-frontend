@@ -8,6 +8,7 @@ import 'react-circular-progressbar/dist/styles.css'
 import { getCustomer } from '../../services/customersApi'
 import type { Customer } from '../../types'
 import { reportError } from '@/lib/reportError'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -35,27 +36,31 @@ const CustomerHome = () => {
   let pricesPage = classCreator(isViewingPrice ? 2 : 4)
   let accountPage = classCreator(isViewingPrice ? 4 : 2)
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    )
-  }
-
   return (
     <div>
       {!isViewingPrice ? (
         <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 justify-items-between">
           <div className="flex justify-center">
             <div className="flex flex-col items-center">
-              <h4 className="text-9 my-3 mx-3">
-                Welcome {localCustomer.name}!
+              {/* The placeholders sit inside the real headings, so the
+                  surrounding copy and the line boxes never move. */}
+              <h4 className="text-9 my-3 mx-3" aria-busy={loading}>
+                Welcome{' '}
+                {loading ? (
+                  <Skeleton className="inline-block h-[1em] w-32 align-middle" />
+                ) : (
+                  localCustomer.name
+                )}
+                !
               </h4>
-              <h4 className="text-7 my-3 mx-3">
+              <h4 className="text-7 my-3 mx-3" aria-busy={loading}>
                 You have{' '}
                 <span className="text-primary">
-                  {localCustomer.total_points}
+                  {loading ? (
+                    <Skeleton className="inline-block h-[1em] w-10 align-middle" />
+                  ) : (
+                    localCustomer.total_points
+                  )}
                 </span>{' '}
                 Carbon Coins!
               </h4>
@@ -64,7 +69,7 @@ const CustomerHome = () => {
           <div className="max-sm mx-auto flex justify-center px-5 py-5 mb-5">
             <div style={{ width: '240px' }}>
               <CircularProgressbarWithChildren
-                value={localCustomer.total_points}
+                value={localCustomer.total_points ?? 0}
                 strokeWidth={4}
                 styles={buildStyles({
                   strokeLinecap: 'butt',

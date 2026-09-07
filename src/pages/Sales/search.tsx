@@ -5,6 +5,7 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { useLocation, useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
+import { ListSkeleton } from '../../components/Loading'
 
 const SearchCustomer = () => {
   let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
@@ -49,9 +50,7 @@ const SearchCustomer = () => {
         />
       </div>
       {!isLoaded ? (
-        <div className="max-md mx-auto text-center">
-          <p className="text-white">Searching...</p>
-        </div>
+        <ListSkeleton rows={3} columns={3} label="Searching" />
       ) : error ? (
         <div className="max-md mx-auto text-center">
           <p className="text-destructive">{error}</p>

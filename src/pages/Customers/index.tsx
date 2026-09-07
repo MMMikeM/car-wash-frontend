@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/table'
 import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
+import { RecordListSkeleton } from '../../components/Loading'
 
 const formatEmail = (email) => (isAnonymousEmail(email) ? null : email)
 
@@ -237,9 +238,7 @@ const CustomersIndex = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
+      <RecordListSkeleton rows={6} label="Loading customers" />
     )
   }
 

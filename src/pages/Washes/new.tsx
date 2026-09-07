@@ -62,17 +62,12 @@ const WashNew = () => {
           <CardTitle>Add New Wash Type</CardTitle>
         </CardHeader>
         <CardContent>
-          {!loading ? (
-            <WashForm
-              editRecordMethod={editRecordMethod}
-              record={newWash}
-              save={save}
-            />
-          ) : (
-            <div className="text-center py-4 text-muted-foreground">
-              Saving...
-            </div>
-          )}
+          <WashForm
+            editRecordMethod={editRecordMethod}
+            record={newWash}
+            save={save}
+            saving={loading}
+          />
         </CardContent>
       </Card>
     </div>

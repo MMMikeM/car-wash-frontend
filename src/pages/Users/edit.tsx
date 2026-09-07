@@ -4,6 +4,7 @@ import { getCustomer, saveSystemUsers } from '../../services/customersApi'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
 import { reportError } from '@/lib/reportError'
+import { FormSkeleton } from '../../components/Loading'
 
 const UserEdit = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
@@ -75,7 +76,9 @@ const UserEdit = () => {
 
   return (
     <div className="w-full">
-      {!loading ? (
+      {loading ? (
+        <FormSkeleton fields={2} label="Loading the user" />
+      ) : (
         <div className="max-xs mx-auto flex justify-center flex-col bg-3 py-4 rounded">
           <div className="px-2 border-b border-primary mb-4">
             <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
@@ -122,8 +125,6 @@ const UserEdit = () => {
           /> */}
           </div>
         </div>
-      ) : (
-        ''
       )}
     </div>
   )

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ArrowLeft, SquarePen } from 'lucide-react'
 import { getWash } from '../../services/washTypesApi'
 import { reportError } from '@/lib/reportError'
+import { DetailSkeleton } from '../../components/Loading'
 import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
@@ -30,9 +31,7 @@ const WashShow = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
+      <DetailSkeleton rows={4} label="Loading the wash type" />
     )
   }
 
