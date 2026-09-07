@@ -87,16 +87,18 @@ const Login = () => {
               )}
             </div>
             <div className="text-9">
-              <label>Contact Number</label>
+              <label htmlFor="contact_number">Contact Number</label>
               <input
+                id="contact_number"
                 className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
                 type="text"
                 onChange={(e) =>
                   setLoginCredsEmail(e.target.value)
                 }
               />
-              <label>Password</label>
+              <label htmlFor="password">Password</label>
               <input
+                id="password"
                 className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
                 type="password"
                 onChange={(e) =>

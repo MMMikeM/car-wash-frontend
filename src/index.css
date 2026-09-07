@@ -108,7 +108,8 @@ code {
   --secondary: #333333;
   --secondary-foreground: #dddddd;
   --muted: #333333;
-  --muted-foreground: #999999;
+  /* #999 on --card #333 is 4.43:1, under the 4.5:1 AA floor. */
+  --muted-foreground: #a3a3a3;
   /* Accent matches primary */
   --accent: #444444;
   --accent-foreground: #dddddd;
