@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { postCustomer } from '../../services/customersApi.js'
+import { postCustomer } from '../../services/customersApi'
 import { SignUpForm } from './form'
 import { useHistory } from 'react-router-dom'
 import * as yup from 'yup'

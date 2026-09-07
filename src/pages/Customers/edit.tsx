@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getCustomer, saveCustomer } from '../../services/customersApi.js'
+import { getCustomer, saveCustomer } from '../../services/customersApi'
 import { useParams, useHistory } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
 

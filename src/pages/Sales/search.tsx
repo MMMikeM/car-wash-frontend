@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { searchCustomer } from '../../services/customersApi.js'
+import { searchCustomer } from '../../services/customersApi'
 import * as yup from 'yup'
 import BasicTable from '../../components/Tables/BasicTable'
 

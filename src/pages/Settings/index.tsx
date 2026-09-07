@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { getWashes, deleteWash } from '../../services/washTypesApi.js'
+import { getWashes, deleteWash } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useParams, useHistory } from 'react-router-dom'
-import { transformWashesCentsToRands } from '../../helpers.js'
+import { transformWashesCentsToRands } from '../../helpers'
 
 const Settings = () => {
   let [washes, setWashes] = useState([])

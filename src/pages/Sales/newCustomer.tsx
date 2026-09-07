@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import * as yup from 'yup'
 import BasicForm from '../../components/Forms/BasicForm'
-import { postCustomer } from '../../services/customersApi.js'
+import { postCustomer } from '../../services/customersApi'
 import { useLocation, useHistory } from 'react-router-dom'
 
 const SalesNew = () => {

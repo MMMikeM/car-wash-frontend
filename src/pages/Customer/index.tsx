@@ -6,7 +6,7 @@ import {
   buildStyles,
 } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-import { getCustomer } from '../../services/customersApi.js'
+import { getCustomer } from '../../services/customersApi'
 
 const CustomerHome = () => {
   let [localCustomer, setLocalCustomer] = useState({})

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getWash } from '../../services/washTypesApi.js'
+import { getWash } from '../../services/washTypesApi'
 import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { getWash, saveWash } from '../../services/washTypesApi.js'
+import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
 import { centsToRands } from '../../helpers'
 
-const WashFreeEdit = () => {
+const WashEdit = () => {
   let [localWash, setLocalWash] = useState({})
   let [loading, setLoading] = useState(true)
 
@@ -22,8 +22,8 @@ const WashFreeEdit = () => {
   }
 
   const save = async () => {
-    const { name, cost, points, description } = localWash
-    await saveWash(localWash.id, { name, cost, points, description })
+    const { name, cost, price, points, description, order } = localWash
+    await saveWash(localWash.id, { name, cost, price, points, description, order })
     history.push(`/wash_types/${id}`)
   }
 
@@ -38,14 +38,21 @@ const WashFreeEdit = () => {
 
   return (
     <div className="w-100">
-      <div className="max-sm mx-auto bg-3 p-5 rounded">
+      <div className="max-sm mx-auto rounded">
         {!loading ? (
           <BasicForm
             editRecordMethod={editRecordMethod}
             record={localWash}
             saveFormData={save}
-            editableKeys={['name', 'cost', 'points', 'description']}
-            valueTransformations={['', centsToRands, '', '']}
+            editableKeys={[
+              'name',
+              'cost',
+              'price',
+              'points',
+              'description',
+              'order',
+            ]}
+            valueTransformations={['', centsToRands, centsToRands, '', '', '']}
           />
         ) : (
           ''
@@ -55,4 +62,4 @@ const WashFreeEdit = () => {
   )
 }
 
-export default WashFreeEdit
+export default WashEdit

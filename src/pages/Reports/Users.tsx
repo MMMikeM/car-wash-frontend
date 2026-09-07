@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import {
-  getWashesReport,
-  getWashesReportDownload,
-} from '../../services/reportsApi.js'
+import { getUsersReport } from '../../services/reportsApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
 //import { Link, useHistory } from 'react-router-dom'
 
-const WashesReport = () => {
+const UsersReport = () => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState('')
   let [endDate, setEndDate] = useState('')
   let [mainTotal, setMainTotal] = useState(0)
   let [loading, setLoading] = useState(true)
+
+  const roles = JSON.parse(sessionStorage.getItem('roles')) || []
+  const isManager = roles.includes('manager')
 
   const todaysDate = () => {
     let d = new Date(),
@@ -26,15 +26,10 @@ const WashesReport = () => {
     return [year, month, day].join('-')
   }
 
-  const handleDownloadReport = async () => {
-    let res = await getWashesReportDownload(startDate, endDate)
-    handleDownload(res, 'WashReport')
-  }
-
   const handleFetchReport = async () => {
     setLoading(true)
     let localTotal = 0
-    let res = await getWashesReport(startDate, endDate)
+    let res = await getUsersReport(startDate, endDate)
     setReportData(res)
     res.map((washType) => {
       localTotal += parseFloat(washType.total_price)
@@ -52,7 +47,7 @@ const WashesReport = () => {
     let localTotal = 0
     setStartDate(localStartDate)
     setEndDate(localEndDate)
-    getWashesReport(localStartDate, localEndDate).then((res) => {
+    getUsersReport(localStartDate, localEndDate).then((res) => {
       setReportData(res)
       res.map((washType) => {
         localTotal += parseFloat(washType.total_price)
@@ -68,47 +63,49 @@ const WashesReport = () => {
     ''
   ) : (
       <div className="row">
-        <div className="col-md-3">
-          <label className="text-white">Start Date</label>
-          <input
-            className="form-control"
-            type="date"
-            onChange={(e) => setStartDate(e.target.value)}
-            value={startDate}
-          />
-        </div>
-        <div className="form-group col-md-3">
-          <label className="text-white">End Date</label>
-          <input
-            className="form-control"
-            type="date"
-            onChange={(e) => setEndDate(e.target.value)}
-            value={endDate}
-          />
-        </div>
-        <div className="form-group col-md-6 d-flex justify-content-end">
-          <button
-            className="btn btn-primary mt-4 mr-4 px-4 py-2"
-            onClick={() => {
-              handleFetchReport()
-            }}
-          >
-            Generate Report
-        </button>
-          <button
-            className="btn btn-primary mt-4  px-4 py-2"
-            onClick={handleDownloadReport}
-          >
-            Download Report
-        </button>
-        </div>
+        {isManager && (
+          <>
+            <div className="col-md-3">
+              <label className="text-white">Start Date</label>
+              <input
+                className="form-control"
+                type="date"
+                onChange={(e) => setStartDate(e.target.value)}
+                value={startDate}
+              />
+            </div>
+            <div className="form-group col-md-3">
+              <label className="text-white">End Date</label>
+              <input
+                className="form-control"
+                type="date"
+                onChange={(e) => setEndDate(e.target.value)}
+                value={endDate}
+              />
+            </div>
+            <div className="form-group col-md-6 d-flex justify-content-end">
+              <button
+                className="btn btn-primary mt-4 mr-4 px-4 py-2"
+                onClick={() => {
+                  handleFetchReport()
+                }}
+              >
+                Generate Report
+              </button>
+            </div>
+          </>
+        )}
+        {!isManager && (
+          <div className="col-md-12 mb-3">
+            <h4 className="text-white">Today's Transactions</h4>
+          </div>
+        )}
         <div className="col-md-12 mt-4">
           <BasicTable
             rowType={'customers'}
-
             records={reportData}
-            fields={['name', 'wash_count', 'total_cost', 'total_price']}
-            headings={['name', 'Quantity', 'Cost Price', 'Total']}
+            fields={['name', 'vehicles/registration_number', 'contact_number']}
+            headings={['name', 'vehicles/registration_number', 'contact_number']}
             crudEnabled={false}
             extraButtons={[]}
           />
@@ -121,4 +118,4 @@ const WashesReport = () => {
     )
 }
 
-export default WashesReport
+export default UsersReport

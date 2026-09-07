@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { postWash, deleteWash } from '../../services/washesApi'
 import { getWashes } from '../../services/washTypesApi'
-import { getCustomer } from '../../services/customersApi.js'
+import { getCustomer } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory, useParams } from 'react-router-dom'
 import Modal from '../../components/Modals/Modal'
