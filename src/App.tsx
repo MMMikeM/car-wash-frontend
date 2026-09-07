@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
-import { MobileNav, NavToggle } from './components/MobileNav'
+import { NavPanel, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
 import { Toaster } from '@/components/ui/toast'
 
@@ -43,7 +43,6 @@ import ActiveUsersReport from './pages/Reports/ActiveUsers'
 
 import ManagerRoute from './pages/Layouts/ManagerRoute'
 import ProtectedRoute from './pages/Layouts/ProtectedRoute'
-import CustomerRoute from './pages/Layouts/CustomerRoute'
 import HomeRoute from './pages/Layouts/HomeRoute'
 
 import UserEdit from './pages/Users/edit'
@@ -66,7 +65,6 @@ import WashFreeEdit from './pages/Settings/edit'
 function App() {
   let [Links, setLinks] = useState([])
   let [isStaff, setIsStaff] = useState(false)
-  let [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   let home = {
     name: 'Home',
@@ -121,6 +119,10 @@ function App() {
       path: '/reports/active_users',
     },
     {
+      name: 'Insured Washes',
+      path: '/reports/insured_washes',
+    },
+    {
       name: 'Wash Prices',
       path: '/wash_types',
     },
@@ -168,12 +170,11 @@ function App() {
   return (
     <Router>
       <div className="page-glow min-h-screen">
-        <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
-        <header className="sticky top-0 z-40 border-b-[1px] border-primary/40 bg-[#181818]/90 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-primary/40 bg-[#181818]/90 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2">
             <div className="flex items-center gap-2">
               {!isStaff ? (
-                <NavToggle onClick={() => setMobileNavOpen(true)} />
+                <NavPanel links={Links} trigger={<NavToggle />} />
               ) : null}
               <Link to="/" className="no-underline!">
                 <span className="font-heading text-xl uppercase tracking-wide text-primary">
@@ -245,6 +246,7 @@ function App() {
           <ManagerRoute component={WashesReport} path="/reports/washes" />
           <ManagerRoute component={DailyWashes} path="/reports/daily_washes" />
           <ManagerRoute component={ActiveUsersReport} path="/reports/active_users" />
+          <ManagerRoute component={InsuredWashes} path="/reports/insured_washes" />
           <Route component={PasswordReset} path="/:id/password_reset" />
           <Route component={ForgotPassword} path="/forgot_password" />
           <Route component={SignUp} path="/sign_up" />
@@ -259,7 +261,7 @@ function App() {
         </React.Suspense>
         </div>
         {isStaff ? (
-          <BottomNav links={Links} onMore={() => setMobileNavOpen(true)} />
+          <BottomNav links={Links} />
         ) : null}
         <Toaster />
       </div>
