@@ -47,8 +47,8 @@ const AdminHome = () => {
   }
 
   return (
-    <div className="w-100">
-      <div className="flex flex-row justify-content-center flex-wrap">
+    <div className="w-full">
+      <div className="flex flex-row justify-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -56,7 +56,7 @@ const AdminHome = () => {
           className="mx-auto mb-5"
         />
       </div>
-      <div className="flex flex-row justify-content-center flex-wrap">
+      <div className="flex flex-row justify-center flex-wrap">
         {cards.map((item, index) =>
           card(item.name, item.img, item.path, index)
         )}

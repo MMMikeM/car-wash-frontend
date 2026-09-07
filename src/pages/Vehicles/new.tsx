@@ -31,7 +31,7 @@ const VehiclesNew = () => {
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       <div className="max-sm mx-auto">
         <BasicForm
           editRecordMethod={editRecordMethod}

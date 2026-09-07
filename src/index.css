@@ -102,7 +102,7 @@ code {
   --popover: #333333;
   --popover-foreground: #dddddd;
   /* Lime green primary - keeping the car wash vibe */
-  --primary: oklch(0.87 0.22 125);
+  --primary: oklch(0.914 0.145 137);
   --primary-foreground: #222222;
   /* Neutral secondary */
   --secondary: #333333;

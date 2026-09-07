@@ -55,10 +55,10 @@ const UserNew = () => {
   }
 
   return (
-    <div className="w-50 mx-auto flex flex-column">
+    <div className="w-1/2 mx-auto flex flex-col">
       {!loading ? (
         <div>
-          <div className="text-7 mb-3 flex flex-row justify-content-around">
+          <div className="text-7 mb-3 flex flex-row justify-around">
             <Button
                 variant={selected == 'salesperson' ? 'default' : 'ghost'}
                 className={selected == 'salesperson' ? active : inactive}
