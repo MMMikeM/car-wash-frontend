@@ -1,19 +1,10 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
+import { hasRole } from '@/lib/auth'
 
 const CustomerRoute = ({ component: Component, ...rest }) => {
-  let token = sessionStorage.getItem('token')
-  let roles = JSON.parse(sessionStorage.getItem('roles'))
-  let valid = false
-
-  if (token && roles.includes('customer')) {
-    valid = true
-  }
-
-  let result = ''
-
   let validateUser = () => {
-    if (valid) {
+    if (hasRole('customer')) {
       return <Component />
     } else return <Redirect to={'/'} />
   }

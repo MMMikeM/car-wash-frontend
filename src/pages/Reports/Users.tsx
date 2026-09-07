@@ -4,6 +4,7 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { hasRole } from '@/lib/auth'
 //import { Link, useHistory } from 'react-router-dom'
 
 const UsersReport = () => {
@@ -13,8 +14,7 @@ const UsersReport = () => {
   let [mainTotal, setMainTotal] = useState('')
   let [loading, setLoading] = useState(true)
 
-  const roles = JSON.parse(sessionStorage.getItem('roles')) || []
-  const isManager = roles.includes('manager')
+  const isManager = hasRole('manager')
 
   const todaysDate = () => {
     let d = new Date(),

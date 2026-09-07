@@ -9,6 +9,7 @@ import Modal from './modal'
 import dayjs from 'dayjs'
 import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
+import { currentRoles } from '@/lib/auth'
 
 
 const CustomersShow = () => {
@@ -87,8 +88,7 @@ const CustomersShow = () => {
     })
   }
 
-  let roles = JSON.parse(sessionStorage.getItem('roles'))
-  console.log(roles)
+  let roles = currentRoles()
 
   return loading ? (
     ''
