@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { ArrowLeft, SquarePen } from 'lucide-react'
 import { getWash } from '../../services/washTypesApi'
 import { reportError } from '@/lib/reportError'
 import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FaArrowLeft, FaEdit } from 'react-icons/fa'
 import type { WashType } from '../../types'
 
 const WashShow = () => {
@@ -74,13 +74,13 @@ const WashShow = () => {
           <div className="flex flex-col sm:flex-row gap-2 mt-6 pt-4 border-t border-border">
             <Link to="/wash_types" className="flex-1">
               <Button variant="outline" className="w-full">
-                <FaArrowLeft className="mr-2" />
+                <ArrowLeft className="mr-2" />
                 Back to Washes
               </Button>
             </Link>
             <Link to={`/wash_types/${id}/edit`} className="flex-1">
               <Button className="w-full">
-                <FaEdit className="mr-2" />
+                <SquarePen className="mr-2" />
                 Edit
               </Button>
             </Link>

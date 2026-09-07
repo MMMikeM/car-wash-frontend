@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { getWashes, deleteWash } from '../../services/washTypesApi'
 import { Link } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
@@ -6,7 +7,6 @@ import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
 import ConfirmDialog from '../../components/ConfirmDialog'
 
 const WashCard = ({ wash, onDelete }) => {
@@ -33,12 +33,12 @@ const WashCard = ({ wash, onDelete }) => {
           <div className="flex gap-1">
             <Link to={`/wash_types/${wash.id}`}>
               <Button variant="ghost" size="icon-sm" className="text-primary" aria-label="View wash type">
-                <FaInfo />
+                <Info />
               </Button>
             </Link>
             <Link to={`/wash_types/${wash.id}/edit`}>
               <Button variant="ghost" size="icon-sm" className="text-primary" aria-label="Edit wash type">
-                <FaEdit />
+                <SquarePen />
               </Button>
             </Link>
             <Button
@@ -48,7 +48,7 @@ const WashCard = ({ wash, onDelete }) => {
               aria-label="Delete wash type"
               onClick={() => onDelete(wash.id)}
             >
-              <FaTrash />
+              <Trash2 />
             </Button>
           </div>
         </div>
@@ -69,12 +69,12 @@ const WashTableRow = ({ wash, onDelete }) => {
         <div className="flex gap-2">
           <Link to={`/wash_types/${wash.id}`}>
             <Button variant="ghost" size="icon-xs" aria-label="View wash type">
-              <FaInfo />
+              <Info />
             </Button>
           </Link>
           <Link to={`/wash_types/${wash.id}/edit`}>
             <Button variant="ghost" size="icon-xs" aria-label="Edit wash type">
-              <FaEdit />
+              <SquarePen />
             </Button>
           </Link>
           <Button
@@ -84,7 +84,7 @@ const WashTableRow = ({ wash, onDelete }) => {
             className="text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={() => onDelete(wash.id)}
           >
-            <FaTrash />
+            <Trash2 />
           </Button>
         </div>
       </td>

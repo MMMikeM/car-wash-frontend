@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Car, Coins, Smartphone, User } from 'lucide-react'
 import { postWash } from '../../services/washesApi'
 import { getWashes } from '../../services/washTypesApi'
 import { getCustomer } from '../../services/customersApi'
@@ -6,7 +7,6 @@ import { transformCentsToRands } from '../../helpers'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { FaUser, FaCar, FaCoins, FaMobileAlt } from 'react-icons/fa'
 import type { Customer, WashType } from '../../types'
 import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
@@ -143,28 +143,28 @@ const ManageUserWashes = () => {
         </h2>
         <div className="px-4 pt-2">
           <p>
-            <FaUser className="mr-2 mb-1" />
+            <User className="mr-2 mb-1" />
             Name:{' '}
             <span className="ml-1 mt-1 font-weight-black">
               {localCustomer.name}
             </span>
           </p>
           <p>
-            <FaCar className="mr-2 mb-1" />
+            <Car className="mr-2 mb-1" />
             Registration number:{' '}
             <span className="ml-1 mt-1 font-weight-black">
               {registration_list}
             </span>
           </p>
           <p>
-            <FaCoins className="mr-2 mb-1" />
+            <Coins className="mr-2 mb-1" />
             Total Points:{' '}
             <span className="ml-1 mt-1 font-weight-black">
               {localCustomer.total_points}
             </span>
           </p>
           <p>
-            <FaMobileAlt className="mr-2 mb-1" />
+            <Smartphone className="mr-2 mb-1" />
             Contact Number:{' '}
             <span className="ml-1 mt-1 font-weight-black">
               {localCustomer.contact_number}

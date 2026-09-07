@@ -2,19 +2,8 @@ import React, { useEffect, useState } from 'react'
 import BasicTable from '../Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { formatDate } from '../../helpers'
 import { reportError } from '@/lib/reportError'
-
-const todaysDate = () => {
-  let d = new Date(),
-    month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
-    year = d.getFullYear()
-
-  if (month.length < 2) month = '0' + month
-  if (day.length < 2) day = '0' + day
-
-  return [year, month, day].join('-')
-}
 
 const ReportPage = ({
   fetchReport,
@@ -25,11 +14,11 @@ const ReportPage = ({
   onDownload = null,
   showFilters = true,
   heading = null,
-  initialStartDate = todaysDate(),
+  initialStartDate = formatDate(new Date()),
 }) => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState(initialStartDate)
-  let [endDate, setEndDate] = useState(todaysDate())
+  let [endDate, setEndDate] = useState(formatDate(new Date()))
   let [mainTotal, setMainTotal] = useState('')
   let [loading, setLoading] = useState(true)
 

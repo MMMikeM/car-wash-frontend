@@ -38,10 +38,14 @@ const inputs = (
       </div>
     ) : (
       <div className="mb-4" key={key}>
-        <label className="block text-sm font-medium text-muted-foreground mb-1.5">
+        <label
+          className="block text-sm font-medium text-muted-foreground mb-1.5"
+          htmlFor={`field-${key}`}
+        >
           {snakeToSpace(key)}
         </label>
         <input
+          id={`field-${key}`}
           type={inputTypes[index] || 'text'}
           onChange={(e) => updateValueMethod(record, key, e.target.value)}
           className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"

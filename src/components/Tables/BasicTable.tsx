@@ -1,6 +1,6 @@
 import React from 'react'
+import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
 import {
   Table,
   TableBody,
@@ -52,11 +52,11 @@ const displayValue = (element, property) => {
 export const CrudActions = ({ rowType, record, onDelete }) => (
   <>
     <Link className={actionClass} to={`/${rowType}/${record.id}`}>
-      <FaInfo />
+      <Info />
       <span className="sr-only">View details</span>
     </Link>
     <Link className={actionClass} to={`/${rowType}/${record.id}/edit`}>
-      <FaEdit />
+      <SquarePen />
       <span className="sr-only">Edit</span>
     </Link>
     <Button
@@ -64,7 +64,7 @@ export const CrudActions = ({ rowType, record, onDelete }) => (
       className={cn('h-auto', actionClass)}
       onClick={() => onDelete(record.id)}
     >
-      <FaTrash />
+      <Trash2 />
       <span className="sr-only">Delete</span>
     </Button>
   </>

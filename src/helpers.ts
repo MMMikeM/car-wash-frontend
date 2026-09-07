@@ -46,6 +46,16 @@ const ANONYMOUS_EMAIL =
 
 export const isAnonymousEmail = (email) => ANONYMOUS_EMAIL.test(email)
 
+const pad = (value: number) => String(value).padStart(2, '0')
+
+/** `YYYY-MM-DD` in local time, which is what the report filters send. */
+export const formatDate = (date: Date) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+
+/** `YYYY-MM-DD HH:mm:ss`. */
+export const formatDateTime = (date: Date) =>
+  `${formatDate(date)} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+
 export const handleDownload = async (res, filename) => {
   const url = window.URL.createObjectURL(new Blob([res]))
   const link = document.createElement('a')

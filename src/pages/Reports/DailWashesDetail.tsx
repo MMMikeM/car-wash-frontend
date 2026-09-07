@@ -1,5 +1,5 @@
 import React from 'react'
-import dayjs from 'dayjs'
+import { formatDateTime } from '../../helpers'
 import { getDailyWashesDetail } from '../../services/reportsApi'
 import ReportPage from '../../components/Reports/ReportPage'
 import { hasRole } from '@/lib/auth'
@@ -14,9 +14,7 @@ const DailyWashesDetail = () => {
       headings={['Wash', 'Name', 'Contact Number', 'Created Time']}
       transform={(rows) =>
         rows.map((row) => {
-          row.created_at = dayjs(new Date(row.created_at)).format(
-            'YYYY-MM-DD HH:mm:ss'
-          )
+          row.created_at = formatDateTime(new Date(row.created_at))
           return row
         })
       }

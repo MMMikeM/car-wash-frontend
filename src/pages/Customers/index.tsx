@@ -3,13 +3,13 @@
    handler instead.  */
 /* oxlint-disable jsx-a11y/prefer-tag-over-role */
 import React, { useState, useEffect } from 'react'
+import { Trash2 } from 'lucide-react'
 import {
   getCustomers,
   getCustomersCSV,
   deleteCustomer,
 } from '../../services/customersApi'
 import { Link, useHistory } from 'react-router-dom'
-import { FaTrash } from 'react-icons/fa'
 import { handleDownload, isAnonymousEmail } from '../../helpers'
 import type { Customer } from '../../types'
 import ConfirmDialog from '../../components/ConfirmDialog'
@@ -112,7 +112,7 @@ const CustomerCard = ({ customer, onAddWash, onDelete, history }) => {
               onDelete(customer.id)
             }}
           >
-            <FaTrash />
+            <Trash2 />
           </Button>
         </div>
       </div>
@@ -154,7 +154,7 @@ const CustomerTableRow = ({ customer, onAddWash, onDelete, history }) => {
               onDelete(customer.id)
             }}
           >
-            <FaTrash />
+            <Trash2 />
           </Button>
         </div>
       </TableCell>

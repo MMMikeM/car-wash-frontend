@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
 import { postWash } from '../../services/washTypesApi'
 import { WashForm, schema } from './form'
 import { useHistory, Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FaArrowLeft } from 'react-icons/fa'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
 
@@ -51,7 +51,7 @@ const WashNew = () => {
       <div className="mb-4">
         <Link to="/wash_types">
           <Button variant="ghost" size="sm">
-            <FaArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Back to Washes
           </Button>
         </Link>

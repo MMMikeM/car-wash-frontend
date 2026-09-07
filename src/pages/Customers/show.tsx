@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { Car, Coins, Mail, Smartphone, User } from 'lucide-react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
 import { Link, useParams } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
-import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import { deleteWash } from '../../services/washesApi'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import dayjs from 'dayjs'
 import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
 import { currentRoles } from '@/lib/auth'
-import { isAnonymousEmail } from '../../helpers'
+import { formatDateTime, isAnonymousEmail } from '../../helpers'
 import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
 
@@ -69,9 +68,7 @@ const CustomersShow = () => {
       (localCustomer?.washes ?? []).map((item) => ({
         ...item,
         wash: washes.find((wash) => item.wash_type_id === wash.id)?.name,
-        created_at: dayjs(new Date(item.created_at)).format(
-          'YYYY-MM-DD HH:mm:ss'
-        ),
+        created_at: formatDateTime(new Date(item.created_at)),
       })),
     [localCustomer, washes]
   )
@@ -125,35 +122,35 @@ const CustomersShow = () => {
       <div className="text-8 flex justify-center flex-col max-sm bg-3 px-4 pt-4 pb-3 rounded">
         <div className="flex flex-col px-2 pt-2">
           <p>
-            <FaUser className="mr-2 mb-1 text-white" />
+            <User className="mr-2 mb-1 text-white" />
             Name:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {localCustomer.name}
             </span>
           </p>
           <p>
-            <FaEnvelope className="mr-2 mb-1 text-white" />
+            <Mail className="mr-2 mb-1 text-white" />
             Email:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {email}
             </span>
           </p>
           <p>
-            <FaMobileAlt className="mr-2 mb-1 text-white" />
+            <Smartphone className="mr-2 mb-1 text-white" />
             Contact number:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {localCustomer.contact_number}
             </span>
           </p>
           <p>
-            <FaCoins className="mr-2 mb-1 text-white" />
+            <Coins className="mr-2 mb-1 text-white" />
             Total Points:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {localCustomer.total_points}
             </span>
           </p>
           <p>
-            <FaCar className="mr-2 mb-1 text-white" />
+            <Car className="mr-2 mb-1 text-white" />
             Registration:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {registration_list}
