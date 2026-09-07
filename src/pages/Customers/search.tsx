@@ -153,8 +153,16 @@ const CustomersSearch = () => {
               {localCustomers.length === 0 ? (
                 <div className="text-center">
                   <p className="text-white">No customers found</p>
-                  <Button asChild className="py-2 px-4">
-                    <Link to="/customers/new">Add customer</Link>
+                  <Button
+                    className="py-2 px-4"
+                    render={
+                      <Link
+                        to="/customers/new"
+                        className="text-primary-foreground! no-underline!"
+                      />
+                    }
+                  >
+                    Add customer
                   </Button>
                 </div>
               ) : (

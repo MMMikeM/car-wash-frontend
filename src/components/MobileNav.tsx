@@ -20,13 +20,16 @@ const MobileNav = ({ links, isOpen, setIsOpen }) => {
         </SheetHeader>
         <nav className="flex flex-col gap-2 mt-4 overflow-y-auto flex-1">
           {links.map((link, key) => (
-            <SheetClose asChild key={key}>
-              <Link
-                to={link.path}
-                className="flex items-center px-4 py-4 text-base text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors shrink-0"
-              >
-                {link.name}
-              </Link>
+            <SheetClose
+              key={key}
+              render={
+                <Link
+                  to={link.path}
+                  className="flex items-center px-4 py-4 text-base text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors shrink-0"
+                />
+              }
+            >
+              {link.name}
             </SheetClose>
           ))}
         </nav>
