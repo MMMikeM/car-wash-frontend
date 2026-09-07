@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
 import { Link, useParams, useHistory } from 'react-router-dom'
@@ -16,7 +16,6 @@ const CustomersShow = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
-  let [processed, setProcessed] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWash, setSelectedWash] = useState('')
 
@@ -34,8 +33,8 @@ const CustomersShow = () => {
     handleFetchCustomer()
   }, [id])
 
-  const handleClick = async (e) => {
-    setSelectedWash(e.currentTarget.parentNode.id)
+  const handleClick = async (wash) => {
+    setSelectedWash(wash.id)
     setModalIsVisible(true)
   }
 
@@ -45,25 +44,20 @@ const CustomersShow = () => {
     history.go(0)
   }
 
-  if (!loading && localCustomer?.washes[0]?.wash_type_id && !processed) {
-    setProcessed(true)
-    let tempWashes = []
-    localCustomer.washes?.map((item) => {
-      let tempObject = item
-      let date = new Date(item.created_at)
-      tempObject.wash = washes.filter(
-        (wash) => item.wash_type_id === wash.id
-      )[0]?.name
-      
-      tempObject.created_at = dayjs(date).format('YYYY-MM-DD HH:mm:ss')
-      // console.log(tempObject.created_at)
-        // date.toLocaleDateString() + ' - ' + date.toLocaleTimeString()
-      tempWashes.push(tempObject)
-    })
-    let tempCustomer = localCustomer
-    tempCustomer.washes = tempWashes
-    setLocalCustomer(tempCustomer)
-  }
+  // Derived, not mutated in place: the old version rewrote the wash objects
+  // during render behind a `processed` flag, which only held while the render
+  // count stayed exactly what it expected.
+  const washRows = useMemo(
+    () =>
+      (localCustomer?.washes ?? []).map((item) => ({
+        ...item,
+        wash: washes.find((wash) => item.wash_type_id === wash.id)?.name,
+        created_at: dayjs(new Date(item.created_at)).format(
+          'YYYY-MM-DD HH:mm:ss'
+        ),
+      })),
+    [localCustomer, washes]
+  )
 
   let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
   let email = localCustomer?.email
@@ -149,25 +143,21 @@ const CustomersShow = () => {
           </Button>
         </div>
       </div>
-      {localCustomer?.washes.length > 0 ? (
+      {washRows.length > 0 ? (
         <div className="mt-4">
           <BasicTable
-            rowType={'washes'}
-            records={localCustomer.washes}
+            records={washRows}
             fields={['wash', 'created_at']}
             headings={['Wash Type', 'created_at']}
-            extraButtons={[
-              roles.includes('manager') ? (
-                <Button variant="link"
-                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
-                  onClick={(e) => handleClick(e)}
-                >
-                  Delete Wash
-                </Button>
-              ) : (
-                ''
-              ),
-            ]}
+            renderActions={
+              roles.includes('manager')
+                ? (wash) => (
+                    <Button variant="link" onClick={() => handleClick(wash)}>
+                      Delete Wash
+                    </Button>
+                  )
+                : null
+            }
           />
         </div>
       ) : (

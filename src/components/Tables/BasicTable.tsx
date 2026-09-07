@@ -10,7 +10,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
-import { useIsDesktop } from '@/lib/useMediaQuery'
 
 const actionClass =
   'rounded-md p-2 text-muted-foreground! no-underline! transition-colors hover:bg-accent hover:text-primary! cursor-pointer'
@@ -51,38 +50,29 @@ const displayValue = (element, property) => {
   return Array.isArray(value) ? snakeToSpace(value[0]) : value
 }
 
-const Actions = ({ rowType, element, deleteMethod }) => (
-  <div className="flex items-center gap-1">
-    <Link className={actionClass} to={`/${rowType}/${element.id}`}>
+export const CrudActions = ({ rowType, record, onDelete }) => (
+  <>
+    <Link className={actionClass} to={`/${rowType}/${record.id}`}>
       <FaInfo />
     </Link>
-    <Link className={actionClass} to={`/${rowType}/${element.id}/edit`}>
+    <Link className={actionClass} to={`/${rowType}/${record.id}/edit`}>
       <FaEdit />
     </Link>
-    <a className={actionClass} onClick={() => deleteMethod(element.id)}>
+    <a className={actionClass} onClick={() => onDelete(record.id)}>
       <FaTrash />
     </a>
-  </div>
+  </>
 )
 
-const BasicTable = ({
-  rowType,
-  records,
-  fields,
-  headings,
-  extraButtons = [],
-  crudEnabled = false,
-  deleteMethod,
-}) => {
+const BasicTable = ({ records, fields, headings, renderActions = null }) => {
   const rows = [...records].reverse()
-  const isDesktop = useIsDesktop()
 
-  // Narrow screens get a card per record: a four-column report scrolled
-  // sideways is unusable on the phones the wash bay runs on.
-  if (!isDesktop) {
-    return (
-      <div className="flex flex-col gap-3">
-        {rows.map((element, key) => (
+  return (
+    <>
+      {/* Narrow screens get a card per record: a four-column report scrolled
+          sideways is unusable on the phones the wash bay runs on. */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {rows.map((record, key) => (
           <Card key={key} className="py-0">
             <CardContent className="flex flex-col gap-2 p-4">
               {fields.map((field, index) => (
@@ -91,77 +81,53 @@ const BasicTable = ({
                     {heading(headings[index] ?? field)}
                   </span>
                   <span className="text-right">
-                    {displayValue(element, field)}
+                    {displayValue(record, field)}
                   </span>
                 </div>
               ))}
-              {(extraButtons.length > 0 || crudEnabled) && (
-                <div className="mt-2 flex items-center justify-between gap-2 border-t border-border pt-3">
-                  <div className="flex items-center gap-2">
-                    {/* Callers read the record id off the button's parentNode,
-                        so each one needs the same wrapper the table cell gives
-                        it. */}
-                    {extraButtons.map((button, index) => (
-                      <span key={index} id={element.id}>
-                        {button}
-                      </span>
-                    ))}
-                  </div>
-                  {crudEnabled && (
-                    <Actions
-                      rowType={rowType}
-                      element={element}
-                      deleteMethod={deleteMethod}
-                    />
-                  )}
+              {renderActions && (
+                <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-border pt-3">
+                  {renderActions(record)}
                 </div>
               )}
             </CardContent>
           </Card>
         ))}
       </div>
-    )
-  }
 
-  return (
-    <Card className="w-full py-0">
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              {headings.map((value, key) => (
-                <TableHead key={key}>{heading(value)}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.map((element, key) => (
-              <TableRow key={key}>
-                {fields.map((field, index) => (
-                  <TableCell key={index}>
-                    {displayValue(element, field)}
-                  </TableCell>
+      <Card className="hidden w-full py-0 md:block">
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                {headings.map((value, key) => (
+                  <TableHead key={key}>{heading(value)}</TableHead>
                 ))}
-                {extraButtons.map((button, index) => (
-                  <TableCell key={index} id={element.id}>
-                    {button}
-                  </TableCell>
-                ))}
-                {crudEnabled && (
-                  <TableCell>
-                    <Actions
-                      rowType={rowType}
-                      element={element}
-                      deleteMethod={deleteMethod}
-                    />
-                  </TableCell>
-                )}
+                {renderActions && <TableHead />}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-    </CardContent>
-    </Card>
+            </TableHeader>
+            <TableBody>
+              {rows.map((record, key) => (
+                <TableRow key={key}>
+                  {fields.map((field, index) => (
+                    <TableCell key={index}>
+                      {displayValue(record, field)}
+                    </TableCell>
+                  ))}
+                  {renderActions && (
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        {renderActions(record)}
+                      </div>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          </CardContent>
+      </Card>
+    </>
   )
 }
 

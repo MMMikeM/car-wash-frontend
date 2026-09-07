@@ -19,8 +19,8 @@ const Settings = () => {
     handleFetchSystemUsers()
   }, [])
 
-  const editUser = (e) => {
-    history.push(`/user/${e.currentTarget.parentNode.id}/edit`)
+  const editUser = (user) => {
+    history.push(`/user/${user.id}/edit`)
   }
 
   return (
@@ -29,19 +29,14 @@ const Settings = () => {
         <div className="row">
           <div className="col-md-12">
             <BasicTable
-              rowType={'customers'}
               records={systemUsers}
               fields={['name', 'email', 'roles']}
               headings={['name', 'email', 'roles']}
-              crudEnabled={false}
-              extraButtons={[
-                <Button variant="link"
-                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
-                  onClick={(e) => editUser(e)}
-                >
+              renderActions={(user) => (
+                <Button variant="link" onClick={() => editUser(user)}>
                   Edit User
-                </Button>,
-              ]}
+                </Button>
+              )}
             />
           </div>
         </div>

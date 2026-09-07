@@ -74,29 +74,29 @@ const SearchCustomer = () => {
             <h4 className="text-white">No user found</h4>
           ) : (
             <BasicTable
-              rowType={'customers'}
               records={localCustomers}
               fields={['name', 'vehicles/registration_number', 'contact_number']}
               headings={['name', 'vehicles/registration_number', 'contact_number']}
-              crudEnabled={false}
-              extraButtons={[
-                <Button variant="link"
-                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
-                  onClick={(e) =>
-                    history.push(`/sales/${(e.currentTarget.parentNode as HTMLElement).id}/vehicles/new`)
-                  }
-                >
-                  Add Registration
-                </Button>,
-                <Button variant="link"
-                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
-                  onClick={(e) =>
-                    history.push(`/customers/${(e.currentTarget.parentNode as HTMLElement).id}/washes/new`)
-                  }
-                >
-                  Add Wash
-                </Button>
-              ]}
+              renderActions={(customer) => (
+                <>
+                  <Button
+                    variant="link"
+                    onClick={() =>
+                      history.push(`/sales/${customer.id}/vehicles/new`)
+                    }
+                  >
+                    Add Registration
+                  </Button>
+                  <Button
+                    variant="link"
+                    onClick={() =>
+                      history.push(`/customers/${customer.id}/washes/new`)
+                    }
+                  >
+                    Add Wash
+                  </Button>
+                </>
+              )}
             />
           )}
 

@@ -93,12 +93,9 @@ const ReportPage = ({
 
       <div className="mt-6 md:col-span-4">
         <BasicTable
-          rowType={'customers'}
           records={reportData}
           fields={fields}
           headings={headings}
-          crudEnabled={false}
-          extraButtons={[]}
         />
       </div>
 

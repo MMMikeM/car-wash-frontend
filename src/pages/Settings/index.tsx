@@ -33,8 +33,8 @@ const Settings = () => {
     }
   }
 
-  const editFreeWash = (e) => {
-    history.push(`settings/${e.currentTarget.parentNode.id}/edit`)
+  const editFreeWash = (wash) => {
+    history.push(`settings/${wash.id}/edit`)
   }
 
   return (
@@ -49,20 +49,14 @@ const Settings = () => {
           </div> */}
           <div className="col-md-12">
             <BasicTable
-              rowType={'wash_types'}
               records={washes.filter((wash) => wash.free == true)}
-              deleteMethod={handleDeleteWash}
               headings={['name', 'cost', 'points']}
               fields={['name', 'cost', 'points']}
-              crudEnabled={false}
-              extraButtons={[
-                <Button variant="link"
-                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
-                  onClick={(e) => editFreeWash(e)}
-                >
+              renderActions={(wash) => (
+                <Button variant="link" onClick={() => editFreeWash(wash)}>
                   Edit Free Wash
-                </Button>,
-              ]}
+                </Button>
+              )}
             />
           </div>
         </div>
