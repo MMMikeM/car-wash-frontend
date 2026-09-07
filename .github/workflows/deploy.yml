@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - mm-production
+      - main
   workflow_dispatch:
 
 permissions:
