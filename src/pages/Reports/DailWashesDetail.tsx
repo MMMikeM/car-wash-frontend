@@ -38,7 +38,6 @@ const DailyWashesDetail = () => {
     
     let tempArray = []
     getDailyWashesDetail(startDate, endDate).then((res) => {
-    // eslint-disable-next-line
     res.map((item) => {
       let tempObject = item
       let date = new Date(item.created_at)
@@ -58,7 +57,6 @@ const DailyWashesDetail = () => {
     setEndDate(localEndDate)
     let tempArray = []
     getDailyWashesDetail(localStartDate, localEndDate).then((res) => {
-    // eslint-disable-next-line
     res.map((item) => {
       let tempObject = item
       let date = new Date(item.created_at)
