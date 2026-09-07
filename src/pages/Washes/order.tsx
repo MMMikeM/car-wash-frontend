@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { getWashes, updateWashOrder } from '../../services/washTypesApi'
 import { List, arrayMove } from 'react-movable'
+import type { WashType } from '../../types'
 
 const WashesOrder = () => {
-  let [washes, setWashes] = useState([])
+  let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
 
   const handleFetchWashes = async () => {
@@ -26,8 +27,8 @@ const WashesOrder = () => {
     handleFetchWashes()
   }, [])
 
-  const handleChange = (washes, oldIndex, newIndex) => {
-    let newArray = arrayMove(washes, oldIndex, newIndex).map((wash, index) => {
+  const handleChange = (washes: WashType[], oldIndex, newIndex) => {
+    let newArray = arrayMove<WashType>(washes, oldIndex, newIndex).map((wash, index) => {
       wash.order = index
       return wash
     })

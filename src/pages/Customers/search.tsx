@@ -3,16 +3,17 @@ import { searchCustomer, deleteCustomer } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
 import Modal from '../Sales/modal'
+import type { Customer } from '../../types'
 
 const CustomersSearch = () => {
   let [searchTerm, setSearchTerm] = useState('')
   let [selectValue, setSelectValue] = useState('name')
-  let [localCustomers, setLocalCustomers] = useState([])
+  let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
   let [isLoaded, setIsLoaded] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [deleteId, setDeleteId] = useState('')
   let [loading, setLoading] = useState(true)
-  let [selectedCustomer, setSelectedCustomer] = useState({})
+  let [selectedCustomer, setSelectedCustomer] = useState<Partial<Customer>>({})
   let [page, setPage] = useState(0)
   let [perPage] = useState(20)
   let [total, setTotal] = useState(0)
@@ -59,7 +60,7 @@ const CustomersSearch = () => {
   const handleSubmit = async () => {
     setLoading(!loading)
     await deleteCustomer(deleteId)
-    search()
+    search(selectValue, searchTerm, page)
     setModalIsVisible(false)
     // history.go(0)
   }

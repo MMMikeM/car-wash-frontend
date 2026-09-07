@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { login } from '../../services/authApi'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import type { LoginResponse } from '../../types'
 
 const Login = () => {
   let [loginCredsEmail, setLoginCredsEmail] = useState('')
@@ -25,7 +26,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     setIsLoading(true)
-    let loginResponse = {}
+    let loginResponse: LoginResponse
     loginResponse = await login(
       loginCredsEmail,
       loginCredsPassword
@@ -90,7 +91,7 @@ const Login = () => {
                 className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
                 type="text"
                 onChange={(e) =>
-                  setLoginCredsEmail(e.target.value, 'contact_number')
+                  setLoginCredsEmail(e.target.value)
                 }
               />
               <label>Password</label>
@@ -98,7 +99,7 @@ const Login = () => {
                 className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
                 type="password"
                 onChange={(e) =>
-                  setLoginCredsPassword(e.target.value, 'password')
+                  setLoginCredsPassword(e.target.value)
                 }
               />
               <div className="d-flex justify-content-end mt-n1 mb-4">

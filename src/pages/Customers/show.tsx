@@ -7,11 +7,12 @@ import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import { deleteWash } from '../../services/washesApi'
 import Modal from './modal'
 import dayjs from 'dayjs'
+import type { Customer, WashType } from '../../types'
 
 
 const CustomersShow = () => {
-  let [localCustomer, setLocalCustomer] = useState({})
-  let [washes, setWashes] = useState([])
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
+  let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
   let [processed, setProcessed] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
@@ -45,7 +46,6 @@ const CustomersShow = () => {
   if (!loading && localCustomer?.washes[0]?.wash_type_id && !processed) {
     setProcessed(true)
     let tempWashes = []
-    // eslint-disable-next-line
     localCustomer.washes?.map((item) => {
       let tempObject = item
       let date = new Date(item.created_at)

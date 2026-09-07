@@ -3,9 +3,10 @@ import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
 import { centsToRands } from '../../helpers'
+import type { WashType } from '../../types'
 
 const WashFreeEdit = () => {
-  let [localWash, setLocalWash] = useState({})
+  let [localWash, setLocalWash] = useState<Partial<WashType>>({})
   let [loading, setLoading] = useState(true)
 
   const history = useHistory()
