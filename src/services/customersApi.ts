@@ -27,7 +27,8 @@ export const saveCustomer = async (id, body) => {
   return response.json()
 }
 export const searchCustomer = async (searchTerm, searchValue, page = 0, perPage = 20) => {
-  let response = await request('GET', `/customers?${searchTerm}=${searchValue}&page=${page}&per_page=${perPage}`)
+  const query = `${searchTerm}=${encodeURIComponent(searchValue)}&page=${page}&per_page=${perPage}`
+  let response = await request('GET', `/customers?${query}`)
   const total = parseInt(response.headers.get('X-Instance-Total') || '0', 10)
   const data = await response.json()
   return { data, total }
