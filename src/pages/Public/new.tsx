@@ -4,7 +4,7 @@ import { SignUpForm } from './form'
 import { useHistory } from 'react-router-dom'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
-import { customerSchema, passwordPairSchema } from '../../lib/schemas'
+import { signUpSchema } from '../../lib/schemas'
 
 const Signup = () => {
   let [localCustomer, setLocalCustomer] = useState({
@@ -20,7 +20,7 @@ const Signup = () => {
   const history = useHistory()
 
   const save = async () => {
-    let valid = validate(schema, localCustomer)
+    let valid = validate(signUpSchema, localCustomer)
     if (valid) {
       setLoading(true)
       try {
@@ -39,7 +39,6 @@ const Signup = () => {
     tempRecord[key] = value
     setLocalCustomer(tempRecord)
   }
-  const schema = passwordPairSchema.extend(customerSchema.shape)
 
   return (
     <div className="w-full">

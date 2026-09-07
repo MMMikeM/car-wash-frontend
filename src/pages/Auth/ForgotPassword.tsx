@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory } from 'react-router-dom'
 import { forgotPassword } from '../../services/authApi'
-import { z } from 'zod'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
+import * as v from 'valibot'
 import { contactNumberSchema } from '../../lib/schemas'
 import { toast } from '@/components/ui/toast'
 
-export const schema = z.object({ contact_number: contactNumberSchema.optional() })
+export const schema = v.object({ contact_number: v.optional(contactNumberSchema) })
 
 const ForgotPassword = () => {
   const history = useHistory()

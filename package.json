@@ -8,17 +8,16 @@
     "@base-ui/react": "^1.8.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "dayjs": "^1.11.19",
+    "date-fns": "^4.4.0",
     "ky": "^2.1.0",
     "lucide-react": "^0.563.0",
     "react": "^19.2.4",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.2.4",
-    "react-icons": "^3.10.0",
     "react-movable": "^2.5.3",
     "react-router-dom": "^5.2.0",
     "tailwind-merge": "^3.4.0",
-    "zod": "^4.5.4"
+    "valibot": "^1.4.2"
   },
   "scripts": {
     "dev": "vite",

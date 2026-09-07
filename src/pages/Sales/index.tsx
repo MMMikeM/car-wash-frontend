@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { z } from 'zod'
+import * as v from 'valibot'
 import { validate } from '../../lib/validate'
 import { useHistory } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -20,15 +20,16 @@ const SalesHome = () => {
     }
   }
 
-  const schema = z
-    .string({ error: 'Please enter a valid registration number' })
-    .min(3, 'Please enter at least 3 characters')
+  const schema = v.pipe(
+    v.string('Please enter a valid registration number'),
+    v.minLength(3, 'Please enter at least 3 characters')
+  )
 
   return (
     <div className="w-full">
       <div className="mx-auto w-full max-w-3xl px-4">
         <form
-          className="rounded-2xl border-[1px] border-white/10 bg-card p-6"
+          className="rounded-2xl border border-white/10 bg-card p-6"
           onSubmit={(e) => {
             e.preventDefault()
             redirect()

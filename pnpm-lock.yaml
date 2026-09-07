@@ -10,16 +10,16 @@ importers:
     dependencies:
       '@base-ui/react':
         specifier: ^1.8.0
-        version: 1.8.0(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 1.8.0(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      dayjs:
-        specifier: ^1.11.19
-        version: 1.11.19
+      date-fns:
+        specifier: ^4.4.0
+        version: 4.4.0
       ky:
         specifier: ^2.1.0
         version: 2.1.0
@@ -35,9 +35,6 @@ importers:
       react-dom:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
-      react-icons:
-        specifier: ^3.10.0
-        version: 3.10.0(react@19.2.4)
       react-movable:
         specifier: ^2.5.3
         version: 2.5.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -47,9 +44,9 @@ importers:
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
-      zod:
-        specifier: ^4.5.4
-        version: 4.5.4
+      valibot:
+        specifier: ^1.4.2
+        version: 1.4.2(typescript@7.0.2)
     devDependencies:
       '@axe-core/playwright':
         specifier: ^4.13.0
@@ -1116,10 +1113,6 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  camelcase@5.3.1:
-    resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
-    engines: {node: '>=6'}
-
   caniuse-lite@1.0.30001767:
     resolution: {integrity: sha512-34+zUAMhSH+r+9eKmYG+k2Rpt8XttfE4yXAjoZvkAPs15xcYQhyBYdalJ65BzivAvGRMViEjy6oKr/S91loekQ==}
 
@@ -1136,8 +1129,8 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
-  dayjs@1.11.19:
-    resolution: {integrity: sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==}
+  date-fns@4.4.0:
+    resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
 
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
@@ -1487,11 +1480,6 @@ packages:
     peerDependencies:
       react: ^19.2.4
 
-  react-icons@3.10.0:
-    resolution: {integrity: sha512-WsQ5n1JToG9VixWilSo1bHv842Cj5aZqTGiS3Ud47myF6aK7S/IUY2+dHcBdmkQcCFRuHsJ9OMUI0kTDfjyZXQ==}
-    peerDependencies:
-      react: '*'
-
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -1603,6 +1591,14 @@ packages:
     resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  valibot@1.4.2:
+    resolution: {integrity: sha512-gjdCvJ6d3RyHAneqxMYMW9QMCwYMb3jpOO0IyHZV1bnRHFBHrX3VkIILt5XYR0WhwHiH7Mty8ovuPZ/O3gamrg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   value-equal@1.0.1:
     resolution: {integrity: sha512-NOJ6JZCAWr0zlxZt+xqCHNTEKOsrks2HQd4MqhP1qy4z1SkbEP467eNx6TgDKXMvUOb+OENfJCZwM+16n7fRfw==}
@@ -1790,7 +1786,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@base-ui/react@1.8.0(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@base-ui/react@1.8.0(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@babel/runtime': 7.29.7
       '@base-ui/utils': 0.4.0(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1801,6 +1797,7 @@ snapshots:
       use-sync-external-store: 1.6.0(react@19.2.4)
     optionalDependencies:
       '@types/react': 19.2.18
+      date-fns: 4.4.0
 
   '@base-ui/utils@0.4.0(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -2381,8 +2378,6 @@ snapshots:
       node-releases: 2.0.27
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
-  camelcase@5.3.1: {}
-
   caniuse-lite@1.0.30001767: {}
 
   class-variance-authority@0.7.1:
@@ -2395,7 +2390,7 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  dayjs@1.11.19: {}
+  date-fns@4.4.0: {}
 
   debug@4.4.3:
     dependencies:
@@ -2753,11 +2748,6 @@ snapshots:
       react: 19.2.4
       scheduler: 0.27.0
 
-  react-icons@3.10.0(react@19.2.4):
-    dependencies:
-      camelcase: 5.3.1
-      react: 19.2.4
-
   react-is@16.13.1: {}
 
   react-movable@2.5.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
@@ -2889,6 +2879,10 @@ snapshots:
   use-sync-external-store@1.6.0(react@19.2.4):
     dependencies:
       react: 19.2.4
+
+  valibot@1.4.2(typescript@7.0.2):
+    optionalDependencies:
+      typescript: 7.0.2
 
   value-equal@1.0.1: {}
 
