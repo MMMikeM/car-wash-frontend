@@ -88,9 +88,9 @@ const CustomersSearch = () => {
               className="text-9 flex flex-col"
               onChange={(e) => setSelectValue(e.target.value)}
             >
-              <label className="form-check-label mt-2" htmlFor="iR1">
+              <label className="mt-2" htmlFor="iR1">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR1"
@@ -100,9 +100,9 @@ const CustomersSearch = () => {
                 Name
               </label>
 
-              <label className="form-check-label mt-2" htmlFor="iR2">
+              <label className="mt-2" htmlFor="iR2">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR2"
@@ -111,9 +111,9 @@ const CustomersSearch = () => {
                 Registration Number
               </label>
 
-              <label className="form-check-label mt-2" htmlFor="iR3">
+              <label className="mt-2" htmlFor="iR3">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR3"
@@ -122,9 +122,9 @@ const CustomersSearch = () => {
                 Email
               </label>
 
-              <label className="form-check-label mt-2" htmlFor="iR4">
+              <label className="mt-2" htmlFor="iR4">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR4"
@@ -135,7 +135,7 @@ const CustomersSearch = () => {
             </form>
             <input
               placeholder="Search here..."
-              className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+              className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
               onChange={(e) => setSearchTerm(e.target.value)}
             ></input>
             <div className="flex justify-center mt-2">
