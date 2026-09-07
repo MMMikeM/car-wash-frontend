@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
 import { MobileNav, NavToggle } from './components/MobileNav'
+import BottomNav from './components/BottomNav'
+import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
 
 import Login from './pages/Auth/Login'
@@ -60,11 +62,13 @@ import WashFreeEdit from './pages/Settings/edit'
 
 function App() {
   let [Links, setLinks] = useState([])
+  let [isStaff, setIsStaff] = useState(false)
   let [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   let home = {
     name: 'Home',
     path: '/',
+    Icon: House,
   }
 
   let signUpLink = {
@@ -83,27 +87,31 @@ function App() {
   let salespersonLinks = [
     {
       name: 'Customers Today',
-      path: '/customers/report'
+      path: '/customers/report',
+      Icon: ClipboardList,
     },
     {
       name: 'Daily Washes',
-      path: '/customers/daily_wash_list'
+      path: '/customers/daily_wash_list',
+      Icon: ChartColumn,
     },
-
   ]
 
   let managerLinks = [
     {
       name: 'Search Customers',
       path: '/customers/search',
+      Icon: Search,
     },
     {
       name: 'List Customers',
       path: '/customers',
+      Icon: Users,
     },
     {
       name: 'Daily Wash Summary',
       path: '/reports/daily_washes',
+      Icon: ChartColumn,
     },
     {
       name: 'Active Users',
@@ -151,35 +159,45 @@ function App() {
       tempLinks.push(signUpLink)
     }
     setLinks(tempLinks)
+    setIsStaff(roles.some((role) => role === 'manager' || role === 'salesperson'))
   }, [])
 
   return (
     <Router>
-      <div className="dark">
+      <div className="dark page-glow min-h-screen">
         <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
-        <nav className="bg-1 navbar border-bottom border-primary">
-          <div className="flex items-center w-full">
-            <div className="flex md:hidden items-center px-2">
-              <NavToggle onClick={() => setMobileNavOpen(true)} />
-              <span className="text-primary ml-2 font-weight-bold">Carbon Car Wash</span>
+        <header className="sticky top-0 z-40 border-b-[1px] border-primary/40 bg-[#181818]/90 backdrop-blur">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2">
+            <div className="flex items-center gap-2">
+              {!isStaff ? (
+                <NavToggle onClick={() => setMobileNavOpen(true)} />
+              ) : null}
+              <Link to="/" className="no-underline!">
+                <span className="font-heading text-xl uppercase tracking-wide text-primary">
+                  Carbon Car Wash
+                </span>
+              </Link>
             </div>
-            <ul className="hidden md:flex flex-row items-center py-2 px-3 mb-0 navbar-nav">
-              {Links.map((link, key) => {
-                return (
-                  <li key={key}>
-                    <Link
-                      className="nav-item mr-3 py-2 px-2 text-9 font-weight-normal text-decoration-none"
-                      to={link.path}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
+            <nav className="ml-auto hidden lg:flex items-center justify-end gap-1">
+              {(isStaff ? [] : Links).map((link, key) => (
+                <NavLink
+                  key={key}
+                  exact={link.path === '/'}
+                  to={link.path}
+                  className="rounded-md px-3 py-2 text-sm text-foreground! no-underline! transition-colors hover:bg-primary/10 hover:text-primary!"
+                  activeClassName="bg-primary/10 text-primary!"
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+            </nav>
           </div>
-        </nav>
-        <div className="container-sm mt-4 flex justify-center">
+        </header>
+        <div
+          className={`container-sm flex justify-center pt-6 ${
+            isStaff ? 'pb-28' : ''
+          }`}
+        >
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />
@@ -235,6 +253,9 @@ function App() {
           />
         </Switch>
         </div>
+        {isStaff ? (
+          <BottomNav links={Links} onMore={() => setMobileNavOpen(true)} />
+        ) : null}
       </div>
     </Router>
   )
