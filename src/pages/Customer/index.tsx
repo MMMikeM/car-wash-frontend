@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Washes from '../Washes/customerIndex'
-import Links from '../../components/Links'
 import {
   CircularProgressbarWithChildren,
   buildStyles,
@@ -85,8 +84,7 @@ const CustomerHome = () => {
           </div>
         </div>
       ) : (
-        <div className="">
-          <Links />
+        <div className="w-full pb-16">
           <Washes />
         </div>
       )}
