@@ -1,36 +1,24 @@
-import numeral from 'numeral'
-
-numeral.register('locale', 'za', {
-  delimiters: {
-    thousands: ' ',
-    decimal: '.',
-  },
-  currency: {
-    symbol: 'R',
-  },
+// Matches what numeral's '$0.00' produced: no thousands separator, a dot
+// decimal, and the sign outside the symbol. en-ZA would render R1 234,56.
+const amount = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+  useGrouping: false,
 })
-numeral.locale('za')
 
-export const transformCentsToRands = (input) => {
-  let transformed = numeral(centsToRands(input)).format('$0.00')
+export const formatRands = (rands) =>
+  `${rands < 0 ? '-' : ''}R${amount.format(Math.abs(rands))}`
 
-  return transformed
-}
+export const centsToRands = (cents) => cents / 100
 
-export const transformWashesCentsToRands = (washes) => {
-  let transformed = washes.map((wash) => {
-    wash.cost = numeral(centsToRands(wash.cost)).format('$0.00')
-    wash.price = numeral(centsToRands(wash.price)).format('$0.00')
+export const transformCentsToRands = (input) => formatRands(centsToRands(input))
+
+export const transformWashesCentsToRands = (washes) =>
+  washes.map((wash) => {
+    wash.cost = formatRands(centsToRands(wash.cost))
+    wash.price = formatRands(centsToRands(wash.price))
     return wash
   })
-  return transformed
-}
-
-export const centsToRands = (rands) => {
-  return rands / 100
-}
-
-export const formatRands = (rands) => numeral(rands).format('$0.00')
 
 export const handleDownload = async (res, filename) => {
   const url = window.URL.createObjectURL(new Blob([res]))
