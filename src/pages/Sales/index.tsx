@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { z } from 'zod'
 import { validate } from '../../lib/validate'
 import { useHistory } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
 
 const SalesHome = () => {
   let [inputValue, setInputValue] = useState('')
@@ -20,7 +21,7 @@ const SalesHome = () => {
 
   return (
     <div className="w-100 mt-5">
-      <div className="d-flex flex-row justify-content-center flex-wrap">
+      <div className="flex flex-row justify-content-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -35,24 +36,24 @@ const SalesHome = () => {
           onChange={(e) => setInputValue(e.target.value)}
         />
 
-        <div className="d-flex justify-content-between mt-2">
-          <button className="btn btn-primary px-4 py-2" onClick={redirect}>
+        <div className="flex justify-content-between mt-2">
+          <Button className="px-4 py-2" onClick={redirect}>
             Search
-          </button>
+          </Button>
 
-          <button
-            className="btn btn-primary px-4 py-2"
+          <Button
+            className="px-4 py-2"
             onClick={() => history.push('/customers/e92d521d-0628-4cb3-8252-02d5d65272e5/washes/new/')}
           >
             No loyalty programme
-          </button>
+          </Button>
 
-          {/* <button
-            className="btn btn-primary px-4 py-2"
+          {/* <Button
+            className="px-4 py-2"
             onClick={() => history.push('/new_customer/')}
           >
             Create new customer
-          </button> */}
+          </Button> */}
         </div>
       </div>
     </div>

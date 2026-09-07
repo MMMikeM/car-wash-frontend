@@ -4,6 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
+import { Button } from '@/components/ui/button'
 
 const CustomersEdit = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
@@ -44,10 +45,10 @@ const CustomersEdit = () => {
     <div className="w-100">
       {!loading ? (
         <div className="max-sm mx-auto">
-          <div className="d-flex justify-content-end">
-            <button className="btn btn-primary my-3 mr-4" onClick={handleClick}>
+          <div className="flex justify-content-end">
+            <Button className="my-3 mr-4" onClick={handleClick}>
               Convert To User
-            </button>
+            </Button>
           </div>
           <CustomerForm
             editRecordMethod={editRecordMethod}

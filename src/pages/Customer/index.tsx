@@ -31,9 +31,9 @@ const CustomerHome = () => {
   return (
     <div>
       {!isViewingPrice ? (
-        <div className="container d-flex flex-column justify-items-between">
-          <div className="d-flex justify-content-center">
-            <div className="d-flex flex-column align-items-center">
+        <div className="container flex flex-column justify-items-between">
+          <div className="flex justify-content-center">
+            <div className="flex flex-column align-items-center">
               <h4 className="text-9 my-3 mx-3 ">
                 Welcome {localCustomer.name}!
               </h4>
@@ -46,7 +46,7 @@ const CustomerHome = () => {
               </h4>
             </div>
           </div>
-          <div className="max-sm mx-auto d-flex justify-content-center px-5 py-5 mb-5">
+          <div className="max-sm mx-auto flex justify-content-center px-5 py-5 mb-5">
             <div style={{ width: '240px' }}>
               <CircularProgressbarWithChildren
                 value={localCustomer.total_points}
@@ -91,7 +91,7 @@ const CustomerHome = () => {
         </div>
       )}
 
-      <div className="footer d-flex">
+      <div className="footer flex">
         <button
           onClick={() => setIsViewingPrice(false)}
           className={accountPage}

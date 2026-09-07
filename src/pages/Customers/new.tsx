@@ -32,7 +32,7 @@ const CustomersNew = () => {
   }
 
   return (
-    <div className="w-50 mx-auto d-flex flex-column">
+    <div className="w-50 mx-auto flex flex-column">
       {!loading ? (
         <CustomerForm
           editRecordMethod={editRecordMethod}

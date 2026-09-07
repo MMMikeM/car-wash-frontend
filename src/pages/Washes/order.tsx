@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getWashes, updateWashOrder } from '../../services/washTypesApi'
 import { List, arrayMove } from 'react-movable'
 import type { WashType } from '../../types'
+import { Button } from '@/components/ui/button'
 
 const WashesOrder = () => {
   let [washes, setWashes] = useState<WashType[]>([])
@@ -66,14 +67,14 @@ const WashesOrder = () => {
               )}
             />
           </div>
-          <button
-            className="btn btn-primary mt-3 px-4 py-2"
+          <Button
+            className="mt-3 px-4 py-2"
             onClick={() => {
               handleClick()
             }}
           >
             Save order
-          </button>
+          </Button>
         </>
       ) : (
         ''

@@ -5,6 +5,7 @@ import BasicTable from '../../components/Tables/BasicTable'
 
 import { useLocation, useHistory, useParams } from 'react-router-dom'
 import type { Customer } from '../../types'
+import { Button } from '@/components/ui/button'
 
 const SearchCustomer = () => {
   let [inputValue, setInputValue] = useState('')
@@ -48,7 +49,7 @@ const SearchCustomer = () => {
 
   return (
     <div className="w-100">
-      <div className="d-flex flex-row justify-content-center flex-wrap">
+      <div className="flex flex-row justify-content-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -63,9 +64,9 @@ const SearchCustomer = () => {
       ) : error ? (
         <div className="max-md mx-auto text-center">
           <p className="text-danger">{error}</p>
-          <button className="btn btn-primary" onClick={() => history.goBack()}>
+          <Button onClick={() => history.goBack()}>
             Go Back
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="max-md mx-auto search">
@@ -79,30 +80,30 @@ const SearchCustomer = () => {
               headings={['name', 'vehicles/registration_number', 'contact_number']}
               crudEnabled={false}
               extraButtons={[
-                <button
-                  className={'link-primary btn btn-link py-0 border-0 d-block button-to-link'}
+                <Button variant="link"
+                  className="link-primary py-0 border-0 d-block button-to-link"
                   onClick={(e) =>
                     history.push(`/sales/${(e.currentTarget.parentNode as HTMLElement).id}/vehicles/new`)
                   }
                 >
                   Add Registration
-                </button>,
-                <button
-                  className={'link-primary btn btn-link py-0 border-0 d-block button-to-link'}
+                </Button>,
+                <Button variant="link"
+                  className="link-primary py-0 border-0 d-block button-to-link"
                   onClick={(e) =>
                     history.push(`/customers/${(e.currentTarget.parentNode as HTMLElement).id}/washes/new`)
                   }
                 >
                   Add Wash
-                </button>
+                </Button>
               ]}
             />
           )}
 
-          <div className="d-flex justify-content-between mt-2">
-            <button className="btn btn-primary px-5" onClick={redirect}>
+          <div className="flex justify-content-between mt-2">
+            <Button className="px-5" onClick={redirect}>
               Create new customer
-            </button>
+            </Button>
           </div>
         </div>
       )}
