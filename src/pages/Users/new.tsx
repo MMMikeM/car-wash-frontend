@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { postCustomer, saveSystemUsers } from '../../services/customersApi'
 import { CustomerForm, schema } from './form'
 import { useHistory } from 'react-router-dom'
+import type { Customer } from '../../types'
+import { validate } from '../../lib/validate'
 
 const UserNew = () => {
-  let [localCustomer, setLocalCustomer] = useState({
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
     name: '',
     email: '',
     contact_number: '',
@@ -19,14 +21,11 @@ const UserNew = () => {
     if (!selected) {
       alert('Please select a user level')
     } else {
-      let valid = await schema.validate(localCustomer).catch((err) => {
-        alert(err.errors)
-      })
+      let valid = validate(schema, localCustomer)
       if (valid) {
         setLoading(true)
-        // eslint-disable-next-line no-unused-vars
         let resCustomer = await postCustomer(localCustomer)
-        let resUser = await saveSystemUsers(resCustomer.id, roles)
+        await saveSystemUsers(resCustomer.id, roles)
         history.push(`/`)
       }
     }
@@ -44,26 +43,16 @@ const UserNew = () => {
     'text-1 btn btn-primary d-flex justify-content-center align-items-center px-4 py-2 highlighted'
 
   let handleSalespersonClick = () => {
-    let tempRecord = {}
-    tempRecord.roles = ['salesperson']
-    setRoles(tempRecord)
+    setRoles({ roles: ['salesperson'] })
     setSelected('salesperson')
   }
   let handleManagerClick = () => {
-    let tempRecord = {}
-    tempRecord.roles = ['manager', 'salesperson']
-    setRoles(tempRecord)
+    setRoles({ roles: ['manager', 'salesperson'] })
     setSelected('manager')
   }
 
   let handleSubmitClick = () => {
-    let body = {}
-    if (selected === 'manager') {
-      body.roles = ['manager', 'salesperson']
-    } else if (selected === 'salesperson') {
-      body.roles = ['salesperson']
-    }
-    save(body)
+    save()
   }
 
   return (

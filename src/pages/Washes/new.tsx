@@ -5,6 +5,7 @@ import { useHistory, Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { FaArrowLeft } from 'react-icons/fa'
+import { validate } from '../../lib/validate'
 
 const WashNew = () => {
   let [newWash, setNewWash] = useState({
@@ -20,9 +21,7 @@ const WashNew = () => {
   const history = useHistory()
 
   const save = async () => {
-    let valid = await schema.validate(newWash).catch((err) => {
-      alert(err.errors)
-    })
+    let valid = validate(schema, newWash)
     if (valid) {
       setLoading(true)
       let res = await postWash(newWash)

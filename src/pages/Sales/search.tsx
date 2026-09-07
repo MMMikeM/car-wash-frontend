@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { searchCustomer } from '../../services/customersApi'
-import * as yup from 'yup'
+import { z } from 'zod'
 import BasicTable from '../../components/Tables/BasicTable'
 
 import { useLocation, useHistory, useParams } from 'react-router-dom'
+import type { Customer } from '../../types'
 
 const SearchCustomer = () => {
   let [inputValue, setInputValue] = useState('')
   let [number, setNumber] = useState('')
-  let [localCustomers, setLocalCustomers] = useState([])
+  let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
   let [isLoaded, setIsLoaded] = useState(false)
   let [error, setError] = useState(null)
   const history = useHistory()
@@ -37,10 +38,9 @@ const SearchCustomer = () => {
     search(query.get('contact_number'))
   }, [])
 
-  const schema = yup
-    .string()
+  const schema = z
+    .string({ error: 'Please enter a valid name' })
     .min(3, 'Please enter at least 3 characters')
-    .required('Please enter a valid name')
 
   const redirect = async () => {
     history.push(`/new_customer/q?contact=${query.get('contact_number')}`)
@@ -82,7 +82,7 @@ const SearchCustomer = () => {
                 <button
                   className={'link-primary btn btn-link py-0 border-0 d-block button-to-link'}
                   onClick={(e) =>
-                    history.push(`/sales/${e.currentTarget.parentNode.id}/vehicles/new`)
+                    history.push(`/sales/${(e.currentTarget.parentNode as HTMLElement).id}/vehicles/new`)
                   }
                 >
                   Add Registration
@@ -90,7 +90,7 @@ const SearchCustomer = () => {
                 <button
                   className={'link-primary btn btn-link py-0 border-0 d-block button-to-link'}
                   onClick={(e) =>
-                    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/new`)
+                    history.push(`/customers/${(e.currentTarget.parentNode as HTMLElement).id}/washes/new`)
                   }
                 >
                   Add Wash

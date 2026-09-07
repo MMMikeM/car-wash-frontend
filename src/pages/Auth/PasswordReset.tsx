@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
 import { updatePassword } from '../../services/authApi'
-import * as yup from 'yup'
+import { validate } from '../../lib/validate'
+import { passwordPairSchema } from '../../lib/schemas'
 
 const PasswordReset = () => {
   const history = useHistory()
@@ -13,11 +14,8 @@ const PasswordReset = () => {
   })
 
   const savePassword = async () => {
-    let valid = await schema.validate(localUser).catch((err) => {
-      alert(err.errors)
-    })
+    let valid = validate(schema, localUser)
     if (valid) {
-      // eslint-disable-next-line no-unused-vars
       await updatePassword(
         id,
         localUser.password,
@@ -35,15 +33,7 @@ const PasswordReset = () => {
     setLocalUser(tempRecord)
   }
 
-  const schema = yup.object().shape({
-    password: yup
-      .string()
-      .required('Please enter a valid password')
-      .min(6, 'Passwords must be at least 6 characters long'),
-    password_confirmation: yup
-      .string()
-      .oneOf([yup.ref('password'), null], 'Please ensure that passwords match'),
-  })
+  const schema = passwordPairSchema
 
   return (
     <div className="w-100">

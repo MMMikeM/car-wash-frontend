@@ -1,16 +1,8 @@
 import React from 'react'
-import * as yup from 'yup'
+import { customerSchema } from '../../lib/schemas'
 import BasicForm from '../../components/Forms/BasicForm'
 
-export const schema = yup.object().shape({
-  name: yup.string().required('Please enter a valid name'),
-  email: yup.string().email('Please enter a valid email address'),
-  contact_number: yup
-    .string()
-    .matches(/^0\d{9}$/g, 'Numbers must begin with 0 and be 10 digits long and contain no spaces')
-    .strict()
-    .trim(),
-})
+export const schema = customerSchema
 
 export const CustomerForm = (props) => {
   return (

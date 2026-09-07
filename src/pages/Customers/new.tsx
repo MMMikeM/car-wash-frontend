@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { postCustomer } from '../../services/customersApi'
 import { CustomerForm, schema} from './form'
 import { useHistory } from 'react-router-dom'
+import { validate } from '../../lib/validate'
 
 const CustomersNew = () => {
   let [localCustomer, setLocalCustomer] = useState({
@@ -15,10 +16,9 @@ const CustomersNew = () => {
   const history = useHistory()
 
   const save = async () => {
-    let valid = await schema.validate(localCustomer).catch((err) => {alert(err.errors)})
+    let valid = validate(schema, localCustomer)
     if (valid){ 
       setLoading(true)
-      // eslint-disable-next-line no-unused-vars
       let res = await postCustomer(localCustomer)
       setLoading(false)
       history.push(`/customers/${res.id}`)

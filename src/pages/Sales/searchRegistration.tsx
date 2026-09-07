@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { searchCustomer } from '../../services/customersApi'
 import { useLocation, useHistory } from 'react-router-dom'
-import * as yup from 'yup'
+import { validate } from '../../lib/validate'
+import { contactNumberSchema } from '../../lib/schemas'
+import type { Customer } from '../../types'
 
 const SearchReg = () => {
   let [inputValue, setInputValue] = useState('')
   let [registration, setRegistration] = useState('')
-  let [localCustomers, setLocalCustomers] = useState([])
+  let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
   let [isLoaded, setIsLoaded] = useState(false)
   const history = useHistory()
 
@@ -19,7 +21,7 @@ const SearchReg = () => {
   const search = async (input) => {
     setRegistration(input)
     let res = await searchCustomer('registration_number', input)
-    setLocalCustomers(res)
+    setLocalCustomers(res.data || [])
     setIsLoaded(true)
   }
 
@@ -27,15 +29,10 @@ const SearchReg = () => {
     search(query.get('registration'))
   }, [])
 
-  const schema = yup
-    .string()
-    .matches(/^0\d{9}$/g, 'Numbers must begin with 0 and be 10 digits long and contain no spaces')
-    .strict()
+  const schema = contactNumberSchema
 
 const redirect = async () => {
-  let valid = await schema.validate(inputValue).catch((err) => {
-    alert(err.errors)
-  })
+  let valid = validate(schema, inputValue)
   if (valid) {
     history.push(`/search/${registration}/q?contact=${inputValue}`)
   }
