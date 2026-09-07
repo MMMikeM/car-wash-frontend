@@ -1,19 +1,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 const column = (property, key) => {
   if (Array.isArray(property)) {
-    return <td key={key}>{snakeToSpace(property[0])}</td>
+    return <TableCell key={key}>{snakeToSpace(property[0])}</TableCell>
   }
-  return <td key={key}>{property}</td>
+  return <TableCell key={key}>{property}</TableCell>
 }
 
 const buttonColumn = (button, key, id) => {
   return (
-    <td key={key} id={id}>
+    <TableCell key={key} id={id}>
       {button}
-    </td>
+    </TableCell>
   )
 }
 
@@ -35,7 +43,10 @@ const row = (
   let buttons = [...extraButtons]
 
   return (
-    <tr key={key}>
+    <TableRow
+      key={key}
+      className="border-0 bg-[var(--grey-3)] hover:bg-[var(--grey-4)] [&>td:first-of-type]:pl-6 [&_a:hover]:bg-[var(--grey-4)]"
+    >
       {properties.map((property, key) => {
         if (property === 'email') {
           let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
@@ -56,7 +67,7 @@ const row = (
       })}
       {buttons.map((button, key) => buttonColumn(button, key, element['id']))}
       {crudEnabled ? (
-        <td>
+        <TableCell>
           <Link className="px-2 mt-n1" to={`/${rowType}/${element.id}`}>
             <FaInfo />
           </Link>
@@ -66,29 +77,33 @@ const row = (
           <a className="px-2 mt-n1" onClick={() => deleteMethod(element.id)}>
             <FaTrash />
           </a>
-        </td>
+        </TableCell>
       ) : (
           ''
         )}
-    </tr>
+    </TableRow>
   )
 }
 
 const BasicTable = (props) => {
   return (
-    <table className="table text-9">
-      <thead>
-        <tr>
+    <Table className="text-9 border-separate border-spacing-y-[3px]">
+      <TableHeader>
+        <TableRow className="border-0 hover:bg-transparent [&>th:first-of-type]:pl-6">
           {props.headings.map((heading, key) => {
             if (heading.includes('/')) {
-              return <th key={key}>{snakeToSpace(heading).split('/')[0]}</th>
+              return (
+                <TableHead key={key}>
+                  {snakeToSpace(heading).split('/')[0]}
+                </TableHead>
+              )
             } else {
-              return <th key={key}>{snakeToSpace(heading)}</th>
+              return <TableHead key={key}>{snakeToSpace(heading)}</TableHead>
             }
           })}
-        </tr>
-      </thead>
-      <tbody>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
         {props.records.reverse().map((record, key) =>
           row(
             props.rowType,
@@ -100,8 +115,8 @@ const BasicTable = (props) => {
             props.deleteMethod
           )
         )}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   )
 }
 

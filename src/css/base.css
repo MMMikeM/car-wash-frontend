@@ -123,17 +123,6 @@ option {
   font-family: lato !important;
 }
 
-.table > tbody > tr {
-  background-color: var(--grey-3);
-  /* border-color: var(--grey-2); */
-  border: 3px solid var(--grey-2);
-}
-.table > tbody > tr > td:first-of-type {
-  padding-left: 24px;
-}
-.table > thead > tr > th:first-of-type {
-  padding-left: 24px;
-}
 
 /* .table > tbody > tr > td:last-of-type {
 display: flex;
@@ -141,11 +130,6 @@ align-items: center;
 justify-content: center;
 border: none;
 } */
-
-.table > tbody > tr:hover,
-.table > tbody > tr > td > a:hover {
-  background-color: var(--grey-4);
-}
 
 .react-icons {
   vertical-align: middle;

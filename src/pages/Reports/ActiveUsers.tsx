@@ -4,6 +4,7 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
 import dayjs from 'dayjs'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 //import { Link, useHistory } from 'react-router-dom'
 
 const ActiveUsersReport = () => {
@@ -55,8 +56,7 @@ const ActiveUsersReport = () => {
       <div className="row">
         {/* <div className="col-md-3">
           <label className="text-white">Start Date</label>
-          <input
-            className="form-control"
+          <Input
             type="date"
             onChange={(e) => setStartDate(e.target.value)}
             value={startDate}
@@ -64,8 +64,7 @@ const ActiveUsersReport = () => {
         </div>
         <div className="form-group col-md-3">
           <label className="text-white">End Date</label>
-          <input
-            className="form-control"
+          <Input
             type="date"
             onChange={(e) => setEndDate(e.target.value)}
             value={endDate}

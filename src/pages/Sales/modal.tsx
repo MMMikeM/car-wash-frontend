@@ -8,7 +8,7 @@ const Modal = (props) => {
     <>
       {props.visible ? (
         <div className="modal-wrapper bg-tint">
-          <div className="modal-card card title text-white py-4 px-5  bg-3">
+          <div className="modal-card title relative flex min-w-0 flex-col break-words rounded border text-white py-4 px-5 bg-3">
 
             <h4 className="">
               <span className="mr-2 text-7">Name:</span> {props.selectedCustomer.name}

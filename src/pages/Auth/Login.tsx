@@ -88,7 +88,7 @@ const Login = () => {
             <div className="text-9">
               <label>Contact Number</label>
               <input
-                className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
                 type="text"
                 onChange={(e) =>
                   setLoginCredsEmail(e.target.value)
@@ -96,7 +96,7 @@ const Login = () => {
               />
               <label>Password</label>
               <input
-                className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
                 type="password"
                 onChange={(e) =>
                   setLoginCredsPassword(e.target.value)

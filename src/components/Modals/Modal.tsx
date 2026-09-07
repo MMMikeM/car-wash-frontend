@@ -7,7 +7,7 @@ const Modal = (props) => {
     <>
       {props.visible ? (
         <div className="modal-wrapper bg-tint">
-          <div className="modal-card card text-black py-4 px-5  ">
+          <div className="modal-card relative flex min-w-0 flex-col break-words rounded border bg-white text-black py-4 px-5">
             <h2 className="title">{props.wash.name}</h2>
             <p className="description">
               Are you sure you want to add the following wash?
