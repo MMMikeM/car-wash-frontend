@@ -4,6 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { updatePassword } from '../../services/authApi'
 import { validate } from '../../lib/validate'
 import { passwordPairSchema } from '../../lib/schemas'
+import { toast } from '@/components/ui/toast'
 
 const PasswordReset = () => {
   const history = useHistory()
@@ -22,8 +23,7 @@ const PasswordReset = () => {
         localUser.password_confirmation
       )
 
-      // TODO: replace with a toast
-      // alert('Your password has been updated')
+      toast.success('Password updated')
       history.push('/')
     }
   }

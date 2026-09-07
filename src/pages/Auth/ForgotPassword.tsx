@@ -5,6 +5,7 @@ import { forgotPassword } from '../../services/authApi'
 import { z } from 'zod'
 import { validate } from '../../lib/validate'
 import { contactNumberSchema } from '../../lib/schemas'
+import { toast } from '@/components/ui/toast'
 
 export const schema = z.object({ contact_number: contactNumberSchema.optional() })
 
@@ -18,8 +19,10 @@ const ForgotPassword = () => {
     let valid = validate(schema, localUser)
     if (valid) {
       await forgotPassword(localUser.contact_number)
-      // TODO: replace with a toast
-      // alert('Your should receive an sms with a link to reset your password')
+      toast.success(
+        'Check your phone',
+        'An SMS with a link to reset your password is on its way.'
+      )
       history.push('/')
     }
   }

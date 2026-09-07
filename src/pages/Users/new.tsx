@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 const UserNew = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
@@ -20,8 +21,7 @@ const UserNew = () => {
 
   const save = async () => {
     if (!selected) {
-      // TODO: replace with a toast
-      // alert('Please select a user level')
+      toast.error('Please select a user level')
     } else {
       let valid = validate(schema, localCustomer)
       if (valid) {

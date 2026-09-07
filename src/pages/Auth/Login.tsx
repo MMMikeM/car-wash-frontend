@@ -3,6 +3,7 @@ import { login } from '../../services/authApi'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import type { LoginResponse } from '../../types'
+import { toast } from '@/components/ui/toast'
 
 const Login = () => {
   let [loginCredsEmail, setLoginCredsEmail] = useState('')
@@ -32,8 +33,7 @@ const Login = () => {
       loginCredsPassword
     ).catch(() => {})
     if (!loginResponse?.is_success) {
-      // TODO: replace with a toast
-      // alert('Login Failed')
+      toast.error('Login failed', 'Check the contact number and password.')
       setIsLoading(false)
     } else {
       sessionStorage.setItem('id', loginResponse.data.user.id)
