@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { searchCustomer, deleteCustomer } from '../../services/customersApi'
-import BasicTable from '../../components/Tables/BasicTable'
+import BasicTable, { CrudActions } from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
-import Modal from '../Sales/modal'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
 
@@ -46,16 +46,12 @@ const CustomersSearch = () => {
     }
   }
 
-  let addWash = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/new`)
+  let addWash = (customer) => {
+    history.push(`/customers/${customer.id}/washes/new`)
   }
 
-  let showCustomer = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}`)
-  }
-
-  const addVehicle = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)
+  const addVehicle = (customer) => {
+    history.push(`/customers/${customer.id}/vehicles/new`)
   }
 
   const handleSubmit = async () => {
@@ -74,23 +70,28 @@ const CustomersSearch = () => {
 
   return (
     <React.Fragment>
-      <div className="w-100 px-3">
-        <Modal
-          selectedCustomer={selectedCustomer}
-          onClick={handleSubmit}
-          visible={modalIsVisible}
-          hideModal={() => setModalIsVisible(false)}
+      <div className="w-full px-3">
+        <ConfirmDialog
+          open={modalIsVisible}
+          onOpenChange={setModalIsVisible}
+          onConfirm={handleSubmit}
+          title="Delete customer"
+          description={`Are you sure you would like to delete ${
+            selectedCustomer?.name ?? 'this customer'
+          }?`}
+          confirmLabel="Delete"
+          destructive
         />
-        <div className="flex justify-content-center max-sm mx-auto flex-column">
-          <div className="flex flex-column w-100">
+        <div className="flex justify-center max-sm mx-auto flex-col">
+          <div className="flex flex-col w-full">
             <label className="text-6">Search by field</label>
             <form
-              className="text-9 flex flex-column"
+              className="text-9 flex flex-col"
               onChange={(e) => setSelectValue(e.target.value)}
             >
-              <label className="form-check-label mt-2" htmlFor="iR1">
+              <label className="mt-2" htmlFor="iR1">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR1"
@@ -100,9 +101,9 @@ const CustomersSearch = () => {
                 Name
               </label>
 
-              <label className="form-check-label mt-2" htmlFor="iR2">
+              <label className="mt-2" htmlFor="iR2">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR2"
@@ -111,9 +112,9 @@ const CustomersSearch = () => {
                 Registration Number
               </label>
 
-              <label className="form-check-label mt-2" htmlFor="iR3">
+              <label className="mt-2" htmlFor="iR3">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR3"
@@ -122,9 +123,9 @@ const CustomersSearch = () => {
                 Email
               </label>
 
-              <label className="form-check-label mt-2" htmlFor="iR4">
+              <label className="mt-2" htmlFor="iR4">
                 <input
-                  className="form-check-input mr-2"
+                  className="mr-2 h-5 w-5 accent-primary align-top"
                   type="radio"
                   name="inlineRadioOptions"
                   id="iR4"
@@ -135,10 +136,10 @@ const CustomersSearch = () => {
             </form>
             <input
               placeholder="Search here..."
-              className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+              className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-b rounded-none border-primary"
               onChange={(e) => setSearchTerm(e.target.value)}
             ></input>
-            <div className="flex justify-content-center mt-2">
+            <div className="flex justify-center mt-2">
               <Button
                 className="px-5 mx-auto"
                 onClick={() => {
@@ -157,14 +158,21 @@ const CustomersSearch = () => {
               {localCustomers.length === 0 ? (
                 <div className="text-center">
                   <p className="text-white">No customers found</p>
-                  <Button asChild className="py-2 px-4">
-                    <Link to="/customers/new">Add customer</Link>
+                  <Button
+                    className="py-2 px-4"
+                    render={
+                      <Link
+                        to="/customers/new"
+                        className="text-primary-foreground! no-underline!"
+                      />
+                    }
+                  >
+                    Add customer
                   </Button>
                 </div>
               ) : (
                 <>
                   <BasicTable
-                    rowType={'customers'}
                     records={localCustomers}
                     headings={[
                       'name',
@@ -178,24 +186,26 @@ const CustomersSearch = () => {
                       'contact_number',
                       'vehicles/registration_number',
                     ]}
-                    crudEnabled={true}
-                    deleteMethod={handleDeleteCustomer}
-                    extraButtons={[
-                      <Button variant="link"
-                        className="link-primary py-0 border-0 d-block"
-                        onClick={(e) => addVehicle(e)}
-                      >
-                        Add Vehicle
-                      </Button>,
-                      <Button variant="link"
-                        className="link-primary py-0 border-0 d-block button-to-link"
-                        onClick={(e) => addWash(e)}
-                      >
-                        Add Wash
-                      </Button>,
-                    ]}
+                    renderActions={(customer) => (
+                      <>
+                        <Button
+                          variant="link"
+                          onClick={() => addVehicle(customer)}
+                        >
+                          Add Vehicle
+                        </Button>
+                        <Button variant="link" onClick={() => addWash(customer)}>
+                          Add Wash
+                        </Button>
+                        <CrudActions
+                          rowType="customers"
+                          record={customer}
+                          onDelete={handleDeleteCustomer}
+                        />
+                      </>
+                    )}
                   />
-                  <div className="flex justify-content-between align-items-center mt-3">
+                  <div className="flex justify-between items-center mt-3">
                     <Button variant="secondary"
            
            onClick={handlePrevPage}

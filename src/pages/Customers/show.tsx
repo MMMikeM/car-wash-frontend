@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
 import { Link, useParams, useHistory } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
 import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import { deleteWash } from '../../services/washesApi'
-import Modal from './modal'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import dayjs from 'dayjs'
 import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
+import { currentRoles } from '@/lib/auth'
 
 
 const CustomersShow = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
-  let [processed, setProcessed] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWash, setSelectedWash] = useState('')
 
@@ -33,8 +33,8 @@ const CustomersShow = () => {
     handleFetchCustomer()
   }, [id])
 
-  const handleClick = async (e) => {
-    setSelectedWash(e.currentTarget.parentNode.id)
+  const handleClick = async (wash) => {
+    setSelectedWash(wash.id)
     setModalIsVisible(true)
   }
 
@@ -44,25 +44,20 @@ const CustomersShow = () => {
     history.go(0)
   }
 
-  if (!loading && localCustomer?.washes[0]?.wash_type_id && !processed) {
-    setProcessed(true)
-    let tempWashes = []
-    localCustomer.washes?.map((item) => {
-      let tempObject = item
-      let date = new Date(item.created_at)
-      tempObject.wash = washes.filter(
-        (wash) => item.wash_type_id === wash.id
-      )[0]?.name
-      
-      tempObject.created_at = dayjs(date).format('YYYY-MM-DD HH:mm:ss')
-      // console.log(tempObject.created_at)
-        // date.toLocaleDateString() + ' - ' + date.toLocaleTimeString()
-      tempWashes.push(tempObject)
-    })
-    let tempCustomer = localCustomer
-    tempCustomer.washes = tempWashes
-    setLocalCustomer(tempCustomer)
-  }
+  // Derived, not mutated in place: the old version rewrote the wash objects
+  // during render behind a `processed` flag, which only held while the render
+  // count stayed exactly what it expected.
+  const washRows = useMemo(
+    () =>
+      (localCustomer?.washes ?? []).map((item) => ({
+        ...item,
+        wash: washes.find((wash) => item.wash_type_id === wash.id)?.name,
+        created_at: dayjs(new Date(item.created_at)).format(
+          'YYYY-MM-DD HH:mm:ss'
+        ),
+      })),
+    [localCustomer, washes]
+  )
 
   let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
   let email = localCustomer?.email
@@ -87,23 +82,33 @@ const CustomersShow = () => {
     })
   }
 
-  let roles = JSON.parse(sessionStorage.getItem('roles'))
-  console.log(roles)
+  let roles = currentRoles()
 
   return loading ? (
     ''
   ) : (
     <div>
-      <Modal
-        id={selectedWash}
-        user={localCustomer}
-        onClick={handleSubmit}
-        visible={modalIsVisible}
-        hideModal={() => setModalIsVisible(false)}
-      />
+      <ConfirmDialog
+        open={modalIsVisible}
+        onOpenChange={setModalIsVisible}
+        onConfirm={handleSubmit}
+        title="Delete wash"
+        description="Are you sure you would like to delete this wash?"
+        confirmLabel="Delete"
+        destructive
+      >
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+          <dt className="text-muted-foreground">Customer</dt>
+          <dd>{localCustomer.name}</dd>
+          <dt className="text-muted-foreground">Wash</dt>
+          <dd>{washRows.find((row) => row.id === selectedWash)?.wash}</dd>
+          <dt className="text-muted-foreground">Date</dt>
+          <dd>{washRows.find((row) => row.id === selectedWash)?.created_at}</dd>
+        </dl>
+      </ConfirmDialog>
 
-      <div className="text-8 flex justify-content-center flex-column max-sm bg-3 px-4 pt-4 pb-3 rounded">
-        <div className="row px-2 pt-2">
+      <div className="text-8 flex justify-center flex-col max-sm bg-3 px-4 pt-4 pb-3 rounded">
+        <div className="flex flex-col px-2 pt-2">
           <p>
             <FaUser className="mr-2 mb-1 text-white" />
             Name:{' '}
@@ -140,34 +145,46 @@ const CustomersShow = () => {
             </span>
           </p>
         </div>
-        <div className="flex justify-content-between mt-2">
-          <Button asChild className="mb-2 mr-2">
-            <Link to={`/${localCustomer.id}/password_reset`}>Reset password</Link>
+        <div className="flex justify-between mt-2">
+          <Button
+            className="mb-2 mr-2"
+            render={
+              <Link
+                to={`/${localCustomer.id}/password_reset`}
+                className="text-primary-foreground! no-underline!"
+              />
+            }
+          >
+            Reset password
           </Button>
-          <Button asChild className="mb-2">
-            <Link to={`/customers/${localCustomer.id}/washes/new`}>Add wash</Link>
+          <Button
+            className="mb-2"
+            render={
+              <Link
+                to={`/customers/${localCustomer.id}/washes/new`}
+                className="text-primary-foreground! no-underline!"
+              />
+            }
+          >
+            Add wash
           </Button>
         </div>
       </div>
-      {localCustomer?.washes.length > 0 ? (
+      {washRows.length > 0 ? (
         <div className="mt-4">
           <BasicTable
-            rowType={'washes'}
-            records={localCustomer.washes}
+            records={washRows}
             fields={['wash', 'created_at']}
             headings={['Wash Type', 'created_at']}
-            extraButtons={[
-              roles.includes('manager') ? (
-                <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
-                  onClick={(e) => handleClick(e)}
-                >
-                  Delete Wash
-                </Button>
-              ) : (
-                ''
-              ),
-            ]}
+            renderActions={
+              roles.includes('manager')
+                ? (wash) => (
+                    <Button variant="link" onClick={() => handleClick(wash)}>
+                      Delete Wash
+                    </Button>
+                  )
+                : null
+            }
           />
         </div>
       ) : (

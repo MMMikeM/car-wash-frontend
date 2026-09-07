@@ -40,8 +40,8 @@ const redirect = async () => {
 }
 
 return (
-  <div className="w-100 mt-4">
-    <div className="flex flex-row justify-content-center flex-wrap">
+  <div className="w-full mt-4">
+    <div className="flex flex-row justify-center flex-wrap">
       <img
         alt="Company logo"
         src="/logo.png"
@@ -58,7 +58,7 @@ return (
           )}
         {localCustomers.map((customer) => {
           return (
-            <div className="text-white flex justify-content-between align-items-center mb-3 bg-3 px-4 py-2">
+            <div className="text-white flex justify-between items-center mb-3 bg-3 px-4 py-2">
               <h5 className="mt-2">{customer.name}</h5>
               <Button
         
@@ -74,11 +74,11 @@ return (
 
         <input
           placeholder={'Search customer contact number'}
-          className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+          className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-b rounded-none border-primary"
           onChange={(e) => setInputValue(e.target.value)}
         />
 
-        <div className="flex justify-content-between mt-2">
+        <div className="flex justify-between mt-2">
           <Button className="px-5" onClick={redirect}>
             Search
             </Button>

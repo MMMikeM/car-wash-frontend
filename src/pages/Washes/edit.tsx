@@ -38,7 +38,7 @@ const WashEdit = () => {
   }, [id])
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       <div className="max-sm mx-auto rounded">
         {!loading ? (
           <BasicForm

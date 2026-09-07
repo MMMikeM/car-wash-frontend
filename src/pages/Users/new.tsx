@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 const UserNew = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
@@ -20,7 +21,7 @@ const UserNew = () => {
 
   const save = async () => {
     if (!selected) {
-      alert('Please select a user level')
+      toast.error('Please select a user level')
     } else {
       let valid = validate(schema, localCustomer)
       if (valid) {
@@ -55,10 +56,10 @@ const UserNew = () => {
   }
 
   return (
-    <div className="w-50 mx-auto flex flex-column">
+    <div className="w-1/2 mx-auto flex flex-col">
       {!loading ? (
         <div>
-          <div className="text-7 mb-3 flex flex-row justify-content-around">
+          <div className="text-7 mb-3 flex flex-row justify-around">
             <Button
                 variant={selected == 'salesperson' ? 'default' : 'ghost'}
                 className={selected == 'salesperson' ? active : inactive}

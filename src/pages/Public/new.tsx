@@ -36,8 +36,8 @@ const Signup = () => {
   const schema = passwordPairSchema.extend(customerSchema.shape)
 
   return (
-    <div className="w-100">
-      <div className="max-xs mx-auto flex flex-column mb-5">
+    <div className="w-full">
+      <div className="max-xs mx-auto flex flex-col mb-5">
         <h4 className="text-8 mb-5">
           Sign up for the Carbon Car Wash Loyalty programme
         </h4>

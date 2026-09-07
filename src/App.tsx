@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
 import { MobileNav, NavToggle } from './components/MobileNav'
+import BottomNav from './components/BottomNav'
+import { Toaster } from '@/components/ui/toast'
+
+// Each of these is the only user of a dependency worth ~14kB and ~4kB, so they
+// are the two routes where splitting pays for itself.
+const WashesOrder = React.lazy(() => import('./pages/Washes/order'))
+const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
+import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
+import { currentRoles } from '@/lib/auth'
 
 import Login from './pages/Auth/Login'
 import Logout from './pages/Auth/Logout'
 import PasswordReset from './pages/Auth/PasswordReset'
 import ForgotPassword from './pages/Auth/ForgotPassword'
 
-import CustomerHome from './pages/Customer/index'
 
 import CustomersIndex from './pages/Customers/index'
 import CustomersEdit from './pages/Customers/edit'
@@ -23,7 +31,6 @@ import WashesIndex from './pages/Washes/index'
 import WashesShow from './pages/Washes/show'
 import WashEdit from './pages/Washes/edit'
 import WashNew from './pages/Washes/new'
-import WashesOrder from './pages/Washes/order'
 
 import ManageUserWashes from './pages/Wash/manageUserWashes'
 
@@ -53,17 +60,18 @@ import SalesNewVehicles from './pages/Sales/newVehicle'
 import SearchCustomer from './pages/Sales/search'
 import SalesNew from './pages/Sales/newCustomer'
 
-import './css/bootstrap-subset.css'
 import './css/base.css'
 import WashFreeEdit from './pages/Settings/edit'
 
 function App() {
   let [Links, setLinks] = useState([])
+  let [isStaff, setIsStaff] = useState(false)
   let [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   let home = {
     name: 'Home',
     path: '/',
+    Icon: House,
   }
 
   let signUpLink = {
@@ -82,27 +90,31 @@ function App() {
   let salespersonLinks = [
     {
       name: 'Customers Today',
-      path: '/customers/report'
+      path: '/customers/report',
+      Icon: ClipboardList,
     },
     {
       name: 'Daily Washes',
-      path: '/customers/daily_wash_list'
+      path: '/customers/daily_wash_list',
+      Icon: ChartColumn,
     },
-
   ]
 
   let managerLinks = [
     {
       name: 'Search Customers',
       path: '/customers/search',
+      Icon: Search,
     },
     {
       name: 'List Customers',
       path: '/customers',
+      Icon: Users,
     },
     {
       name: 'Daily Wash Summary',
       path: '/reports/daily_washes',
+      Icon: ChartColumn,
     },
     {
       name: 'Active Users',
@@ -131,10 +143,7 @@ function App() {
   ]
 
   useEffect(() => {
-    let roles = JSON.parse(sessionStorage.getItem('roles'))
-    if (roles === null) {
-      roles = []
-    }
+    let roles = [...currentRoles()]
     let tempLinks = [...Links]
     tempLinks.push(home)
     roles.reverse().map((role) => {
@@ -153,35 +162,46 @@ function App() {
       tempLinks.push(signUpLink)
     }
     setLinks(tempLinks)
+    setIsStaff(roles.some((role) => role === 'manager' || role === 'salesperson'))
   }, [])
 
   return (
     <Router>
-      <div className="dark">
+      <div className="page-glow min-h-screen">
         <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
-        <nav className="bg-1 navbar border-bottom border-primary">
-          <div className="flex align-items-center w-100">
-            <div className="flex md:hidden align-items-center px-2">
-              <NavToggle onClick={() => setMobileNavOpen(true)} />
-              <span className="text-primary ml-2 font-weight-bold">Carbon Car Wash</span>
+        <header className="sticky top-0 z-40 border-b-[1px] border-primary/40 bg-[#181818]/90 backdrop-blur">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2">
+            <div className="flex items-center gap-2">
+              {!isStaff ? (
+                <NavToggle onClick={() => setMobileNavOpen(true)} />
+              ) : null}
+              <Link to="/" className="no-underline!">
+                <span className="font-heading text-xl uppercase tracking-wide text-primary">
+                  Carbon Car Wash
+                </span>
+              </Link>
             </div>
-            <ul className="hidden md:flex flex-row align-items-center py-2 px-3 mb-0 navbar-nav">
-              {Links.map((link, key) => {
-                return (
-                  <li key={key}>
-                    <Link
-                      className="nav-item mr-3 py-2 px-2 text-9 font-weight-normal text-decoration-none"
-                      to={link.path}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
+            <nav className="ml-auto hidden lg:flex items-center justify-end gap-1">
+              {(isStaff ? [] : Links).map((link, key) => (
+                <NavLink
+                  key={key}
+                  exact={link.path === '/'}
+                  to={link.path}
+                  className="rounded-md px-3 py-2 text-sm text-foreground! no-underline! transition-colors hover:bg-primary/10 hover:text-primary!"
+                  activeClassName="bg-primary/10 text-primary!"
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+            </nav>
           </div>
-        </nav>
-        <div className="container-sm mt-4 flex justify-content-center">
+        </header>
+        <div
+          className={`mx-auto w-full max-w-5xl px-4 flex justify-center pt-6 ${
+            isStaff ? 'pb-28' : ''
+          }`}
+        >
+        <React.Suspense fallback={null}>
         <Switch>
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />
@@ -236,7 +256,12 @@ function App() {
             path="/"
           />
         </Switch>
+        </React.Suspense>
         </div>
+        {isStaff ? (
+          <BottomNav links={Links} onMore={() => setMobileNavOpen(true)} />
+        ) : null}
+        <Toaster />
       </div>
     </Router>
   )

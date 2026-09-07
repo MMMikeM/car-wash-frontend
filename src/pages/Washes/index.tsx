@@ -29,12 +29,12 @@ const WashCard = ({ wash, onDelete }) => {
 
           <div className="flex gap-1">
             <Link to={`/wash_types/${wash.id}`}>
-              <Button variant="ghost" size="icon-sm" className="text-primary">
+              <Button variant="ghost" size="icon-sm" className="text-primary" aria-label="View wash type">
                 <FaInfo />
               </Button>
             </Link>
             <Link to={`/wash_types/${wash.id}/edit`}>
-              <Button variant="ghost" size="icon-sm" className="text-primary">
+              <Button variant="ghost" size="icon-sm" className="text-primary" aria-label="Edit wash type">
                 <FaEdit />
               </Button>
             </Link>
@@ -42,6 +42,7 @@ const WashCard = ({ wash, onDelete }) => {
               variant="ghost"
               size="icon-sm"
               className="text-destructive"
+              aria-label="Delete wash type"
               onClick={() => onDelete(wash.id)}
             >
               <FaTrash />
@@ -64,18 +65,19 @@ const WashTableRow = ({ wash, onDelete }) => {
       <td className="py-3 px-4">
         <div className="flex gap-2">
           <Link to={`/wash_types/${wash.id}`}>
-            <Button variant="ghost" size="icon-xs">
+            <Button variant="ghost" size="icon-xs" aria-label="View wash type">
               <FaInfo />
             </Button>
           </Link>
           <Link to={`/wash_types/${wash.id}/edit`}>
-            <Button variant="ghost" size="icon-xs">
+            <Button variant="ghost" size="icon-xs" aria-label="Edit wash type">
               <FaEdit />
             </Button>
           </Link>
           <Button
             variant="ghost"
             size="icon-xs"
+            aria-label="Delete wash type"
             className="text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={() => onDelete(wash.id)}
           >

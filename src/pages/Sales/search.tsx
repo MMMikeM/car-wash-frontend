@@ -48,8 +48,8 @@ const SearchCustomer = () => {
   }
 
   return (
-    <div className="w-100">
-      <div className="flex flex-row justify-content-center flex-wrap">
+    <div className="w-full">
+      <div className="flex flex-row justify-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -63,7 +63,7 @@ const SearchCustomer = () => {
         </div>
       ) : error ? (
         <div className="max-md mx-auto text-center">
-          <p className="text-danger">{error}</p>
+          <p className="text-destructive">{error}</p>
           <Button onClick={() => history.goBack()}>
             Go Back
           </Button>
@@ -74,33 +74,33 @@ const SearchCustomer = () => {
             <h4 className="text-white">No user found</h4>
           ) : (
             <BasicTable
-              rowType={'customers'}
               records={localCustomers}
               fields={['name', 'vehicles/registration_number', 'contact_number']}
               headings={['name', 'vehicles/registration_number', 'contact_number']}
-              crudEnabled={false}
-              extraButtons={[
-                <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
-                  onClick={(e) =>
-                    history.push(`/sales/${(e.currentTarget.parentNode as HTMLElement).id}/vehicles/new`)
-                  }
-                >
-                  Add Registration
-                </Button>,
-                <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
-                  onClick={(e) =>
-                    history.push(`/customers/${(e.currentTarget.parentNode as HTMLElement).id}/washes/new`)
-                  }
-                >
-                  Add Wash
-                </Button>
-              ]}
+              renderActions={(customer) => (
+                <>
+                  <Button
+                    variant="link"
+                    onClick={() =>
+                      history.push(`/sales/${customer.id}/vehicles/new`)
+                    }
+                  >
+                    Add Registration
+                  </Button>
+                  <Button
+                    variant="link"
+                    onClick={() =>
+                      history.push(`/customers/${customer.id}/washes/new`)
+                    }
+                  >
+                    Add Wash
+                  </Button>
+                </>
+              )}
             />
           )}
 
-          <div className="flex justify-content-between mt-2">
+          <div className="flex justify-between mt-2">
             <Button className="px-5" onClick={redirect}>
               Create new customer
             </Button>

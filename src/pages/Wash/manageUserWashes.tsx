@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { postWash, deleteWash } from '../../services/washesApi'
 import { getWashes } from '../../services/washTypesApi'
 import { getCustomer } from '../../services/customersApi'
+import { transformCentsToRands } from '../../helpers'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory, useParams } from 'react-router-dom'
-import Modal from '../../components/Modals/Modal'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import type { Customer, WashType } from '../../types'
 
@@ -48,7 +49,7 @@ const ManageUserWashes = () => {
 
   const washCard = ({ name, price, points, id }, key, isWashSelected) => {
     let cardClass =
-      'text-white bg-3 flex justify-content-center align-items-center m-2 p-2'
+      'text-white bg-3 flex justify-center items-center m-2 p-2'
     if (isWashSelected) {
       cardClass += ' highlighted'
     }
@@ -67,7 +68,7 @@ const ManageUserWashes = () => {
   }
   const InsuranceCard = () => {
     let cardClass =
-      'text-white bg-3 flex justify-content-center align-items-center m-2 p-2'
+      'text-white bg-3 flex justify-center items-center m-2 p-2'
     if (hasInsurance) {
       cardClass += ' highlighted'
     }
@@ -84,6 +85,8 @@ const ManageUserWashes = () => {
   let handleProceed = (input) => {
     setModalIsVisible(true)
   }
+
+  const selectedWash = washes.find((wash) => wash.id === selectedWashId)
 
   const handleSubmit = async () => {
     if (submitted === false) {
@@ -119,45 +122,54 @@ const ManageUserWashes = () => {
   }
 
   return (
-    <div className="w-100">
-      <Modal
-        wash={washes.filter((wash) => wash.id == selectedWashId)[0]}
-        user={localCustomer}
-        onClick={handleSubmit}
-        visible={modalIsVisible}
-        hideModal={() => setModalIsVisible(false)}
-      />
+    <div className="w-full">
+      <ConfirmDialog
+        open={modalIsVisible}
+        onOpenChange={setModalIsVisible}
+        onConfirm={handleSubmit}
+        title={selectedWash?.name ?? 'Add wash'}
+        description="Are you sure you want to add the following wash?"
+      >
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+          <dt className="text-muted-foreground">Customer</dt>
+          <dd>{localCustomer.name}</dd>
+          <dt className="text-muted-foreground">Wash type</dt>
+          <dd>{selectedWash?.name}</dd>
+          <dt className="text-muted-foreground">Price</dt>
+          <dd>{selectedWash ? transformCentsToRands(selectedWash.price) : ''}</dd>
+        </dl>
+      </ConfirmDialog>
 
-      <div className=" py-3 mb-3 bg-3 text-8">
-        <h2 className="px-4 pb-3 w-100 border-bottom border-primary text-white">
+      <div className="py-3 mb-3 bg-3 text-8">
+        <h2 className="px-4 pb-3 w-full border-b border-primary text-white">
           User Profile
         </h2>
         <div className="px-4 pt-2">
           <p>
-            <FaUser className="mr-2 mb-1 " />
+            <FaUser className="mr-2 mb-1" />
             Name:{' '}
-            <span className=" ml-1 mt-1 font-weight-black">
+            <span className="ml-1 mt-1 font-weight-black">
               {localCustomer.name}
             </span>
           </p>
           <p>
-            <FaCar className="mr-2 mb-1 " />
+            <FaCar className="mr-2 mb-1" />
             Registration number:{' '}
-            <span className=" ml-1 mt-1 font-weight-black">
+            <span className="ml-1 mt-1 font-weight-black">
               {registration_list}
             </span>
           </p>
           <p>
-            <FaCoins className="mr-2 mb-1 " />
+            <FaCoins className="mr-2 mb-1" />
             Total Points:{' '}
-            <span className=" ml-1 mt-1 font-weight-black">
+            <span className="ml-1 mt-1 font-weight-black">
               {localCustomer.total_points}
             </span>
           </p>
           <p>
-            <FaMobileAlt className="mr-2 mb-1 " />
+            <FaMobileAlt className="mr-2 mb-1" />
             Contact Number:{' '}
-            <span className=" ml-1 mt-1 font-weight-black">
+            <span className="ml-1 mt-1 font-weight-black">
               {localCustomer.contact_number}
             </span>
           </p>
@@ -185,7 +197,7 @@ const ManageUserWashes = () => {
         {selectedWashId != '' ? (
           <div
             onClick={handleProceed}
-            className="text-black bg-primary flex justify-content-center align-items-center m-2 p-2 font-weight-bold"
+            className="text-black bg-primary flex justify-center items-center m-2 p-2 font-bold"
           >
             <h5 className="py-0 my-0">
               {!submitted ? 'Proceed' : 'Processing...'}
@@ -198,7 +210,6 @@ const ManageUserWashes = () => {
       {!loading && localCustomer.washes.length > 0 ? (
         <div className="max-md mx-auto">
           <BasicTable
-            rowType={'washes'}
             records={localCustomer.washes}
             fields={['wash_type', 'created_at']}
             headings={['wash_type', 'created_at']}

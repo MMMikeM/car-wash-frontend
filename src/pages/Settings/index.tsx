@@ -33,36 +33,30 @@ const Settings = () => {
     }
   }
 
-  const editFreeWash = (e) => {
-    history.push(`settings/${e.currentTarget.parentNode.id}/edit`)
+  const editFreeWash = (wash) => {
+    history.push(`settings/${wash.id}/edit`)
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       {!loading ? (
-        <div className="row max-md mx-auto">
-          {/* <div className="col-md-9"></div>
-          <div className="col-md-3 text-right">
-            <Link className="btn btn-primary px-4 py-2" to="/wash_types/new">
+        <div className="flex flex-wrap max-md mx-auto">
+          {/* <div className="w-full md:w-3/4"></div>
+          <div className="w-full md:w-1/4 text-right">
+            <Link className="px-4 py-2" to="/wash_types/new">
               Add Wash
             </Link>
           </div> */}
-          <div className="col-md-12">
+          <div className="w-full">
             <BasicTable
-              rowType={'wash_types'}
               records={washes.filter((wash) => wash.free == true)}
-              deleteMethod={handleDeleteWash}
               headings={['name', 'cost', 'points']}
               fields={['name', 'cost', 'points']}
-              crudEnabled={false}
-              extraButtons={[
-                <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
-                  onClick={(e) => editFreeWash(e)}
-                >
+              renderActions={(wash) => (
+                <Button variant="link" onClick={() => editFreeWash(wash)}>
                   Edit Free Wash
-                </Button>,
-              ]}
+                </Button>
+              )}
             />
           </div>
         </div>

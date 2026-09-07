@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
   Sheet,
   SheetContent,
@@ -19,13 +20,16 @@ const MobileNav = ({ links, isOpen, setIsOpen }) => {
         </SheetHeader>
         <nav className="flex flex-col gap-2 mt-4 overflow-y-auto flex-1">
           {links.map((link, key) => (
-            <SheetClose asChild key={key}>
-              <Link
-                to={link.path}
-                className="flex items-center px-4 py-3 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors shrink-0"
-              >
-                {link.name}
-              </Link>
+            <SheetClose
+              key={key}
+              render={
+                <Link
+                  to={link.path}
+                  className="flex items-center px-4 py-4 text-base text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors shrink-0"
+                />
+              }
+            >
+              {link.name}
             </SheetClose>
           ))}
         </nav>
@@ -34,12 +38,15 @@ const MobileNav = ({ links, isOpen, setIsOpen }) => {
   )
 }
 
-const NavToggle = ({ onClick }) => {
+const NavToggle = ({ onClick, alwaysVisible = false }) => {
   return (
     <Button
       variant="ghost"
       size="icon"
-      className="md:hidden text-primary hover:text-primary hover:bg-primary/10"
+      className={cn(
+        'text-primary hover:text-primary hover:bg-primary/10',
+        !alwaysVisible && 'lg:hidden'
+      )}
       onClick={onClick}
       aria-label="Open menu"
     >

@@ -3,6 +3,7 @@ import { getWashes, updateWashOrder } from '../../services/washTypesApi'
 import { List, arrayMove } from 'react-movable'
 import type { WashType } from '../../types'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 const WashesOrder = () => {
   let [washes, setWashes] = useState<WashType[]>([])
@@ -39,11 +40,11 @@ const WashesOrder = () => {
 
   const handleClick = () => {
     updateWashOrder(washes)
-    alert('Wash order updated')
+    toast.success('Wash order updated')
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       {!loading ? (
         <>
           <div
@@ -54,17 +55,26 @@ const WashesOrder = () => {
               onChange={({ oldIndex, newIndex }) => {
                 handleChange(washes, oldIndex, newIndex)
               }}
-              renderList={({ children, props }) => (
-                <ul {...props}>{children}</ul>
-              )}
-              renderItem={({ value, props }) => (
-                <div
-                  {...props}
-                  className="text-white border-custom bg-3 py-2 px-4 m-2"
-                >
-                  {value.name}
-                </div>
-              )}
+              renderList={({ children, props }) => {
+                const { key, ...rest } = props
+                return (
+                  <ul key={key} {...rest}>
+                    {children}
+                  </ul>
+                )
+              }}
+              renderItem={({ value, props }) => {
+                const { key, ...rest } = props
+                return (
+                  <div
+                    key={key}
+                    {...rest}
+                    className="text-white border-custom bg-3 py-2 px-4 m-2"
+                  >
+                    {value.name}
+                  </div>
+                )
+              }}
             />
           </div>
           <Button

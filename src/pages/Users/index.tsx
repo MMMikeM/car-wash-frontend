@@ -19,8 +19,8 @@ const Settings = () => {
     handleFetchSystemUsers()
   }, [])
 
-  const editUser = (e) => {
-    history.push(`users/${e.currentTarget.parentNode.id}/edit`)
+  const editUser = (user) => {
+    history.push(`users/${user.id}/edit`)
   }
 
   const handleAdd = () => {
@@ -30,34 +30,29 @@ const Settings = () => {
   return (
     <>
       {!loading ? (
-        <div className="w-100">
-          <div className="row max-md mx-auto">
-            <div className="col-md-9"></div>
-            <div className="col-md-3 text-right">
+        <div className="w-full">
+          <div className="flex flex-wrap max-md mx-auto">
+            <div className="w-full md:w-3/4"></div>
+            <div className="w-full md:w-1/4 text-right">
               <Button
-                className="mb-2 px-4 py-2 w-100"
+                className="mb-2 px-4 py-2 w-full"
                 onClick={handleAdd}
               >
                 Add User
               </Button>
             </div>
           </div>
-          <div className="row max-md mx-auto">
-            <div className="col-md-12">
+          <div className="flex flex-wrap max-md mx-auto">
+            <div className="w-full">
               <BasicTable
-                rowType={'customers'}
                 records={systemUsers}
                 fields={['name', 'email', 'roles']}
                 headings={['name', 'email', 'roles']}
-                crudEnabled={false}
-                extraButtons={[
-                  <Button variant="link"
-                    className="link-primary py-0 border-0 d-block button-to-link"
-                    onClick={(e) => editUser(e)}
-                  >
+                renderActions={(user) => (
+                  <Button variant="link" onClick={() => editUser(user)}>
                     Edit User
-                  </Button>,
-                ]}
+                  </Button>
+                )}
               />
             </div>
           </div>

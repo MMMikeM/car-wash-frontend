@@ -1,22 +1,28 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import HomeTile from '@/components/HomeTile'
+import { ListOrdered, Settings, UserCheck } from 'lucide-react'
 
 const AdminHome = () => {
   const cards = [
-    {
-      name: 'List Customers',
-      img: '/customers.jpg',
-      path: '/customers',
-    },
     {
       name: 'Search Customers',
       img: '/search.jpg',
       path: '/customers/search',
     },
     {
+      name: 'List Customers',
+      img: '/customers.jpg',
+      path: '/customers',
+    },
+    {
       name: 'Washes Report',
       img: '/reports.jpg',
       path: '/reports/washes',
+    },
+    {
+      name: 'Daily Wash Summary',
+      img: '/washes.jpg',
+      path: '/reports/daily_washes',
     },
     {
       name: 'Wash Prices',
@@ -28,38 +34,29 @@ const AdminHome = () => {
       img: '/users.jpg',
       path: '/settings/users',
     },
+    {
+      name: 'Active Users',
+      Icon: UserCheck,
+      path: '/reports/active_users',
+    },
+    {
+      name: 'Wash Order',
+      Icon: ListOrdered,
+      path: '/wash_order',
+    },
+    {
+      name: 'Settings',
+      Icon: Settings,
+      path: '/settings',
+    },
   ]
 
-  const card = (name, img, path, index) => {
-    const capitalise = (input) => input.charAt(0).toUpperCase() + input.slice(1)
-    return (
-      <Link to={path} className="text-decoration-none" key={index}>
-        <div className="text-8 bg-4 m-3 rounded">
-          <img
-            src={img}
-            width="180px"
-            className="border-primary border-bottom rounded-top"
-          />
-          <h6 className="m-3 font-weight-black pb-4">{capitalise(name)}</h6>
-        </div>
-      </Link>
-    )
-  }
-
   return (
-    <div className="w-100">
-      <div className="flex flex-row justify-content-center flex-wrap">
-        <img
-          alt="Company logo"
-          src="/logo.png"
-          style={{ width: '200px' }}
-          className="mx-auto mb-5"
-        />
-      </div>
-      <div className="flex flex-row justify-content-center flex-wrap">
-        {cards.map((item, index) =>
-          card(item.name, item.img, item.path, index)
-        )}
+    <div className="w-full">
+      <div className="mx-auto grid max-w-4xl grid-cols-2 gap-3 px-4 sm:grid-cols-3 sm:gap-4">
+        {cards.map((item) => (
+          <HomeTile key={item.path} {...item} />
+        ))}
       </div>
     </div>
   )

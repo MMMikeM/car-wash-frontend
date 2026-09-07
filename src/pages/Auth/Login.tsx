@@ -3,6 +3,7 @@ import { login } from '../../services/authApi'
 import { useHistory, Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import type { LoginResponse } from '../../types'
+import { toast } from '@/components/ui/toast'
 
 const Login = () => {
   let [loginCredsEmail, setLoginCredsEmail] = useState('')
@@ -32,7 +33,7 @@ const Login = () => {
       loginCredsPassword
     ).catch(() => {})
     if (!loginResponse?.is_success) {
-      alert('Login Failed')
+      toast.error('Login failed', 'Check the contact number and password.')
       setIsLoading(false)
     } else {
       sessionStorage.setItem('id', loginResponse.data.user.id)
@@ -66,8 +67,8 @@ const Login = () => {
   }
 
   return (
-    <div className="w-100 mb-5 mx-1">
-      <div className="max-xs mx-auto flex flex-column justify-content-center flex-wrap">
+    <div className="w-full mb-5 mx-1">
+      <div className="max-xs mx-auto flex flex-col justify-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -86,28 +87,30 @@ const Login = () => {
               )}
             </div>
             <div className="text-9">
-              <label>Contact Number</label>
+              <label htmlFor="contact_number">Contact Number</label>
               <input
-                className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+                id="contact_number"
+                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-b rounded-none border-primary"
                 type="text"
                 onChange={(e) =>
                   setLoginCredsEmail(e.target.value)
                 }
               />
-              <label>Password</label>
+              <label htmlFor="password">Password</label>
               <input
-                className="form-control text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+                id="password"
+                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-b rounded-none border-primary"
                 type="password"
                 onChange={(e) =>
                   setLoginCredsPassword(e.target.value)
                 }
               />
-              <div className="flex justify-content-end mt-n1 mb-4">
+              <div className="flex justify-end mt-n1 mb-4">
                 <Link to="/forgot_password">Forgot Password?</Link>
               </div>
             </div>
 
-            <div className="mt-2 flex justify-content-between">
+            <div className="mt-2 flex justify-between">
               <Button
                 className="w-full my-3"
                 onClick={handleLogin}
@@ -117,8 +120,8 @@ const Login = () => {
             </div>
           </div>
         </div>
-        <div className="bg-3 px-4 pt-4 pb-3 border-primary border-top rounded-bottom">
-          <div className="text-9 flex justify-content-center  ">
+        <div className="bg-3 px-4 pt-4 pb-3 border-primary border-t rounded-b">
+          <div className="text-9 flex justify-center">
             <h6>
               New to Carbon Car Wash?
               <Link className="pl-2" to="/sign_up">
