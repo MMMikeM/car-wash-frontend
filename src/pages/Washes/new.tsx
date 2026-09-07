@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { postWash } from '../../services/washTypesApi.js'
+import { postWash } from '../../services/washTypesApi'
 import { WashForm, schema } from './form'
 import { useHistory, Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'

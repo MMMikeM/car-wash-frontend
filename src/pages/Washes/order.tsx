@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getWashes, updateWashOrder } from '../../services/washTypesApi.js'
+import { getWashes, updateWashOrder } from '../../services/washTypesApi'
 import { List, arrayMove } from 'react-movable'
 
 const WashesOrder = () => {

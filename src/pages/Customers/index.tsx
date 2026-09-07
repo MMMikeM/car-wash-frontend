@@ -3,7 +3,7 @@ import {
   getCustomers,
   getCustomersCSV,
   deleteCustomer,
-} from '../../services/customersApi.js'
+} from '../../services/customersApi'
 import { Link, useHistory } from 'react-router-dom'
 import { handleDownload } from '../../helpers'
 import Modal from '../Sales/modal'

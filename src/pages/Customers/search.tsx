@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { searchCustomer, deleteCustomer } from '../../services/customersApi.js'
+import { searchCustomer, deleteCustomer } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
 import Modal from '../Sales/modal'

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import {
-  getDailyWashes
-} from '../../services/reportsApi.js'
+  getInsuredWashes
+} from '../../services/reportsApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
 //import { Link, useHistory } from 'react-router-dom'
 
-const DailyWashes = () => {
+const InsuredWashes = () => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState('')
   let [endDate, setEndDate] = useState('')
@@ -30,7 +30,7 @@ const DailyWashes = () => {
   const handleFetchReport = async () => {
     setLoading(true)
     let localTotal = 0
-    let res = await getDailyWashes(startDate, endDate)
+    let res = await getInsuredWashes(startDate, endDate)
     setReportData(res)
     res.map((washType) => {
       localTotal += parseFloat(washType.total_price)
@@ -48,7 +48,7 @@ const DailyWashes = () => {
     let localTotal = 0
     setStartDate(localStartDate)
     setEndDate(localEndDate)
-    getDailyWashes(localStartDate, localEndDate).then((res) => {
+    getInsuredWashes(localStartDate, localEndDate).then((res) => {
       setReportData(res)
       res.map((washType) => {
         localTotal += parseFloat(washType.total_price)
@@ -110,4 +110,4 @@ const DailyWashes = () => {
     )
 }
 
-export default DailyWashes
+export default InsuredWashes

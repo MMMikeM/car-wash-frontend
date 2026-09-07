@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { getCustomer } from '../../services/customersApi.js'
+import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
 import { Link, useParams, useHistory } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
 import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
-import { deleteWash } from '../../services/washesApi.js'
+import { deleteWash } from '../../services/washesApi'
 import Modal from './modal'
 import dayjs from 'dayjs'
 

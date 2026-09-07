@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { getActiveUsersReport } from '../../services/reportsApi.js'
+import {
+  getDailyWashes
+} from '../../services/reportsApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { centsToRands, formatRands, handleDownload } from '../../helpers'
-import dayjs from 'dayjs'
 //import { Link, useHistory } from 'react-router-dom'
 
-const ActiveUsersReport = () => {
+const DailyWashes = () => {
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState('')
   let [endDate, setEndDate] = useState('')
-  // let [mainTotal, setMainTotal] = useState(0)
+  let [mainTotal, setMainTotal] = useState(0)
   let [loading, setLoading] = useState(true)
 
   const todaysDate = () => {
@@ -24,26 +25,37 @@ const ActiveUsersReport = () => {
     return [year, month, day].join('-')
   }
 
-  const threeMonthsBackDate = () => {
-    var wayback = dayjs().subtract(7, 'month').format('YYYY-MM-DD')
-    return(wayback)
-  }
+
 
   const handleFetchReport = async () => {
     setLoading(true)
-    let res = await getActiveUsersReport(startDate, endDate)
+    let localTotal = 0
+    let res = await getDailyWashes(startDate, endDate)
     setReportData(res)
+    res.map((washType) => {
+      localTotal += parseFloat(washType.total_price)
+      washType.total_cost = formatRands(centsToRands(washType.total_cost))
+      washType.total_price = formatRands(centsToRands(washType.total_price))
+    })
+    setMainTotal(formatRands(centsToRands(localTotal)))
     setLoading(false)
   }
 
   useEffect(() => {
     setLoading(true)
-    let localStartDate =  threeMonthsBackDate() 
+    let localStartDate = todaysDate()
     let localEndDate = todaysDate()
+    let localTotal = 0
     setStartDate(localStartDate)
     setEndDate(localEndDate)
-    getActiveUsersReport(localStartDate, localEndDate).then((res) => {
+    getDailyWashes(localStartDate, localEndDate).then((res) => {
       setReportData(res)
+      res.map((washType) => {
+        localTotal += parseFloat(washType.total_price)
+        washType.total_cost = formatRands(centsToRands(washType.total_cost))
+        washType.total_price = formatRands(centsToRands(washType.total_price))
+      })
+      setMainTotal(formatRands(centsToRands(localTotal)))
       setLoading(false)
     })
   }, [])
@@ -52,7 +64,7 @@ const ActiveUsersReport = () => {
     ''
   ) : (
       <div className="row">
-        {/* <div className="col-md-3">
+        <div className="col-md-3">
           <label className="text-white">Start Date</label>
           <input
             className="form-control"
@@ -79,19 +91,23 @@ const ActiveUsersReport = () => {
           >
             Generate Report
         </button>
-        </div> */}
+        </div>
         <div className="col-md-12 mt-4">
           <BasicTable
             rowType={'customers'}
             records={reportData}
-            fields={['name', 'contact_number']}
-            headings={['name', 'contact_number']}
+            fields={['day', 'wash_count', 'total_cost', 'total_price']}
+            headings={['Date', 'Quantity', 'Cost Price', 'Total']}
             crudEnabled={false}
             extraButtons={[]}
           />
+        </div>
+        <div className="col-md-6"></div>
+        <div className="col-md-6 mt-4 text-right">
+          <h3 className="text-white">{`Total: ${mainTotal}`}</h3>
         </div>
       </div>
     )
 }
 
-export default ActiveUsersReport
+export default DailyWashes

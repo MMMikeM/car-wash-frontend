@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { searchCustomer } from '../../services/customersApi.js'
+import { searchCustomer } from '../../services/customersApi'
 import { useLocation, useHistory } from 'react-router-dom'
 import * as yup from 'yup'
 
@@ -31,7 +31,6 @@ const SearchReg = () => {
     .string()
     .matches(/^0\d{9}$/g, 'Numbers must begin with 0 and be 10 digits long and contain no spaces')
     .strict()
-    )
 
 const redirect = async () => {
   let valid = await schema.validate(inputValue).catch((err) => {

@@ -1,6 +1,6 @@
 const headers = new Headers({})
 
-const request = async (method, path, body) => {
+const request = async (method, path, body?) => {
   headers.set('Content-Type', 'application/json')
   headers.set('X-User-Email', sessionStorage.getItem('email'))
   headers.set('X-User-Token', sessionStorage.getItem('token'))
@@ -18,7 +18,7 @@ const request = async (method, path, body) => {
   } else if (invalidStatuses.includes(response.status)) {
     // throw new Error(
     console.log(
-      `Error fetching ${url}: ${response.status} (${response.statusCode}) ${response.body}`
+      `Error fetching ${url}: ${response.status} (${response.statusText}) ${response.body}`
     )
   }
 
