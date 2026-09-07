@@ -13,16 +13,16 @@ import {
 const MobileNav = ({ links, isOpen, setIsOpen }) => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent side="left" className="w-[280px] bg-card">
-        <SheetHeader>
+      <SheetContent side="left" className="w-[280px] bg-card flex flex-col">
+        <SheetHeader className="shrink-0">
           <SheetTitle className="text-primary">Carbon Car Wash</SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col gap-2 mt-4">
+        <nav className="flex flex-col gap-2 mt-4 overflow-y-auto flex-1">
           {links.map((link, key) => (
             <SheetClose asChild key={key}>
               <Link
                 to={link.path}
-                className="flex items-center px-4 py-3 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+                className="flex items-center px-4 py-3 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors shrink-0"
               >
                 {link.name}
               </Link>
