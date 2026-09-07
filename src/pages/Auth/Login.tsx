@@ -90,7 +90,7 @@ const Login = () => {
               <label htmlFor="contact_number">Contact Number</label>
               <input
                 id="contact_number"
-                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-b rounded-none border-primary"
                 type="text"
                 onChange={(e) =>
                   setLoginCredsEmail(e.target.value)
@@ -99,7 +99,7 @@ const Login = () => {
               <label htmlFor="password">Password</label>
               <input
                 id="password"
-                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-bottom rounded-0 border-primary"
+                className="block w-full px-3 py-1.5 leading-normal text-9 bg-3 border-0 text-6 mb-3 border-b rounded-none border-primary"
                 type="password"
                 onChange={(e) =>
                   setLoginCredsPassword(e.target.value)
@@ -120,8 +120,8 @@ const Login = () => {
             </div>
           </div>
         </div>
-        <div className="bg-3 px-4 pt-4 pb-3 border-primary border-top rounded-bottom">
-          <div className="text-9 flex justify-center  ">
+        <div className="bg-3 px-4 pt-4 pb-3 border-primary border-t rounded-b">
+          <div className="text-9 flex justify-center">
             <h6>
               New to Carbon Car Wash?
               <Link className="pl-2" to="/sign_up">

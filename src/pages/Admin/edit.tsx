@@ -26,8 +26,8 @@ const Settings = () => {
   return (
     <>
       {!loading ? (
-        <div className="row">
-          <div className="col-md-12">
+        <div className="flex flex-wrap">
+          <div className="w-full">
             <BasicTable
               records={systemUsers}
               fields={['name', 'email', 'roles']}

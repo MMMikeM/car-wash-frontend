@@ -40,14 +40,14 @@ const Settings = () => {
   return (
     <div className="w-full">
       {!loading ? (
-        <div className="row max-md mx-auto">
-          {/* <div className="col-md-9"></div>
-          <div className="col-md-3 text-right">
-            <Link className="btn btn-primary px-4 py-2" to="/wash_types/new">
+        <div className="flex flex-wrap max-md mx-auto">
+          {/* <div className="w-full md:w-3/4"></div>
+          <div className="w-full md:w-1/4 text-right">
+            <Link className="px-4 py-2" to="/wash_types/new">
               Add Wash
             </Link>
           </div> */}
-          <div className="col-md-12">
+          <div className="w-full">
             <BasicTable
               records={washes.filter((wash) => wash.free == true)}
               headings={['name', 'cost', 'points']}

@@ -5,7 +5,7 @@ import { Link, useParams, useHistory } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
 import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import { deleteWash } from '../../services/washesApi'
-import Modal from './modal'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import dayjs from 'dayjs'
 import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
@@ -88,16 +88,27 @@ const CustomersShow = () => {
     ''
   ) : (
     <div>
-      <Modal
-        id={selectedWash}
-        user={localCustomer}
-        onClick={handleSubmit}
-        visible={modalIsVisible}
-        hideModal={() => setModalIsVisible(false)}
-      />
+      <ConfirmDialog
+        open={modalIsVisible}
+        onOpenChange={setModalIsVisible}
+        onConfirm={handleSubmit}
+        title="Delete wash"
+        description="Are you sure you would like to delete this wash?"
+        confirmLabel="Delete"
+        destructive
+      >
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+          <dt className="text-muted-foreground">Customer</dt>
+          <dd>{localCustomer.name}</dd>
+          <dt className="text-muted-foreground">Wash</dt>
+          <dd>{washRows.find((row) => row.id === selectedWash)?.wash}</dd>
+          <dt className="text-muted-foreground">Date</dt>
+          <dd>{washRows.find((row) => row.id === selectedWash)?.created_at}</dd>
+        </dl>
+      </ConfirmDialog>
 
       <div className="text-8 flex justify-center flex-col max-sm bg-3 px-4 pt-4 pb-3 rounded">
-        <div className="row px-2 pt-2">
+        <div className="flex flex-col px-2 pt-2">
           <p>
             <FaUser className="mr-2 mb-1 text-white" />
             Name:{' '}

@@ -108,8 +108,9 @@ code {
   --secondary: #333333;
   --secondary-foreground: #dddddd;
   --muted: #333333;
-  /* #999 on --card #333 is 4.43:1, under the 4.5:1 AA floor. */
-  --muted-foreground: #a3a3a3;
+  /* #999 was 4.43:1 on --card #333, under the AA floor; #a3a3a3 only just
+     cleared it at ~5:1 and still read as dim. This is ~6.5:1 there. */
+  --muted-foreground: #b5b5b5;
   /* Accent matches primary */
   --accent: #444444;
   --accent-foreground: #dddddd;
@@ -142,5 +143,80 @@ code {
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Tailwind's preflight strips heading and paragraph styling, and the app
+     leans on 30 bare <h2>-<h6> and 22 <p> tags. These are the sizes the
+     Bootstrap reboot used to supply. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  /* h1-h4 scale with the viewport and settle at the large sizes past 1200px,
+     which is what the reboot did - fixing them at the large values made
+     headings noticeably heavier on a phone. */
+  h1 {
+    font-size: calc(1.375rem + 1.5vw);
+  }
+  h2 {
+    font-size: calc(1.325rem + 0.9vw);
+  }
+  h3 {
+    font-size: calc(1.3rem + 0.6vw);
+  }
+  h4 {
+    font-size: calc(1.275rem + 0.3vw);
+  }
+  h5 {
+    font-size: 1.25rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+  @media (min-width: 1200px) {
+    h1 {
+      font-size: 2.5rem;
+    }
+    h2 {
+      font-size: 2rem;
+    }
+    h3 {
+      font-size: 1.75rem;
+    }
+    h4 {
+      font-size: 1.5rem;
+    }
+  }
+  p {
+    margin-bottom: 1rem;
+  }
+  /* Links were lime by way of the Bootstrap reboot. In a base layer this time,
+     so a utility class on a link still wins. */
+  a {
+    color: var(--color-primary);
+  }
+  /* A link sitting inline in prose cannot be told apart by colour alone -
+     lime against the surrounding #ddd is about 1.09:1. Nav and buttons are
+     not text blocks, so they stay undecorated. */
+  p a,
+  li a,
+  h1 a,
+  h2 a,
+  h3 a,
+  h4 a,
+  h5 a,
+  h6 a {
+    text-decoration: underline;
+  }
+  ol,
+  ul {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
   }
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { searchCustomer, deleteCustomer } from '../../services/customersApi'
 import BasicTable, { CrudActions } from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
-import Modal from '../Sales/modal'
+import ConfirmDialog from '../../components/ConfirmDialog'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
 
@@ -71,11 +71,16 @@ const CustomersSearch = () => {
   return (
     <React.Fragment>
       <div className="w-full px-3">
-        <Modal
-          selectedCustomer={selectedCustomer}
-          onClick={handleSubmit}
-          visible={modalIsVisible}
-          hideModal={() => setModalIsVisible(false)}
+        <ConfirmDialog
+          open={modalIsVisible}
+          onOpenChange={setModalIsVisible}
+          onConfirm={handleSubmit}
+          title="Delete customer"
+          description={`Are you sure you would like to delete ${
+            selectedCustomer?.name ?? 'this customer'
+          }?`}
+          confirmLabel="Delete"
+          destructive
         />
         <div className="flex justify-center max-sm mx-auto flex-col">
           <div className="flex flex-col w-full">
@@ -131,7 +136,7 @@ const CustomersSearch = () => {
             </form>
             <input
               placeholder="Search here..."
-              className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
+              className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-b rounded-none border-primary"
               onChange={(e) => setSearchTerm(e.target.value)}
             ></input>
             <div className="flex justify-center mt-2">
