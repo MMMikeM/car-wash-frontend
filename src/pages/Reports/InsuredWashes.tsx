@@ -83,7 +83,7 @@ const InsuredWashes = () => {
             value={endDate}
           />
         </div>
-        <div className="form-group col-md-6 flex justify-content-end">
+        <div className="form-group col-md-6 flex justify-end">
           <Button
             className="mt-4 mr-4 px-4 py-2"
             onClick={() => {

@@ -38,7 +38,7 @@ const Settings = () => {
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       {!loading ? (
         <div className="row max-md mx-auto">
           {/* <div className="col-md-9"></div>
@@ -57,7 +57,7 @@ const Settings = () => {
               crudEnabled={false}
               extraButtons={[
                 <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
+                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
                   onClick={(e) => editFreeWash(e)}
                 >
                   Edit Free Wash

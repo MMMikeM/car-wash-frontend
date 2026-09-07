@@ -36,7 +36,7 @@ const PasswordReset = () => {
   const schema = passwordPairSchema
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       <div className="max-xs mx-auto">
         <h6 className="text-9">Please enter a new password</h6>
         <BasicForm

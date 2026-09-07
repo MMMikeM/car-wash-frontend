@@ -22,7 +22,7 @@ const Modal = (props) => {
             <p className="mb-4">
               Wash Type: <strong>{props.wash.name}</strong>
             </p>
-            <div className="flex justify-content-around">
+            <div className="flex justify-around">
               <Button variant="destructive" onClick={props.hideModal}>
                 Close
               </Button>

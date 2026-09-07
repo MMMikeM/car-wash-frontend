@@ -6,7 +6,7 @@ const Card = (props) => {
     .map((wash, y) => {
       return (
         <div
-          className="responsive-card border-0 bg-3 border-custom font-weight-bold text-7 shadow-custom m-2 px-4 py-3 bg-3 border-custom flex flex-column justify-content-between"
+          className="responsive-card border-0 bg-3 border-custom font-weight-bold text-7 shadow-custom m-2 px-4 py-3 bg-3 border-custom flex flex-col justify-between"
           key={y}
         >
           <h3 className="card-title text-grey font-heading font-weight-black mb-3  ">
@@ -14,8 +14,8 @@ const Card = (props) => {
           </h3>
           <h6>{wash.description}</h6>
           {wash.points ? (
-            <div className="flex align-items-end justify-content-between">
-              <div className="flex align-content-end">
+            <div className="flex items-end justify-between">
+              <div className="flex content-end">
                 <img
                   alt="icon"
                   src="/coin.png"
@@ -26,7 +26,7 @@ const Card = (props) => {
               <h2 className="card-text h1 text-primary align-bottom pt-1 lh-1 font-heading font-weight-black">{`${wash.price}`}</h2>
             </div>
           ) : (
-            <div className="flex align-items-end justify-content-end">
+            <div className="flex items-end justify-end">
               <h2 className="card-text h1 text-primary align-bottom pt-1 lh-1 font-heading font-weight-black">{`${wash.price}`}</h2>
             </div>
           )}

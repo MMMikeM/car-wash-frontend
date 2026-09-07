@@ -24,16 +24,16 @@ const CustomerHome = () => {
   }, [])
 
   let classCreator = (bgNumber) =>
-    `bg-${bgNumber} w-50 link-primary rounded-0 btn-link py-0 border-0 d-block button-to-link h-100`
+    `bg-${bgNumber} w-1/2 text-primary hover:text-primary/80 rounded-0 btn-link py-0 border-0 d-block button-to-link h-full`
   let pricesPage = classCreator(isViewingPrice ? 2 : 4)
   let accountPage = classCreator(isViewingPrice ? 4 : 2)
 
   return (
     <div>
       {!isViewingPrice ? (
-        <div className="container flex flex-column justify-items-between">
-          <div className="flex justify-content-center">
-            <div className="flex flex-column align-items-center">
+        <div className="container flex flex-col justify-items-between">
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center">
               <h4 className="text-9 my-3 mx-3 ">
                 Welcome {localCustomer.name}!
               </h4>
@@ -46,7 +46,7 @@ const CustomerHome = () => {
               </h4>
             </div>
           </div>
-          <div className="max-sm mx-auto flex justify-content-center px-5 py-5 mb-5">
+          <div className="max-sm mx-auto flex justify-center px-5 py-5 mb-5">
             <div style={{ width: '240px' }}>
               <CircularProgressbarWithChildren
                 value={localCustomer.total_points}

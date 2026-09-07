@@ -36,7 +36,7 @@ const Settings = () => {
               crudEnabled={false}
               extraButtons={[
                 <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
+                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
                   onClick={(e) => editUser(e)}
                 >
                   Edit User

@@ -30,12 +30,12 @@ const Settings = () => {
   return (
     <>
       {!loading ? (
-        <div className="w-100">
+        <div className="w-full">
           <div className="row max-md mx-auto">
             <div className="col-md-9"></div>
             <div className="col-md-3 text-right">
               <Button
-                className="mb-2 px-4 py-2 w-100"
+                className="mb-2 px-4 py-2 w-full"
                 onClick={handleAdd}
               >
                 Add User
@@ -52,7 +52,7 @@ const Settings = () => {
                 crudEnabled={false}
                 extraButtons={[
                   <Button variant="link"
-                    className="link-primary py-0 border-0 d-block button-to-link"
+                    className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
                     onClick={(e) => editUser(e)}
                   >
                     Edit User

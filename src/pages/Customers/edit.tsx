@@ -42,10 +42,10 @@ const CustomersEdit = () => {
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       {!loading ? (
         <div className="max-sm mx-auto">
-          <div className="flex justify-content-end">
+          <div className="flex justify-end">
             <Button className="my-3 mr-4" onClick={handleClick}>
               Convert To User
             </Button>

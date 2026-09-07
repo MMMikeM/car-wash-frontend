@@ -16,7 +16,7 @@ const Modal = (props) => {
             <p className="description">
               Are you sure you would like to delete this customer?
             </p>
-            <div className="flex justify-content-around">
+            <div className="flex justify-around">
               <Button variant="destructive" onClick={props.hideModal}>
                 Close
               </Button>

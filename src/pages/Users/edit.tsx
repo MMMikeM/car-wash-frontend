@@ -70,15 +70,15 @@ const UserEdit = () => {
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       {!loading ? (
-        <div className="max-xs mx-auto flex justify-content-center flex-column bg-3 py-4 rounded">
+        <div className="max-xs mx-auto flex justify-center flex-col bg-3 py-4 rounded">
           <div className="px-2 border-bottom border-primary mb-4">
             <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
           </div>
           <div className="px-2">
             <h4 className="text-9 mb-4 px-4">Select user level</h4>
-            <div className="text-7 pt-3 flex flex-row justify-content-around">
+            <div className="text-7 pt-3 flex flex-row justify-around">
               <Button
                 variant={selected == 'customer' ? 'default' : 'ghost'}
                 className={selected == 'customer' ? active : inactive}
@@ -103,7 +103,7 @@ const UserEdit = () => {
             </div>
             <div className="px-3">
               <Button
-                className="w-100 mx-5 mt-5 mb-2 mx-auto"
+                className="w-full mx-5 mt-5 mb-2 mx-auto"
                 onClick={handleSubmitClick}
               >
                 Submit

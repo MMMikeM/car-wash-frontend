@@ -74,18 +74,18 @@ const CustomersSearch = () => {
 
   return (
     <React.Fragment>
-      <div className="w-100 px-3">
+      <div className="w-full px-3">
         <Modal
           selectedCustomer={selectedCustomer}
           onClick={handleSubmit}
           visible={modalIsVisible}
           hideModal={() => setModalIsVisible(false)}
         />
-        <div className="flex justify-content-center max-sm mx-auto flex-column">
-          <div className="flex flex-column w-100">
+        <div className="flex justify-center max-sm mx-auto flex-col">
+          <div className="flex flex-col w-full">
             <label className="text-6">Search by field</label>
             <form
-              className="text-9 flex flex-column"
+              className="text-9 flex flex-col"
               onChange={(e) => setSelectValue(e.target.value)}
             >
               <label className="form-check-label mt-2" htmlFor="iR1">
@@ -138,7 +138,7 @@ const CustomersSearch = () => {
               className="form-control bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
               onChange={(e) => setSearchTerm(e.target.value)}
             ></input>
-            <div className="flex justify-content-center mt-2">
+            <div className="flex justify-center mt-2">
               <Button
                 className="px-5 mx-auto"
                 onClick={() => {
@@ -182,20 +182,20 @@ const CustomersSearch = () => {
                     deleteMethod={handleDeleteCustomer}
                     extraButtons={[
                       <Button variant="link"
-                        className="link-primary py-0 border-0 d-block"
+                        className="text-primary hover:text-primary/80 py-0 border-0 d-block"
                         onClick={(e) => addVehicle(e)}
                       >
                         Add Vehicle
                       </Button>,
                       <Button variant="link"
-                        className="link-primary py-0 border-0 d-block button-to-link"
+                        className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
                         onClick={(e) => addWash(e)}
                       >
                         Add Wash
                       </Button>,
                     ]}
                   />
-                  <div className="flex justify-content-between align-items-center mt-3">
+                  <div className="flex justify-between items-center mt-3">
                     <Button variant="secondary"
            
            onClick={handlePrevPage}

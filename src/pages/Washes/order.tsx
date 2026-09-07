@@ -43,7 +43,7 @@ const WashesOrder = () => {
   }
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       {!loading ? (
         <>
           <div

@@ -38,7 +38,7 @@ const WashFreeEdit = () => {
   }, [id])
 
   return (
-    <div className="w-100">
+    <div className="w-full">
       <div className="max-sm mx-auto bg-3 p-5 rounded">
         {!loading ? (
           <BasicForm

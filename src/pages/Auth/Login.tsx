@@ -66,8 +66,8 @@ const Login = () => {
   }
 
   return (
-    <div className="w-100 mb-5 mx-1">
-      <div className="max-xs mx-auto flex flex-column justify-content-center flex-wrap">
+    <div className="w-full mb-5 mx-1">
+      <div className="max-xs mx-auto flex flex-col justify-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -102,12 +102,12 @@ const Login = () => {
                   setLoginCredsPassword(e.target.value)
                 }
               />
-              <div className="flex justify-content-end mt-n1 mb-4">
+              <div className="flex justify-end mt-n1 mb-4">
                 <Link to="/forgot_password">Forgot Password?</Link>
               </div>
             </div>
 
-            <div className="mt-2 flex justify-content-between">
+            <div className="mt-2 flex justify-between">
               <Button
                 className="w-full my-3"
                 onClick={handleLogin}
@@ -118,7 +118,7 @@ const Login = () => {
           </div>
         </div>
         <div className="bg-3 px-4 pt-4 pb-3 border-primary border-top rounded-bottom">
-          <div className="text-9 flex justify-content-center  ">
+          <div className="text-9 flex justify-center  ">
             <h6>
               New to Carbon Car Wash?
               <Link className="pl-2" to="/sign_up">

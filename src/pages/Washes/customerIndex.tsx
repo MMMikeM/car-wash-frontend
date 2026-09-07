@@ -19,7 +19,7 @@ const Washes = () => {
 
   return (
     <div className="">
-      <div className="flex flex-column align-items-center justify-content-center">
+      <div className="flex flex-col items-center justify-center">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -27,11 +27,11 @@ const Washes = () => {
           className="mx-auto mb-5 mt-2"
         />
       </div>
-      <div className="flex flex-column justify-content-center align-items-center">
+      <div className="flex flex-col justify-center items-center">
         <h3 className="text-white mt-3 pr-2">
           448 Vale Avenue, Ferndale, Johannesburg
         </h3>
-      <div className="flex flex-row justify-content-center align-items-center">
+      <div className="flex flex-row justify-center items-center">
           <h4 className="text-white my-3 pr-2">
             Earn Carbon Coins 
             With Our Carbon Loyalty Program
@@ -48,7 +48,7 @@ const Washes = () => {
         </h4>
       </div>
 
-      <div className="flex flex-wrap justify-content-center">
+      <div className="flex flex-wrap justify-center">
         {!loading ? (
           <BasicCard
             data={washes

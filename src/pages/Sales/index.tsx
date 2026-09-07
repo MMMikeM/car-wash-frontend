@@ -20,8 +20,8 @@ const SalesHome = () => {
     .min(3, 'Please enter at least 3 characters')
 
   return (
-    <div className="w-100 mt-5">
-      <div className="flex flex-row justify-content-center flex-wrap">
+    <div className="w-full mt-5">
+      <div className="flex flex-row justify-center flex-wrap">
         <img
           alt="Company logo"
           src="/logo.png"
@@ -36,7 +36,7 @@ const SalesHome = () => {
           onChange={(e) => setInputValue(e.target.value)}
         />
 
-        <div className="flex justify-content-between mt-2">
+        <div className="flex justify-between mt-2">
           <Button className="px-4 py-2" onClick={redirect}>
             Search
           </Button>

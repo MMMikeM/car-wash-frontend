@@ -102,7 +102,7 @@ const CustomersShow = () => {
         hideModal={() => setModalIsVisible(false)}
       />
 
-      <div className="text-8 flex justify-content-center flex-column max-sm bg-3 px-4 pt-4 pb-3 rounded">
+      <div className="text-8 flex justify-center flex-col max-sm bg-3 px-4 pt-4 pb-3 rounded">
         <div className="row px-2 pt-2">
           <p>
             <FaUser className="mr-2 mb-1 text-white" />
@@ -140,7 +140,7 @@ const CustomersShow = () => {
             </span>
           </p>
         </div>
-        <div className="flex justify-content-between mt-2">
+        <div className="flex justify-between mt-2">
           <Button asChild className="mb-2 mr-2">
             <Link to={`/${localCustomer.id}/password_reset`}>Reset password</Link>
           </Button>
@@ -159,7 +159,7 @@ const CustomersShow = () => {
             extraButtons={[
               roles.includes('manager') ? (
                 <Button variant="link"
-                  className="link-primary py-0 border-0 d-block button-to-link"
+                  className="text-primary hover:text-primary/80 py-0 border-0 d-block button-to-link"
                   onClick={(e) => handleClick(e)}
                 >
                   Delete Wash
