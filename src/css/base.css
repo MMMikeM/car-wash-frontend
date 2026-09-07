@@ -226,22 +226,6 @@ div > .max-lg {
   ) !important;
 }
 
-@media (min-width: 320px) and (max-width: 575.98px) {
-  .responsive-card {
-    width: 22rem;
-  }
-}
-@media (min-width: 578px) and (max-width: 767.98px) {
-  .responsive-card {
-    width: 26rem;
-  }
-}
-@media (min-width: 768px) {
-  .responsive-card {
-    width: 24rem;
-  }
-}
-
 .footer {
   width: 100%;
   position: fixed;
