@@ -3,6 +3,11 @@ import { z } from 'zod'
 import { validate } from '../../lib/validate'
 import { useHistory } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import HomeTile from '@/components/HomeTile'
+import { ClipboardList, ChartColumn, CarFront } from 'lucide-react'
+
+// The walk-in customer every wash without a loyalty account is booked against.
+const WALK_IN_CUSTOMER_ID = 'e92d521d-0628-4cb3-8252-02d5d65272e5'
 
 const SalesHome = () => {
   let [inputValue, setInputValue] = useState('')
@@ -20,40 +25,54 @@ const SalesHome = () => {
     .min(3, 'Please enter at least 3 characters')
 
   return (
-    <div className="w-full mt-5">
-      <div className="flex flex-row justify-center flex-wrap">
-        <img
-          alt="Company logo"
-          src="/logo.png"
-          style={{ width: '200px' }}
-          className="mx-auto mb-5"
-        />
-      </div>
-      <div className="max-sm mx-auto ">
-        <input
-          placeholder={'Search customer contact number'}
-          className="block w-full px-3 py-1.5 leading-normal bg-2 border-0 text-6 mb-3 my-4 border-bottom rounded-0 border-primary"
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-
-        <div className="flex justify-between mt-2">
-          <Button className="px-4 py-2" onClick={redirect}>
+    <div className="w-full">
+      <div className="mx-auto w-full max-w-3xl px-4">
+        <form
+          className="rounded-2xl border-[1px] border-white/10 bg-card p-6"
+          onSubmit={(e) => {
+            e.preventDefault()
+            redirect()
+          }}
+        >
+          <label
+            htmlFor="contact_number"
+            className="text-sm text-muted-foreground"
+          >
+            Customer contact number
+          </label>
+          <input
+            id="contact_number"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="off"
+            placeholder="082 000 0000"
+            className="mt-2 block h-16 w-full rounded-xl border-[1px] border-white/10 bg-background px-4 text-2xl text-foreground outline-none focus:border-primary"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <Button type="submit" size="lg" className="mt-4 h-14 w-full text-base">
             Search
           </Button>
+        </form>
 
-          <Button
-            className="px-4 py-2"
-            onClick={() => history.push('/customers/e92d521d-0628-4cb3-8252-02d5d65272e5/washes/new/')}
-          >
-            No loyalty programme
-          </Button>
-
-          {/* <Button
-            className="px-4 py-2"
-            onClick={() => history.push('/new_customer/')}
-          >
-            Create new customer
-          </Button> */}
+        <div className="mt-6 grid grid-cols-3 gap-4">
+          <HomeTile
+            name="Walk-in wash"
+            Icon={CarFront}
+            onClick={() =>
+              history.push(`/customers/${WALK_IN_CUSTOMER_ID}/washes/new/`)
+            }
+          />
+          <HomeTile
+            name="Customers Today"
+            Icon={ClipboardList}
+            path="/customers/report"
+          />
+          <HomeTile
+            name="Daily Washes"
+            Icon={ChartColumn}
+            path="/customers/daily_wash_list"
+          />
         </div>
       </div>
     </div>
