@@ -8,9 +8,9 @@ export const washTypes = [
 ]
 
 export const customersList = [
-  { id: 'cust-1', name: 'John Doe', email: 'john@test.com', contact_number: '0821111111', total_points: 50 },
-  { id: 'cust-2', name: 'Jane Smith', email: 'jane@test.com', contact_number: '0822222222', total_points: 120 },
-  { id: 'cust-3', name: 'No Loyalty Programme', email: 'noloyalty@carboncarwash.co.za', contact_number: '0000000001', total_points: 10450 },
+  { id: 'cust-1', name: 'John Doe', email: 'john@test.com', contact_number: '0821111111', total_points: 50, vehicles: [{ id: 'v-1', registration_number: 'ABC123GP' }] },
+  { id: 'cust-2', name: 'Jane Smith', email: 'jane@test.com', contact_number: '0822222222', total_points: 120, vehicles: [{ id: 'v-2', registration_number: 'XYZ789GP' }, { id: 'v-3', registration_number: 'JKL456GP' }] },
+  { id: 'cust-3', name: 'No Loyalty Programme', email: 'noloyalty@carboncarwash.co.za', contact_number: '0000000001', total_points: 10450, vehicles: [] },
 ]
 
 export const buildCustomer = (overrides = {}) => ({
