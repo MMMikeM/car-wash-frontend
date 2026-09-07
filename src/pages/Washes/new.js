@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { postWash } from '../../services/washTypesApi.js'
 import { WashForm, schema } from './form'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { FaArrowLeft } from 'react-icons/fa'
 
 const WashNew = () => {
   let [newWash, setNewWash] = useState({
@@ -22,7 +25,6 @@ const WashNew = () => {
     })
     if (valid) {
       setLoading(true)
-      // eslint-disable-next-line no-unused-vars
       let res = await postWash(newWash)
       setLoading(false)
       history.push(`/wash_types/${res.id}`)
@@ -40,16 +42,34 @@ const WashNew = () => {
   }
 
   return (
-    <div className="w-50 mx-auto d-flex flex-column">
-      {!loading ? (
-        <WashForm
-          editRecordMethod={editRecordMethod}
-          record={newWash}
-          save={save}
-        />
-      ) : (
-        ''
-      )}
+    <div className="w-full max-w-lg mx-auto">
+      <div className="mb-4">
+        <Link to="/wash_types">
+          <Button variant="ghost" size="sm">
+            <FaArrowLeft className="mr-2" />
+            Back to Washes
+          </Button>
+        </Link>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Add New Wash Type</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!loading ? (
+            <WashForm
+              editRecordMethod={editRecordMethod}
+              record={newWash}
+              save={save}
+            />
+          ) : (
+            <div className="text-center py-4 text-muted-foreground">
+              Saving...
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

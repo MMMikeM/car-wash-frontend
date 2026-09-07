@@ -4,12 +4,105 @@ import {
   getCustomersCSV,
   deleteCustomer,
 } from '../../services/customersApi.js'
-import BasicTable from '../../components/Tables/BasicTable'
 import { Link, useHistory } from 'react-router-dom'
 import { handleDownload } from '../../helpers'
 import Modal from '../Sales/modal'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
+const formatEmail = (email) => {
+  const regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
+  if (regex.test(email)) {
+    return null
+  }
+  return email
+}
+
+const getVehicleRegs = (vehicles) => {
+  if (!vehicles || vehicles.length === 0) return null
+  if (vehicles.length > 2) return 'Multiple'
+  return vehicles
+    .map((v) => v.registration_number)
+    .filter(Boolean)
+    .join(', ')
+    .toUpperCase()
+}
+
+const CustomerCard = ({ customer, onAddWash, history }) => {
+  const email = formatEmail(customer.email)
+  const vehicles = getVehicleRegs(customer.vehicles)
+
+  const handleCardClick = (e) => {
+    // Don't navigate if clicking the Wash button
+    if (e.target.closest('button')) return
+    history.push(`/customers/${customer.id}`)
+  }
+
+  return (
+    <div
+      className="bg-card rounded-lg mb-2 px-4 py-3 cursor-pointer active:bg-muted/50 flex justify-between items-start gap-3"
+      onClick={handleCardClick}
+    >
+      <div className="min-w-0 flex-1">
+        <h3 className="font-semibold text-foreground leading-tight">{customer.name}</h3>
+        <div className="text-sm text-muted-foreground leading-tight mt-0.5">
+          {email && <span>{email}</span>}
+          {email && customer.contact_number && <span className="mx-1.5">·</span>}
+          {customer.contact_number && <span>{customer.contact_number}</span>}
+        </div>
+        {vehicles && (
+          <div className="text-xs font-mono text-muted-foreground mt-0.5">{vehicles}</div>
+        )}
+      </div>
+
+      <Button
+        size="sm"
+        onClick={(e) => {
+          e.stopPropagation()
+          onAddWash(customer.id)
+        }}
+      >
+        Add wash
+      </Button>
+    </div>
+  )
+}
+
+const CustomerTableRow = ({ customer, onAddWash, history }) => {
+  const email = formatEmail(customer.email)
+  const vehicles = getVehicleRegs(customer.vehicles)
+
+  return (
+    <TableRow
+      className="cursor-pointer"
+      onClick={() => history.push(`/customers/${customer.id}`)}
+    >
+      <TableCell className="font-medium">{customer.name}</TableCell>
+      <TableCell className="text-muted-foreground">{email || '—'}</TableCell>
+      <TableCell>{customer.contact_number || '—'}</TableCell>
+      <TableCell className="font-mono text-xs">{vehicles || '—'}</TableCell>
+      <TableCell>
+        <Button
+          size="xs"
+          onClick={(e) => {
+            e.stopPropagation()
+            onAddWash(customer.id)
+          }}
+        >
+          Add wash
+        </Button>
+      </TableCell>
+    </TableRow>
+  )
+}
 
 const CustomersIndex = () => {
   const history = useHistory()
@@ -49,21 +142,19 @@ const CustomersIndex = () => {
     if (page < totalPages - 1) setPage(page + 1)
   }
 
-  const addVehicle = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/vehicles/new`)
+  const handleAddVehicle = (customerId) => {
+    history.push(`/customers/${customerId}/vehicles/new`)
+  }
+
+  const handleAddWash = (customerId) => {
+    history.push(`/customers/${customerId}/washes/new`)
   }
 
   const handleDeleteCustomer = async (elementId) => {
-    console.log(elementId)
     setSelectedCustomer(localCustomers.find((x) => x.id === elementId))
     setModalIsVisible(true)
     setDeleteId(elementId)
   }
-
-  let addWash = (e) => {
-    history.push(`/customers/${e.currentTarget.parentNode.id}/washes/new`)
-  }
-
 
   const handleSubmit = async () => {
     setLoading(!loading)
@@ -73,95 +164,117 @@ const CustomersIndex = () => {
     history.go(0)
   }
 
-  return (
-    <div className="w-100">
-      {!loading ? (
+  const reversedCustomers = [...localCustomers].reverse()
 
-        <div className="w-100">
-          <Modal
-            selectedCustomer={selectedCustomer}
-            onClick={handleSubmit}
-            visible={modalIsVisible}
-            hideModal={() => setModalIsVisible(false)}
-          />
-          <div className="row">
-            <div className="col-md-9"></div>
-            <div className="col-md-3 text-right">
-              <Link to="/customers/new" className="w-full mb-2 block">
-                <Button className="w-full">Add customer</Button>
-              </Link>
-            </div>
-            <div className="col-md-12">
-              <BasicTable
-                rowType={'customers'}
-                records={localCustomers}
-                fields={[
-                  'name',
-                  'email',
-                  'contact_number',
-                  'vehicles/registration_number',
-                ]}
-                headings={[
-                  'name',
-                  'email',
-                  'contact_number',
-                  'vehicles/registration_number',
-                ]}
-                crudEnabled={true}
-                deleteMethod={handleDeleteCustomer}
-                extraButtons={[
-                  <button
-                    className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
-                    onClick={(e) => addVehicle(e)}
-                  >
-                    Add Vehicle
-                  </button>,
-                  <button
-                    className="link-primary btn btn-link py-0 border-0 d-block button-to-link"
-                    onClick={(e) => addWash(e)}
-                  >
-                    Add Wash
-                  </button>,
-                ]}
-              />
-            </div>
-          </div>
-          <div className="row mt-3">
-            <div className="col-md-12 d-flex justify-content-between align-items-center">
-              <Button
-                size="sm"
-                onClick={handlePrevPage}
-                disabled={page === 0}
-              >
-                Previous
-              </Button>
-              <span className="text-white">
-                Page {page + 1} of {totalPages} ({total} total)
-              </span>
-              <Button
-                size="sm"
-                onClick={handleNextPage}
-                disabled={page >= totalPages - 1}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-          <div className="row mt-5">
-            <div className="col-md-9"></div>
-            <div className="col-md-3 text-right">
-              <Button
-                className="w-full mb-2"
-                onClick={handleDownloadCustomers}
-              >
-                Download Customer List
-              </Button>
-            </div>
-          </div>
-        </div>
-      ) : (
-          ''
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full">
+      <Modal
+        selectedCustomer={selectedCustomer}
+        onClick={handleSubmit}
+        visible={modalIsVisible}
+        hideModal={() => setModalIsVisible(false)}
+      />
+
+      <Link to="/customers/new" className="block mb-4">
+        <Button className="w-full">Add customer</Button>
+      </Link>
+
+      {/* Mobile: Card Layout */}
+      <div className="md:hidden">
+        {reversedCustomers.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              No customers yet. Add your first one!
+            </CardContent>
+          </Card>
+        ) : (
+          reversedCustomers.map((customer) => (
+            <CustomerCard
+              key={customer.id}
+              customer={customer}
+              onAddWash={handleAddWash}
+              history={history}
+            />
+          ))
         )}
+      </div>
+
+      {/* Desktop: Table Layout */}
+      <div className="hidden md:block">
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Vehicles</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reversedCustomers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
+                      No customers yet. Add your first one!
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  reversedCustomers.map((customer) => (
+                    <CustomerTableRow
+                      key={customer.id}
+                      customer={customer}
+                      onAddWash={handleAddWash}
+                      history={history}
+                    />
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Pagination - only show when multiple pages */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-4">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handlePrevPage}
+            disabled={page === 0}
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            {page + 1} / {totalPages}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleNextPage}
+            disabled={page >= totalPages - 1}
+          >
+            Next
+          </Button>
+        </div>
+      )}
+
+      <button
+        className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground py-2"
+        onClick={handleDownloadCustomers}
+      >
+        Download CSV
+      </button>
     </div>
   )
 }
