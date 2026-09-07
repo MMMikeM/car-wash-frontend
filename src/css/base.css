@@ -14,6 +14,15 @@ body {
   background: var(--grey-2);
 }
 
+.page-glow {
+  background: radial-gradient(
+      48rem 28rem at 50% 0,
+      hsla(102, 89%, 78%, 0.13),
+      transparent 70%
+    )
+    no-repeat;
+}
+
 .shadow-custom {
   box-shadow: 4px 4px 8px hsla(295, 15%, 10%, 0.5);
 }
