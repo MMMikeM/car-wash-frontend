@@ -119,6 +119,33 @@ describe('UI Screenshots - Mobile', () => {
       cy.mockWashTypes()
     })
 
+    it('Wash types list', () => {
+      cy.visit('/wash_types')
+      cy.wait('@getWashTypes')
+      cy.wait(500)
+      cy.screenshot('mobile/09-wash-types-list')
+    })
+
+    it('Wash type detail', () => {
+      cy.intercept('GET', '**/api/v1/wash_types/wt-2', {
+        statusCode: 200,
+        body: {
+          id: 'wt-2',
+          name: 'Wash & Go',
+          points: 10,
+          price: 5000,
+          cost: 2000,
+          description: 'Quick exterior wash',
+          order: 1,
+        },
+      }).as('getWashType')
+
+      cy.visit('/wash_types/wt-2')
+      cy.wait('@getWashType')
+      cy.wait(500)
+      cy.screenshot('mobile/10-wash-type-detail')
+    })
+
     it('Wash type edit', () => {
       cy.intercept('GET', '**/api/v1/wash_types/wt-2', {
         statusCode: 200,
@@ -136,7 +163,13 @@ describe('UI Screenshots - Mobile', () => {
       cy.visit('/wash_types/wt-2/edit')
       cy.wait('@getWashType')
       cy.wait(500)
-      cy.screenshot('mobile/09-wash-type-edit')
+      cy.screenshot('mobile/11-wash-type-edit')
+    })
+
+    it('Wash type new', () => {
+      cy.visit('/wash_types/new')
+      cy.wait(500)
+      cy.screenshot('mobile/12-wash-type-new')
     })
   })
 })
