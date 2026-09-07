@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
+import { reportError } from '@/lib/reportError'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 
@@ -10,9 +11,14 @@ const Settings = () => {
   const history = useHistory()
 
   const handleFetchSystemUsers = async () => {
-    let res = await getSystemUsers()
-    setSystemUsers(res)
-    setLoading(false)
+    try {
+      let res = await getSystemUsers()
+      setSystemUsers(res)
+    } catch (error) {
+      reportError(error, 'load the users')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {

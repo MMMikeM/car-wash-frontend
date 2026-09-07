@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { getCustomer, saveSystemUsers } from '../../services/customersApi'
-import BasicForm from '../../components/Forms/BasicForm'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
+import { reportError } from '@/lib/reportError'
 
 const UserEdit = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
@@ -14,32 +14,36 @@ const UserEdit = () => {
 
   useEffect(() => {
     const handleFetchCustomer = async () => {
-      let res = await getCustomer(id)
-      setLocalCustomer(res)
-      setLoading(false)
-      if (res.roles.includes('manager')) {
-        setSelected('manager')
-      } else if (res.roles.includes('salesperson')) {
-        setSelected('salesperson')
-      } else if (res.roles.includes('customer')) {
-        setSelected('customer')
+      try {
+        let res = await getCustomer(id)
+        setLocalCustomer(res)
+        if (res.roles.includes('manager')) {
+          setSelected('manager')
+        } else if (res.roles.includes('salesperson')) {
+          setSelected('salesperson')
+        } else if (res.roles.includes('customer')) {
+          setSelected('customer')
+        }
+      } catch (error) {
+        reportError(error, 'load the user')
+      } finally {
+        setLoading(false)
       }
     }
     handleFetchCustomer()
   }, [id])
-
-  const editRecordMethod = (record, key, value) => {
-    let tempRecord = { ...record }
-    tempRecord[key] = value
-    setLocalCustomer(tempRecord)
-  }
 
   const save = async (id, body) => {
     // let valid = await schema.validate(localCustomer).catch((err) => {
     //   alert(err.errors)
     // })
     // if (valid) {
-    let res = await saveSystemUsers(id, body)
+    try {
+      await saveSystemUsers(id, body)
+    } catch (error) {
+      reportError(error, 'save the user')
+      return
+    }
     history.push(`/settings/users`)
     // }
   }
@@ -103,7 +107,7 @@ const UserEdit = () => {
             </div>
             <div className="px-3">
               <Button
-                className="w-full mx-5 mt-5 mb-2 mx-auto"
+                className="w-full mt-5 mb-2 mx-auto"
                 onClick={handleSubmitClick}
               >
                 Submit

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { login } from '../../services/authApi'
-import { useHistory, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import type { LoginResponse } from '../../types'
 import { toast } from '@/components/ui/toast'
+import { isHTTPError } from 'ky'
+import { reportError } from '@/lib/reportError'
 
 const Login = () => {
   let [loginCredsEmail, setLoginCredsEmail] = useState('')
   let [loginCredsPassword, setLoginCredsPassword] = useState('')
   let [isLoggedIn, setLoggedIn] = useState(false)
   let [isLoading, setIsLoading] = useState(false)
-  const history = useHistory()
 
   useEffect(() => {
     if (sessionStorage.getItem('token')) {
@@ -27,11 +28,21 @@ const Login = () => {
 
   const handleLogin = async () => {
     setIsLoading(true)
-    let loginResponse: LoginResponse
-    loginResponse = await login(
-      loginCredsEmail,
-      loginCredsPassword
-    ).catch(() => {})
+    let loginResponse: LoginResponse | undefined
+    try {
+      loginResponse = await login(loginCredsEmail, loginCredsPassword)
+    } catch (error) {
+      // A 401 here means bad credentials; anything else is the server or the
+      // connection, and saying "check your password" would be misleading.
+      if (isHTTPError(error) && error.response.status === 401) {
+        loginResponse = undefined
+      } else {
+        reportError(error, 'sign you in')
+        setIsLoading(false)
+        return
+      }
+    }
+
     if (!loginResponse?.is_success) {
       toast.error('Login failed', 'Check the contact number and password.')
       setIsLoading(false)
@@ -59,11 +70,6 @@ const Login = () => {
 
       // history.push('/')
     }
-  }
-
-  const handleLogout = async () => {
-    sessionStorage.removeItem('email')
-    sessionStorage.removeItem('token')
   }
 
   return (

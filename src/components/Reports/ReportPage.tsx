@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import BasicTable from '../Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { reportError } from '@/lib/reportError'
 
 const todaysDate = () => {
   let d = new Date(),
@@ -32,15 +33,19 @@ const ReportPage = ({
   let [mainTotal, setMainTotal] = useState('')
   let [loading, setLoading] = useState(true)
 
-  const load = (from, to) => {
+  const load = async (from, to) => {
     setLoading(true)
-    fetchReport(from, to).then((res) => {
+    try {
+      const res = await fetchReport(from, to)
       if (total) {
         setMainTotal(total(res))
       }
       setReportData(transform(res))
+    } catch (error) {
+      reportError(error, 'load the report')
+    } finally {
       setLoading(false)
-    })
+    }
   }
 
   useEffect(() => {
@@ -54,16 +59,22 @@ const ReportPage = ({
       {showFilters ? (
         <>
           <div>
-            <label className="text-white">Start Date</label>
+            <label className="text-white" htmlFor="report-start-date">
+              Start Date
+            </label>
             <Input
+              id="report-start-date"
               type="date"
               onChange={(e) => setStartDate(e.target.value)}
               value={startDate}
             />
           </div>
           <div>
-            <label className="text-white">End Date</label>
+            <label className="text-white" htmlFor="report-end-date">
+              End Date
+            </label>
             <Input
+              id="report-end-date"
               type="date"
               onChange={(e) => setEndDate(e.target.value)}
               value={endDate}

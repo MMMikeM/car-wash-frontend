@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { searchCustomer } from '../../services/customersApi'
-import { z } from 'zod'
 import BasicTable from '../../components/Tables/BasicTable'
 
-import { useLocation, useHistory, useParams } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
 
 const SearchCustomer = () => {
-  let [inputValue, setInputValue] = useState('')
-  let [number, setNumber] = useState('')
   let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
   let [isLoaded, setIsLoaded] = useState(false)
   let [error, setError] = useState(null)
   const history = useHistory()
-  let { registrationNumber } = useParams()
 
   function useQuery() {
     return new URLSearchParams(useLocation().search)
@@ -23,13 +19,12 @@ const SearchCustomer = () => {
   let query = useQuery()
 
   const search = async (input) => {
-    setNumber(input)
     setError(null)
     try {
       let res = await searchCustomer('contact_number', input)
       setLocalCustomers(res.data || [])
       setIsLoaded(true)
-    } catch (err) {
+    } catch {
       setError('Failed to search. Please try again.')
       setIsLoaded(true)
     }
@@ -38,10 +33,6 @@ const SearchCustomer = () => {
   useEffect(() => {
     search(query.get('contact_number'))
   }, [])
-
-  const schema = z
-    .string({ error: 'Please enter a valid name' })
-    .min(3, 'Please enter at least 3 characters')
 
   const redirect = async () => {
     history.push(`/new_customer/q?contact=${query.get('contact_number')}`)

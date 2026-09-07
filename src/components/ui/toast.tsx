@@ -43,7 +43,7 @@ function ToastList() {
           "absolute right-0 bottom-0 left-auto z-50 flex w-[min(22rem,calc(100vw-2rem))] items-start gap-3",
           "rounded-xl border border-white/10 bg-[#232323] py-3 pr-9 pl-3.5 shadow-xl ring-1 ring-black/30",
           // Base UI stacks toasts by index; the offsets come from its own vars.
-          "[transform:translateY(calc(var(--toast-index)*-0.75rem))_scale(calc(1-(var(--toast-index)*0.05)))]",
+          "transform-[translateY(calc(var(--toast-index)*-0.75rem))_scale(calc(1-(var(--toast-index)*0.05)))]",
           "transition-[opacity,transform] duration-200 data-ending-style:opacity-0 data-starting-style:translate-y-full data-starting-style:opacity-0"
         )}
       >

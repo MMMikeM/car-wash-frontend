@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
+import { reportError } from '@/lib/reportError'
 import { centsToRands } from '../../helpers'
 import type { WashType } from '../../types'
 
@@ -24,15 +25,25 @@ const WashEdit = () => {
 
   const save = async () => {
     const { name, cost, price, points, description, order } = localWash
-    await saveWash(localWash.id, { name, cost, price, points, description, order })
+    try {
+      await saveWash(localWash.id, { name, cost, price, points, description, order })
+    } catch (error) {
+      reportError(error, 'save the wash type')
+      return
+    }
     history.push(`/wash_types/${id}`)
   }
 
   useEffect(() => {
     const handleFetchWash = async () => {
-      let res = await getWash(id)
-      setLocalWash(res)
-      setLoading(false)
+      try {
+        let res = await getWash(id)
+        setLocalWash(res)
+      } catch (error) {
+        reportError(error, 'load the wash type')
+      } finally {
+        setLoading(false)
+      }
     }
     handleFetchWash()
   }, [id])

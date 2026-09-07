@@ -3,6 +3,7 @@ import { postCustomer } from '../../services/customersApi'
 import { SignUpForm } from './form'
 import { useHistory } from 'react-router-dom'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 import { customerSchema, passwordPairSchema } from '../../lib/schemas'
 
 const Signup = () => {
@@ -22,9 +23,14 @@ const Signup = () => {
     let valid = validate(schema, localCustomer)
     if (valid) {
       setLoading(true)
-      let res = await postCustomer(localCustomer)
-      setLoading(false)
-      history.push(`/login`)
+      try {
+        await postCustomer(localCustomer)
+        history.push(`/login`)
+      } catch (error) {
+        reportError(error, 'create your account')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 

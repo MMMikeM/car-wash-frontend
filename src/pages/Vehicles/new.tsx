@@ -4,6 +4,7 @@ import BasicForm from '../../components/Forms/BasicForm'
 import { useHistory, useParams } from 'react-router-dom'
 import { z } from 'zod'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 
 const VehiclesNew = () => {
   const history = useHistory()
@@ -13,7 +14,12 @@ const VehiclesNew = () => {
   const save = async () => {
     let valid = validate(schema, data.registration_number)
     if (valid) {
-      let res = await postVehicle(data)
+      try {
+        await postVehicle(data)
+      } catch (error) {
+        reportError(error, 'add the vehicle')
+        return
+      }
       history.push('/')
     }
   }

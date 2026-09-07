@@ -4,6 +4,7 @@ import {
   getWashesReportDownload,
 } from '../../services/reportsApi'
 import ReportPage from '../../components/Reports/ReportPage'
+import { reportError } from '@/lib/reportError'
 import { formatReportMoney, handleDownload, sumReportTotal } from '../../helpers'
 
 const WashesReport = () => (
@@ -14,8 +15,12 @@ const WashesReport = () => (
     transform={formatReportMoney}
     total={sumReportTotal}
     onDownload={async (startDate, endDate) => {
-      let res = await getWashesReportDownload(startDate, endDate)
-      handleDownload(res, 'WashReport')
+      try {
+        let res = await getWashesReportDownload(startDate, endDate)
+        handleDownload(res, 'WashReport')
+      } catch (error) {
+        reportError(error, 'download the report')
+      }
     }}
   />
 )

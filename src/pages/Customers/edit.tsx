@@ -4,6 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
 
 const CustomersEdit = () => {
@@ -23,16 +24,26 @@ const CustomersEdit = () => {
     let valid = validate(schema, localCustomer)
     if (valid) {
       const { name, email, contact_number, total_points, loyalty_enabled } = localCustomer
-      await saveCustomer(localCustomer.id, { name, email, contact_number, total_points, loyalty_enabled })
+      try {
+        await saveCustomer(localCustomer.id, { name, email, contact_number, total_points, loyalty_enabled })
+      } catch (error) {
+        reportError(error, 'save the customer')
+        return
+      }
       history.push(`/customers/${localCustomer.id}`)
     }
   }
 
   useEffect(() => {
     const handleFetchCustomer = async () => {
-      let res = await getCustomer(id)
-      setLocalCustomer(res)
-      setLoading(false)
+      try {
+        let res = await getCustomer(id)
+        setLocalCustomer(res)
+      } catch (error) {
+        reportError(error, 'load the customer')
+      } finally {
+        setLoading(false)
+      }
     }
     handleFetchCustomer()
   }, [id])

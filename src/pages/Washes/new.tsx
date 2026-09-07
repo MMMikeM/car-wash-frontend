@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { FaArrowLeft } from 'react-icons/fa'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 
 const WashNew = () => {
   let [newWash, setNewWash] = useState({
@@ -24,9 +25,14 @@ const WashNew = () => {
     let valid = validate(schema, newWash)
     if (valid) {
       setLoading(true)
-      let res = await postWash(newWash)
-      setLoading(false)
-      history.push(`/wash_types/${res.id}`)
+      try {
+        let res = await postWash(newWash)
+        history.push(`/wash_types/${res.id}`)
+      } catch (error) {
+        reportError(error, 'create the wash type')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 

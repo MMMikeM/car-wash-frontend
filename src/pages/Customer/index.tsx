@@ -7,6 +7,9 @@ import {
 import 'react-circular-progressbar/dist/styles.css'
 import { getCustomer } from '../../services/customersApi'
 import type { Customer } from '../../types'
+import { reportError } from '@/lib/reportError'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const CustomerHome = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
@@ -14,9 +17,14 @@ const CustomerHome = () => {
   let [isViewingPrice, setIsViewingPrice] = useState(false)
 
   const handleFetchCustomer = async () => {
-    let res = await getCustomer(sessionStorage.getItem('id'))
-    setLocalCustomer(res)
-    setLoading(false)
+    try {
+      let res = await getCustomer(sessionStorage.getItem('id'))
+      setLocalCustomer(res)
+    } catch (error) {
+      reportError(error, 'load your profile')
+    } finally {
+      setLoading(false)
+    }
   }
   useEffect(() => {
     handleFetchCustomer()
@@ -26,6 +34,14 @@ const CustomerHome = () => {
     `bg-${bgNumber} w-1/2 text-primary hover:text-primary/80 rounded-0 btn-link py-0 border-0 d-block button-to-link h-full`
   let pricesPage = classCreator(isViewingPrice ? 2 : 4)
   let accountPage = classCreator(isViewingPrice ? 4 : 2)
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -67,7 +83,7 @@ const CustomerHome = () => {
               </CircularProgressbarWithChildren>
             </div>
           </div>
-          <div className="text-small pt-5 max-md mx-auto mb-5 pb-5 pt-3">
+          <div className="text-small max-md mx-auto mb-5 pb-5 pt-3">
             <p className="text-9">
               *T’s & C’s. Complimentary Disinfectant Fogging Included in Full
               House And CARBON Treatment When Available. Carbon Loyalty
@@ -90,15 +106,20 @@ const CustomerHome = () => {
       )}
 
       <div className="footer flex">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsViewingPrice(false)}
-          className={accountPage}
+          className={cn('h-full rounded-none', accountPage)}
         >
           Account
-        </button>
-        <button onClick={() => setIsViewingPrice(true)} className={pricesPage}>
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => setIsViewingPrice(true)}
+          className={cn('h-full rounded-none', pricesPage)}
+        >
           Prices
-        </button>
+        </Button>
       </div>
     </div>
   )

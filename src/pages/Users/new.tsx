@@ -4,6 +4,7 @@ import { CustomerForm, schema } from './form'
 import { useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 
@@ -26,9 +27,16 @@ const UserNew = () => {
       let valid = validate(schema, localCustomer)
       if (valid) {
         setLoading(true)
-        let resCustomer = await postCustomer(localCustomer)
-        await saveSystemUsers(resCustomer.id, roles)
-        history.push(`/`)
+        try {
+          let resCustomer = await postCustomer(localCustomer)
+          await saveSystemUsers(resCustomer.id, roles)
+          history.push(`/`)
+        } catch (error) {
+          // setLoading was never reset on failure, leaving the form blank.
+          reportError(error, 'create the user')
+        } finally {
+          setLoading(false)
+        }
       }
     }
   }
@@ -49,10 +57,6 @@ const UserNew = () => {
   let handleManagerClick = () => {
     setRoles({ roles: ['manager', 'salesperson'] })
     setSelected('manager')
-  }
-
-  let handleSubmitClick = () => {
-    save()
   }
 
   return (

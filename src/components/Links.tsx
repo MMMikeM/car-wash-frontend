@@ -33,7 +33,7 @@ const Links = () => {
         <a
           key={name}
           href={href}
-          className="inline-flex items-center gap-2 rounded-full border-[1px] border-white/10 bg-white/5 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground! no-underline! transition-colors hover:border-primary/50 hover:bg-primary/10 hover:text-primary!"
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-foreground! no-underline! transition-colors hover:border-primary/50 hover:bg-primary/10 hover:text-primary!"
         >
           <Icon className="text-base" />
           {name}

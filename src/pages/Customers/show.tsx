@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
-import { Link, useParams, useHistory } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
 import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import { deleteWash } from '../../services/washesApi'
@@ -10,6 +10,9 @@ import dayjs from 'dayjs'
 import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
 import { currentRoles } from '@/lib/auth'
+import { isAnonymousEmail } from '../../helpers'
+import { reportError } from '@/lib/reportError'
+import { toast } from '@/components/ui/toast'
 
 
 const CustomersShow = () => {
@@ -19,15 +22,21 @@ const CustomersShow = () => {
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWash, setSelectedWash] = useState('')
 
-  const history = useHistory()
   let { id } = useParams()
 
   const handleFetchCustomer = async () => {
-    let resCustomer = await getCustomer(id)
-    let resWashes = await getWashes()
-    setLocalCustomer(resCustomer)
-    setWashes(resWashes)
-    setLoading(false)
+    try {
+      let [resCustomer, resWashes] = await Promise.all([
+        getCustomer(id),
+        getWashes(),
+      ])
+      setLocalCustomer(resCustomer)
+      setWashes(resWashes)
+    } catch (error) {
+      reportError(error, 'load the customer')
+    } finally {
+      setLoading(false)
+    }
   }
   useEffect(() => {
     handleFetchCustomer()
@@ -39,9 +48,17 @@ const CustomersShow = () => {
   }
 
   const handleSubmit = async () => {
-    let res = await deleteWash(selectedWash)
     setModalIsVisible(false)
-    history.go(0)
+    try {
+      await deleteWash(selectedWash)
+    } catch (error) {
+      // A full reload past a failed delete left the wash on screen with
+      // nothing said, which reads exactly like a successful delete.
+      reportError(error, 'delete the wash')
+      return
+    }
+    toast.success('Wash deleted')
+    handleFetchCustomer()
   }
 
   // Derived, not mutated in place: the old version rewrote the wash objects
@@ -59,11 +76,9 @@ const CustomersShow = () => {
     [localCustomer, washes]
   )
 
-  let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
-  let email = localCustomer?.email
-  if (regex.test(email)) {
-    email = 'No email provided'
-  }
+  const email = isAnonymousEmail(localCustomer?.email)
+    ? 'No email provided'
+    : localCustomer?.email
 
   let registration_list = []
 

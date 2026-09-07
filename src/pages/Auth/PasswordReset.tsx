@@ -3,6 +3,7 @@ import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
 import { updatePassword } from '../../services/authApi'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 import { passwordPairSchema } from '../../lib/schemas'
 import { toast } from '@/components/ui/toast'
 
@@ -17,11 +18,16 @@ const PasswordReset = () => {
   const savePassword = async () => {
     let valid = validate(schema, localUser)
     if (valid) {
-      await updatePassword(
-        id,
-        localUser.password,
-        localUser.password_confirmation
-      )
+      try {
+        await updatePassword(
+          id,
+          localUser.password,
+          localUser.password_confirmation
+        )
+      } catch (error) {
+        reportError(error, 'update the password')
+        return
+      }
 
       toast.success('Password updated')
       history.push('/')

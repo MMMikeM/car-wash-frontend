@@ -3,6 +3,7 @@ import { postCustomer } from '../../services/customersApi'
 import { CustomerForm, schema} from './form'
 import { useHistory } from 'react-router-dom'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 
 const CustomersNew = () => {
   let [localCustomer, setLocalCustomer] = useState({
@@ -19,9 +20,14 @@ const CustomersNew = () => {
     let valid = validate(schema, localCustomer)
     if (valid){ 
       setLoading(true)
-      let res = await postCustomer(localCustomer)
-      setLoading(false)
-      history.push(`/customers/${res.id}`)
+      try {
+        let res = await postCustomer(localCustomer)
+        history.push(`/customers/${res.id}`)
+      } catch (error) {
+        reportError(error, 'create the customer')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 

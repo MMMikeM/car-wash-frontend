@@ -3,20 +3,25 @@ import BasicCard from '../../components/BasicCard'
 import Links, { MAPS_URL } from '../../components/Links'
 import { getWashes } from '../../services/washTypesApi'
 import { transformWashesCentsToRands } from '../../helpers'
+import { reportError } from '@/lib/reportError'
 
 const Washes = () => {
   let [washes, setWashes] = useState([])
   let [loading, setLoading] = useState(true)
+  const handleFetchWashes = async () => {
+    try {
+      let res = await getWashes()
+      setWashes(transformWashesCentsToRands(res))
+    } catch (error) {
+      reportError(error, 'load the wash prices')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     handleFetchWashes()
   }, [])
-
-  const handleFetchWashes = async () => {
-    let res = await getWashes()
-    let transformedWashes = transformWashesCentsToRands(res)
-    setWashes(transformedWashes)
-    setLoading(false)
-  }
 
   const priced = washes
     .filter((wash) => wash.free == false)
@@ -41,7 +46,7 @@ const Washes = () => {
           <Links />
         </div>
 
-        <div className="mt-8 w-full max-w-2xl rounded-2xl border-[1px] border-primary/25 bg-primary/5 px-6 py-6">
+        <div className="mt-8 w-full max-w-2xl rounded-2xl border border-primary/25 bg-primary/5 px-6 py-6">
           <img
             alt="Carbon Coin"
             src="/coin.png"
@@ -75,7 +80,7 @@ const Washes = () => {
       </section>
 
       <details className="mx-auto mt-16 max-w-4xl px-4 text-sm">
-        <summary className="mx-auto w-fit cursor-pointer list-none rounded-full border-[1px] border-white/10 bg-white/5 px-4 py-2 text-muted-foreground transition-colors hover:text-foreground">
+        <summary className="mx-auto w-fit cursor-pointer list-none rounded-full border border-white/10 bg-white/5 px-4 py-2 text-muted-foreground transition-colors hover:text-foreground">
           Terms &amp; Conditions
         </summary>
         <div className="text-small mt-4 space-y-3 text-muted-foreground">

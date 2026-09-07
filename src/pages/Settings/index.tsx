@@ -1,37 +1,30 @@
 import React, { useState, useEffect } from 'react'
-import { getWashes, deleteWash } from '../../services/washTypesApi'
+import { getWashes } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
+import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
 
 const Settings = () => {
   let [washes, setWashes] = useState([])
   let [loading, setLoading] = useState(true)
   const history = useHistory()
-  let { id } = useParams()
 
   const handleFetchWashes = async () => {
-    let res = await getWashes()
-    let transformedWashes = transformWashesCentsToRands(res)
-    setWashes(transformedWashes)
-    setLoading(false)
+    try {
+      let res = await getWashes()
+      setWashes(transformWashesCentsToRands(res))
+    } catch (error) {
+      reportError(error, 'load the wash types')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     handleFetchWashes()
   }, [])
-
-  const handleDeleteWash = async (washId) => {
-    let mustDeletewash = window.confirm(
-      'Are you sure you want to delete this Wash Option?'
-    )
-    if (mustDeletewash) {
-      setLoading(!loading)
-      await deleteWash(washId)
-      handleFetchWashes()
-    }
-  }
 
   const editFreeWash = (wash) => {
     history.push(`settings/${wash.id}/edit`)

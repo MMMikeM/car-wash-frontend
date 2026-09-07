@@ -1,25 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import { postWash, deleteWash } from '../../services/washesApi'
+import { postWash } from '../../services/washesApi'
 import { getWashes } from '../../services/washTypesApi'
 import { getCustomer } from '../../services/customersApi'
 import { transformCentsToRands } from '../../helpers'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
+import { FaUser, FaCar, FaCoins, FaMobileAlt } from 'react-icons/fa'
 import type { Customer, WashType } from '../../types'
+import { reportError } from '@/lib/reportError'
+import { toast } from '@/components/ui/toast'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+const cardClass = 'text-white bg-3 h-auto m-2 p-2 whitespace-normal'
+
+const SelectCard = ({ label, selected, onSelect }) => (
+  <Button
+    variant="ghost"
+    className={cn(cardClass, selected && 'highlighted')}
+    onClick={onSelect}
+  >
+    <h5 className="py-0 my-0">{label}</h5>
+  </Button>
+)
 
 const ManageUserWashes = () => {
   const history = useHistory()
   let { id } = useParams()
-  let [data, setData] = useState({ user_id: id, wash_type_id: '' })
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
   let [submitted, setSubmitted] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWashId, setSelectedWashId] = useState('')
-  let [fogging, setFogging] = useState(false)
   let [hasInsurance, setHasInsurance] = useState(false)
 
   const freeWashPoints = -washes?.filter((wash) => wash.free == true)[0]?.points
@@ -32,76 +46,59 @@ const ManageUserWashes = () => {
 
   useEffect(() => {
     const handleFetchData = async () => {
-      let resCustomer = await getCustomer(id)
-      let resWashes = await getWashes()
-      setLocalCustomer(resCustomer)
-      setWashes(resWashes)
-      setLoading(false)
+      try {
+        let [resCustomer, resWashes] = await Promise.all([
+          getCustomer(id),
+          getWashes(),
+        ])
+        setLocalCustomer(resCustomer)
+        setWashes(resWashes)
+      } catch (error) {
+        reportError(error, 'load this customer')
+      } finally {
+        setLoading(false)
+      }
     }
     handleFetchData()
   }, [id])
 
-  const editRecordMethod = (record, key, value) => {
-    let tempRecord = { ...record }
-    tempRecord[key] = value
-    setData(tempRecord)
-  }
+  // Free first when the customer qualifies, then by the configured order.
+  // Free first when the customer qualifies, then by the configured order.
+  const selectableWashes = (
+    qualifies ? [...washes] : washes.filter((wash) => wash.free === false)
+  ).sort((a, b) => Number(b.free) - Number(a.free) || a.order - b.order)
 
-  const washCard = ({ name, price, points, id }, key, isWashSelected) => {
-    let cardClass =
-      'text-white bg-3 flex justify-center items-center m-2 p-2'
-    if (isWashSelected) {
-      cardClass += ' highlighted'
-    }
-    const handleClick = () => {
-      if (selectedWashId === id && !loading) {
-        setSelectedWashId('')
-      } else {
-        setSelectedWashId(id)
-      }
-    }
-    return (
-      <div className={cardClass} key={id} onClick={handleClick}>
-        <h5 className="py-0 my-0">{name}</h5>
-      </div>
-    )
-  }
-  const InsuranceCard = () => {
-    let cardClass =
-      'text-white bg-3 flex justify-center items-center m-2 p-2'
-    if (hasInsurance) {
-      cardClass += ' highlighted'
-    }
-    const handleClick = () => {
-      setHasInsurance(!hasInsurance)
-    }
-    return (
-      <div className={cardClass} key={id} onClick={handleClick}>
-        <h5 className="py-0 my-0">Wash Insurance</h5>
-      </div>
-    )
-  }
+  const toggleWash = (washId: string) =>
+    setSelectedWashId(selectedWashId === washId && !loading ? '' : washId)
 
-  let handleProceed = (input) => {
+  let handleProceed = () => {
     setModalIsVisible(true)
   }
 
   const selectedWash = washes.find((wash) => wash.id === selectedWashId)
 
   const handleSubmit = async () => {
-    if (submitted === false) {
-      setSubmitted(true)
-      let res = await postWash({
+    if (submitted) return
+    setSubmitted(true)
+    setModalIsVisible(false)
+
+    try {
+      await postWash({
         user_id: id,
         wash_type_id: selectedWashId,
         insurance: hasInsurance,
       })
-      setModalIsVisible(false)
-      let resCustomer = await getCustomer(id)
-      setLocalCustomer(resCustomer)
-      setSelectedWashId('')
-      history.push(`/customers/${id}`)
+    } catch (error) {
+      // Release the guard so the wash can be captured again; leaving it set
+      // stranded the till on "Processing..." until someone reloaded.
+      setSubmitted(false)
+      reportError(error, 'capture the wash')
+      return
     }
+
+    setSelectedWashId('')
+    toast.success('Wash captured')
+    history.push(`/customers/${id}`)
   }
 
   let registration_list = []
@@ -177,32 +174,31 @@ const ManageUserWashes = () => {
       </div>
 
       <div className="wash-grid">
-        {!qualifies
-          ? washes
-              .filter((wash) => wash.free === false)
-              .sort((a, b) => (a.order > b.order ? 1 : -1))
-              .map((wash, key) => {
-                let isWashSelected = wash.id === selectedWashId
-                return washCard(wash, key, isWashSelected)
-              })
-          : washes
-              .sort((a, b) => (a.order > b.order ? 1 : -1))
-              .sort((washa, washb) => Number(washa.free < washb.free))
-              .map((wash, key) => {
-                let isWashSelected = wash.id === selectedWashId
-                return washCard(wash, key, isWashSelected)
-              })}
-        <InsuranceCard />
+        {selectableWashes.map((wash) => (
+          <SelectCard
+            key={wash.id}
+            label={wash.name}
+            selected={wash.id === selectedWashId}
+            onSelect={() => toggleWash(wash.id)}
+          />
+        ))}
+
+        <SelectCard
+          label="Wash Insurance"
+          selected={hasInsurance}
+          onSelect={() => setHasInsurance(!hasInsurance)}
+        />
 
         {selectedWashId != '' ? (
-          <div
+          <Button
+            className="m-2 h-auto p-2 font-bold"
+            disabled={submitted}
             onClick={handleProceed}
-            className="text-black bg-primary flex justify-center items-center m-2 p-2 font-bold"
           >
             <h5 className="py-0 my-0">
               {!submitted ? 'Proceed' : 'Processing...'}
             </h5>
-          </div>
+          </Button>
         ) : (
           ''
         )}

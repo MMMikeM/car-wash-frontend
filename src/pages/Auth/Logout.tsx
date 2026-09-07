@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { useHistory } from 'react-router-dom'
-
 const Logout = () => {
-  const history = useHistory()
-
   useEffect(() => {
     sessionStorage.removeItem('roles')
     sessionStorage.removeItem('token')

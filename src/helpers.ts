@@ -36,6 +36,16 @@ export const formatReportMoney = (rows) =>
     return row
   })
 
+/**
+ * Sign-ups without an email get a generated `<uuid>@carboncarwash.co.za`
+ * address. No `g` flag: `test()` on a global regex advances `lastIndex`, so a
+ * shared instance would alternate true/false between calls.
+ */
+const ANONYMOUS_EMAIL =
+  /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/
+
+export const isAnonymousEmail = (email) => ANONYMOUS_EMAIL.test(email)
+
 export const handleDownload = async (res, filename) => {
   const url = window.URL.createObjectURL(new Blob([res]))
   const link = document.createElement('a')

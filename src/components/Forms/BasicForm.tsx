@@ -23,7 +23,7 @@ const inputs = (
     return inputTypes[index] === 'checkbox' ? (
       <div key={key} className="flex items-center space-x-2 py-3">
         <input
-          onChange={(e) => updateValueMethod(record, key, !value)}
+          onChange={() => updateValueMethod(record, key, !value)}
           checked={value}
           className="h-4 w-4 rounded border-input bg-background text-primary focus:ring-primary focus:ring-offset-background"
           type="checkbox"

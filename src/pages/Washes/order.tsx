@@ -4,25 +4,21 @@ import { List, arrayMove } from 'react-movable'
 import type { WashType } from '../../types'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
+import { reportError } from '@/lib/reportError'
 
 const WashesOrder = () => {
   let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
 
   const handleFetchWashes = async () => {
-    let res = await getWashes()
-    console.log(res)
-    console.log(res.sort((a, b) => (a.order - b.order ? -1 : 1)))
-    console.log(await res.sort((a, b) => (a.order - b.order ? -1 : 1)))
-    let sorted = res.sort((a, b) => (a.order - b.order ? -1 : 1))
-    // let renumbered = sorted.map((wash, index) => {
-    //   let temp = wash
-    //   wash.order = index
-    //   return temp
-    // })
-    console.log(sorted)
-    setWashes(sorted)
-    setLoading(false)
+    try {
+      let res = await getWashes()
+      setWashes([...res].sort((a, b) => a.order - b.order))
+    } catch (error) {
+      reportError(error, 'load the wash types')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -30,16 +26,20 @@ const WashesOrder = () => {
   }, [])
 
   const handleChange = (washes: WashType[], oldIndex, newIndex) => {
-    let newArray = arrayMove<WashType>(washes, oldIndex, newIndex).map((wash, index) => {
-      wash.order = index
-      return wash
-    })
+    const newArray = arrayMove<WashType>(washes, oldIndex, newIndex).map(
+      (wash, index) => ({ ...wash, order: index })
+    )
     setWashes(newArray)
     return newArray
   }
 
-  const handleClick = () => {
-    updateWashOrder(washes)
+  const handleClick = async () => {
+    try {
+      await updateWashOrder(washes)
+    } catch (error) {
+      reportError(error, 'save the wash order')
+      return
+    }
     toast.success('Wash order updated')
   }
 
@@ -55,14 +55,9 @@ const WashesOrder = () => {
               onChange={({ oldIndex, newIndex }) => {
                 handleChange(washes, oldIndex, newIndex)
               }}
-              renderList={({ children, props }) => {
-                const { key, ...rest } = props
-                return (
-                  <ul key={key} {...rest}>
-                    {children}
-                  </ul>
-                )
-              }}
+              renderList={({ children, props }) => (
+                <ul {...props}>{children}</ul>
+              )}
               renderItem={({ value, props }) => {
                 const { key, ...rest } = props
                 return (

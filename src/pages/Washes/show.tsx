@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { getWash } from '../../services/washTypesApi'
+import { reportError } from '@/lib/reportError'
 import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
@@ -15,9 +16,14 @@ const WashShow = () => {
 
   useEffect(() => {
     const handleFetchWash = async () => {
-      let res = await getWash(id)
-      setLocalWash(res)
-      setLoading(false)
+      try {
+        let res = await getWash(id)
+        setLocalWash(res)
+      } catch (error) {
+        reportError(error, 'load the wash type')
+      } finally {
+        setLoading(false)
+      }
     }
     handleFetchWash()
   }, [id])

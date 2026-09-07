@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { forgotPassword } from '../../services/authApi'
 import { z } from 'zod'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 import { contactNumberSchema } from '../../lib/schemas'
 import { toast } from '@/components/ui/toast'
 
@@ -18,7 +19,12 @@ const ForgotPassword = () => {
   const resetPassword = async () => {
     let valid = validate(schema, localUser)
     if (valid) {
-      await forgotPassword(localUser.contact_number)
+      try {
+        await forgotPassword(localUser.contact_number)
+      } catch (error) {
+        reportError(error, 'send the reset link')
+        return
+      }
       toast.success(
         'Check your phone',
         'An SMS with a link to reset your password is on its way.'
