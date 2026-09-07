@@ -14,6 +14,9 @@ const DailyWashesDetail = () => {
   // let [mainTotal, setMainTotal] = useState(0)
   let [loading, setLoading] = useState(true)
 
+  const roles = JSON.parse(sessionStorage.getItem('roles')) || []
+  const isManager = roles.includes('manager')
+
   const todaysDate = () => {
     let d = new Date(),
       month = '' + (d.getMonth() + 1),
@@ -71,34 +74,43 @@ const DailyWashesDetail = () => {
     ''
   ) : (
       <div className="row">
-        <div className="col-md-3">
-          <label className="text-white">Start Date</label>
-          <input
-            className="form-control"
-            type="date"
-            onChange={(e) => setStartDate(e.target.value)}
-            value={startDate}
-          />
-        </div>
-        <div className="form-group col-md-3">
-          <label className="text-white">End Date</label>
-          <input
-            className="form-control"
-            type="date"
-            onChange={(e) => setEndDate(e.target.value)}
-            value={endDate}
-          />
-        </div>
-        <div className="form-group col-md-6 d-flex justify-content-end">
-          <button
-            className="btn btn-primary mt-4 mr-4 px-4 py-2"
-            onClick={() => {
-              handleFetchReport()
-            }}
-          >
-            Generate Report
-        </button>
-        </div>
+        {isManager && (
+          <>
+            <div className="col-md-3">
+              <label className="text-white">Start Date</label>
+              <input
+                className="form-control"
+                type="date"
+                onChange={(e) => setStartDate(e.target.value)}
+                value={startDate}
+              />
+            </div>
+            <div className="form-group col-md-3">
+              <label className="text-white">End Date</label>
+              <input
+                className="form-control"
+                type="date"
+                onChange={(e) => setEndDate(e.target.value)}
+                value={endDate}
+              />
+            </div>
+            <div className="form-group col-md-6 d-flex justify-content-end">
+              <button
+                className="btn btn-primary mt-4 mr-4 px-4 py-2"
+                onClick={() => {
+                  handleFetchReport()
+                }}
+              >
+                Generate Report
+              </button>
+            </div>
+          </>
+        )}
+        {!isManager && (
+          <div className="col-md-12 mb-3">
+            <h4 className="text-white">Today's Washes</h4>
+          </div>
+        )}
         <div className="col-md-12 mt-4">
           <BasicTable
             rowType={'customers'}

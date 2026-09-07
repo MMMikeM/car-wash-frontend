@@ -186,11 +186,11 @@ function App() {
           <Route component={Login} path="/login" />
           <Route component={Logout} path="/logout" />
           <ProtectedRoute component={CustomersNew} path="/customers/new" />
-          <ProtectedRoute
+          <ManagerRoute
             component={CustomersSearch}
             path="/customers/search"
           />
-          <ProtectedRoute
+          <ManagerRoute
             component={CustomersEdit}
             path="/customers/:id/edit"
           />
