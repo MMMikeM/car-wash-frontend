@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "index.html"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx,css}"
+  ],
+  "ignore": [
+    "src/components/ui/**"
+  ],
+  "ignoreDependencies": [
+    "autoprefixer",
+    "postcss"
+  ],
+  "ignoreExportsUsedInFile": true
+}
