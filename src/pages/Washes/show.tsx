@@ -5,9 +5,10 @@ import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FaArrowLeft, FaEdit } from 'react-icons/fa'
+import type { WashType } from '../../types'
 
 const WashShow = () => {
-  let [localWash, setLocalWash] = useState({})
+  let [localWash, setLocalWash] = useState<Partial<WashType>>({})
   let [loading, setLoading] = useState(true)
 
   let { id } = useParams()

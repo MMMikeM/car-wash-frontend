@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { getCustomer, saveSystemUsers } from '../../services/customersApi'
 import BasicForm from '../../components/Forms/BasicForm'
+import type { Customer } from '../../types'
 
 const UserEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState({})
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [loading, setLoading] = useState(true)
   const history = useHistory()
   let { id } = useParams()
@@ -36,7 +37,6 @@ const UserEdit = () => {
     // let valid = await schema.validate(localCustomer).catch((err) => {
     //   alert(err.errors)
     // })
-    // eslint-disable-next-line no-unused-vars
     // if (valid) {
     let res = await saveSystemUsers(id, body)
     history.push(`/settings/users`)
@@ -59,7 +59,7 @@ const UserEdit = () => {
   }
 
   let handleSubmitClick = () => {
-    let body = {}
+    let body: { roles: string[] } = { roles: [] }
     if (selected === 'manager') {
       body.roles = ['manager', 'salesperson']
     } else if (selected === 'salesperson') {

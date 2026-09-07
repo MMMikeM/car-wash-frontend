@@ -7,9 +7,10 @@ import {
 } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 import { getCustomer } from '../../services/customersApi'
+import type { Customer } from '../../types'
 
 const CustomerHome = () => {
-  let [localCustomer, setLocalCustomer] = useState({})
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [loading, setLoading] = useState(true)
   let [isViewingPrice, setIsViewingPrice] = useState(false)
 

@@ -6,13 +6,14 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory, useParams } from 'react-router-dom'
 import Modal from '../../components/Modals/Modal'
 import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
+import type { Customer, WashType } from '../../types'
 
 const ManageUserWashes = () => {
   const history = useHistory()
   let { id } = useParams()
   let [data, setData] = useState({ user_id: id, wash_type_id: '' })
-  let [localCustomer, setLocalCustomer] = useState({})
-  let [washes, setWashes] = useState([])
+  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
+  let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
   let [submitted, setSubmitted] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
@@ -24,7 +25,6 @@ const ManageUserWashes = () => {
   let qualifies = localCustomer.total_points >= freeWashPoints
 
   // const save = async (body) => {
-  //   // eslint-disable-next-line
   //   let res = await postWash(data)
   //   history.push('/')
   // }
