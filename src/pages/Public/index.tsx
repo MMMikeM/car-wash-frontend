@@ -13,15 +13,20 @@ const Public = () => {
           Join the loyalty programme
         </h2>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button asChild size="lg">
-            <Link to="/sign_up" className="text-primary-foreground! no-underline!">
-              Sign up
-            </Link>
+          <Button
+            size="lg"
+            render={
+              <Link to="/sign_up" className="text-primary-foreground! no-underline!" />
+            }
+          >
+            Sign up
           </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link to="/login" className="text-primary! no-underline!">
-              Log in
-            </Link>
+          <Button
+            size="lg"
+            variant="outline"
+            render={<Link to="/login" className="text-primary! no-underline!" />}
+          >
+            Log in
           </Button>
         </div>
       </section>

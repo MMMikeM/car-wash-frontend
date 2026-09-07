@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority";
-import { Slot } from "radix-ui"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
 
 import { cn } from "@/lib/utils"
 
@@ -42,22 +43,24 @@ function Button({
   className,
   variant = "default",
   size = "default",
-  asChild = false,
+  render,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot.Root : "button"
-
-  return (
-    <Comp
-      data-slot="button"
-      data-variant={variant}
-      data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />
-  );
+}: useRender.ComponentProps<"button"> & VariantProps<typeof buttonVariants>) {
+  // data-variant and data-size are not stock shadcn; base.css hangs the primary
+  // gradient off [data-slot='button'][data-variant='default'].
+  return useRender({
+    defaultTagName: "button",
+    render,
+    props: mergeProps<"button">(
+      {
+        "data-slot": "button",
+        "data-variant": variant,
+        "data-size": size,
+        className: cn(buttonVariants({ variant, size, className })),
+      } as React.ComponentProps<"button">,
+      props
+    ),
+  })
 }
 
 export { Button, buttonVariants }

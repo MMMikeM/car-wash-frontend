@@ -135,11 +135,27 @@ const CustomersShow = () => {
           </p>
         </div>
         <div className="flex justify-between mt-2">
-          <Button asChild className="mb-2 mr-2">
-            <Link to={`/${localCustomer.id}/password_reset`}>Reset password</Link>
+          <Button
+            className="mb-2 mr-2"
+            render={
+              <Link
+                to={`/${localCustomer.id}/password_reset`}
+                className="text-primary-foreground! no-underline!"
+              />
+            }
+          >
+            Reset password
           </Button>
-          <Button asChild className="mb-2">
-            <Link to={`/customers/${localCustomer.id}/washes/new`}>Add wash</Link>
+          <Button
+            className="mb-2"
+            render={
+              <Link
+                to={`/customers/${localCustomer.id}/washes/new`}
+                className="text-primary-foreground! no-underline!"
+              />
+            }
+          >
+            Add wash
           </Button>
         </div>
       </div>

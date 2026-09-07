@@ -5,11 +5,11 @@
   "type": "module",
   "packageManager": "pnpm@10.26.2",
   "dependencies": {
+    "@base-ui/react": "^1.8.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
     "lucide-react": "^0.563.0",
-    "radix-ui": "^1.4.3",
     "react": "^19.2.4",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.2.4",
@@ -41,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.4.1",
