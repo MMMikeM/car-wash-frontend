@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { MobileNav, NavToggle } from './components/MobileNav'
+import { currentRoles } from '@/lib/auth'
 
 import Login from './pages/Auth/Login'
 import Logout from './pages/Auth/Logout'
@@ -131,10 +132,7 @@ function App() {
   ]
 
   useEffect(() => {
-    let roles = JSON.parse(sessionStorage.getItem('roles'))
-    if (roles === null) {
-      roles = []
-    }
+    let roles = [...currentRoles()]
     let tempLinks = [...Links]
     tempLinks.push(home)
     roles.reverse().map((role) => {

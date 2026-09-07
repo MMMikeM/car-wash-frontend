@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Route } from 'react-router-dom'
+import { hasRole } from '@/lib/auth'
 
 const HomeRoute = ({
   manager: Manager,
@@ -8,15 +9,12 @@ const HomeRoute = ({
   public: Public,
   ...rest
 }) => {
-  let token = sessionStorage.getItem('token')
-  let roles = JSON.parse(sessionStorage.getItem('roles'))
-
   let validateUserLevel = () => {
-    if (token && roles.includes('manager')) {
+    if (hasRole('manager')) {
       return <Manager />
-    } else if (token && roles.includes('salesperson')) {
+    } else if (hasRole('salesperson')) {
       return <Sales />
-    } else if (token && roles.includes('customer')) {
+    } else if (hasRole('customer')) {
       return <Customer />
     } else return <Public />
   }
