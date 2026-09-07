@@ -25,7 +25,7 @@ const SalesHome = () => {
       <div className="d-flex flex-row justify-content-center flex-wrap">
         <img
           alt="Company logo"
-          src="public/logo.png"
+          src="/logo.png"
           style={{ width: '200px' }}
           className="mx-auto mb-5"
         />
