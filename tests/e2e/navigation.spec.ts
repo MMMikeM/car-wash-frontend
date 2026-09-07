@@ -63,3 +63,24 @@ test.describe('Route protection', () => {
     await expect(page).toHaveURL(/\/sign_up$/)
   })
 })
+
+// Both of these routes are React.lazy, so they exercise the Suspense boundary
+// as well as the page itself.
+test('wash order loads as a split chunk', async ({ page, login, api }) => {
+  await login('manager')
+  await api.washTypes()
+
+  await page.goto('/wash_order')
+
+  await expect(page.getByText('Wash & Go').filter({ visible: true }).first()).toBeVisible()
+})
+
+test('customer home loads as a split chunk', async ({ page, login, api }) => {
+  await login('customer')
+  await api.washTypes()
+  await api.customer({ id: 'test-user-id', name: 'Ada Mokoena', total_points: 40 })
+
+  await page.goto('/')
+
+  await expect(page.getByText('Ada Mokoena').filter({ visible: true }).first()).toBeVisible()
+})
