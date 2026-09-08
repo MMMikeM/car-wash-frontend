@@ -1,60 +1,47 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
+import { useParams, useNavigate } from 'react-router-dom'
 import { getCustomer, saveSystemUsers } from '../../services/customersApi'
-import BasicForm from '../../components/Forms/BasicForm'
-import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
+import { reportError } from '@/lib/reportError'
+import { FormSkeleton } from '../../components/Loading'
 
-const UserEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [loading, setLoading] = useState(true)
-  const history = useHistory()
+const currentRole = (roles: string[] = []) => {
+  if (roles.includes('manager')) return 'manager'
+  if (roles.includes('salesperson')) return 'salesperson'
+  if (roles.includes('customer')) return 'customer'
+  return ''
+}
+
+const UserEditContent = () => {
+  const navigate = useNavigate()
   let { id } = useParams()
-  let [selected, setSelected] = useState('')
 
-  useEffect(() => {
-    const handleFetchCustomer = async () => {
-      let res = await getCustomer(id)
-      setLocalCustomer(res)
-      setLoading(false)
-      if (res.roles.includes('manager')) {
-        setSelected('manager')
-      } else if (res.roles.includes('salesperson')) {
-        setSelected('salesperson')
-      } else if (res.roles.includes('customer')) {
-        setSelected('customer')
-      }
+  const { data: localCustomer } = useSWR(['the user', id], () => getCustomer(id))
+  const [chosen, setChosen] = useState<string>()
+  const selected = chosen ?? currentRole(localCustomer.roles)
+
+  const save = async (userId, body) => {
+    try {
+      await saveSystemUsers(userId, body)
+    } catch (error) {
+      reportError(error, 'save the user')
+      return
     }
-    handleFetchCustomer()
-  }, [id])
-
-  const editRecordMethod = (record, key, value) => {
-    let tempRecord = { ...record }
-    tempRecord[key] = value
-    setLocalCustomer(tempRecord)
-  }
-
-  const save = async (id, body) => {
-    // let valid = await schema.validate(localCustomer).catch((err) => {
-    //   alert(err.errors)
-    // })
-    // if (valid) {
-    let res = await saveSystemUsers(id, body)
-    history.push(`/settings/users`)
-    // }
+    navigate(`/settings/users`)
   }
 
   let inactive = 'text-white bg-4 px-4 py-2'
   let active = 'text-1 px-4 py-2 highlighted'
 
   let handleCustomerClick = () => {
-    setSelected('customer')
+    setChosen('customer')
   }
   let handleSalespersonClick = () => {
-    setSelected('salesperson')
+    setChosen('salesperson')
   }
   let handleManagerClick = () => {
-    setSelected('manager')
+    setChosen('manager')
   }
 
   let handleSubmitClick = () => {
@@ -71,7 +58,6 @@ const UserEdit = () => {
 
   return (
     <div className="w-full">
-      {!loading ? (
         <div className="max-xs mx-auto flex justify-center flex-col bg-3 py-4 rounded">
           <div className="px-2 border-b border-primary mb-4">
             <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
@@ -103,7 +89,7 @@ const UserEdit = () => {
             </div>
             <div className="px-3">
               <Button
-                className="w-full mx-5 mt-5 mb-2 mx-auto"
+                className="w-full mt-5 mb-2 mx-auto"
                 onClick={handleSubmitClick}
               >
                 Submit
@@ -118,11 +104,14 @@ const UserEdit = () => {
           /> */}
           </div>
         </div>
-      ) : (
-        ''
-      )}
     </div>
   )
 }
+
+const UserEdit = () => (
+  <Suspense fallback={<FormSkeleton fields={2} label="Loading the user" />}>
+    <UserEditContent />
+  </Suspense>
+)
 
 export default UserEdit

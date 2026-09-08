@@ -1,37 +1,31 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo, Suspense } from 'react'
+import useSWR from 'swr'
+import { Car, Coins, Mail, Smartphone, User } from 'lucide-react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
-import { Link, useParams, useHistory } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
-import { FaUser, FaCar, FaCoins, FaMobileAlt, FaEnvelope } from 'react-icons/fa'
 import { deleteWash } from '../../services/washesApi'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import dayjs from 'dayjs'
-import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
+import { DetailSkeleton } from '../../components/Loading'
 import { currentRoles } from '@/lib/auth'
+import { formatDateTime, isAnonymousEmail } from '../../helpers'
+import { reportError } from '@/lib/reportError'
+import { toast } from '@/components/ui/toast'
 
 
-const CustomersShow = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [washes, setWashes] = useState<WashType[]>([])
-  let [loading, setLoading] = useState(true)
+const CustomersShowContent = () => {
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWash, setSelectedWash] = useState('')
 
-  const history = useHistory()
   let { id } = useParams()
 
-  const handleFetchCustomer = async () => {
-    let resCustomer = await getCustomer(id)
-    let resWashes = await getWashes()
-    setLocalCustomer(resCustomer)
-    setWashes(resWashes)
-    setLoading(false)
-  }
-  useEffect(() => {
-    handleFetchCustomer()
-  }, [id])
+  // Two reads, one boundary: they resolve in parallel and the page waits once.
+  const { data: localCustomer, mutate } = useSWR(['the customer', id], () =>
+    getCustomer(id)
+  )
+  const { data: washes } = useSWR('the wash types', getWashes)
 
   const handleClick = async (wash) => {
     setSelectedWash(wash.id)
@@ -39,31 +33,31 @@ const CustomersShow = () => {
   }
 
   const handleSubmit = async () => {
-    let res = await deleteWash(selectedWash)
     setModalIsVisible(false)
-    history.go(0)
+    try {
+      await deleteWash(selectedWash)
+    } catch (error) {
+      reportError(error, 'delete the wash')
+      return
+    }
+    toast.success('Wash deleted')
+    mutate()
   }
 
-  // Derived, not mutated in place: the old version rewrote the wash objects
-  // during render behind a `processed` flag, which only held while the render
-  // count stayed exactly what it expected.
+  // Derived rather than mutated in place: these rows are rebuilt each render.
   const washRows = useMemo(
     () =>
       (localCustomer?.washes ?? []).map((item) => ({
         ...item,
         wash: washes.find((wash) => item.wash_type_id === wash.id)?.name,
-        created_at: dayjs(new Date(item.created_at)).format(
-          'YYYY-MM-DD HH:mm:ss'
-        ),
+        created_at: formatDateTime(new Date(item.created_at)),
       })),
     [localCustomer, washes]
   )
 
-  let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
-  let email = localCustomer?.email
-  if (regex.test(email)) {
-    email = 'No email provided'
-  }
+  const email = isAnonymousEmail(localCustomer?.email)
+    ? 'No email provided'
+    : localCustomer?.email
 
   let registration_list = []
 
@@ -84,9 +78,7 @@ const CustomersShow = () => {
 
   let roles = currentRoles()
 
-  return loading ? (
-    ''
-  ) : (
+  return (
     <div>
       <ConfirmDialog
         open={modalIsVisible}
@@ -110,35 +102,35 @@ const CustomersShow = () => {
       <div className="text-8 flex justify-center flex-col max-sm bg-3 px-4 pt-4 pb-3 rounded">
         <div className="flex flex-col px-2 pt-2">
           <p>
-            <FaUser className="mr-2 mb-1 text-white" />
+            <User className="mr-2 mb-1 text-white" />
             Name:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {localCustomer.name}
             </span>
           </p>
           <p>
-            <FaEnvelope className="mr-2 mb-1 text-white" />
+            <Mail className="mr-2 mb-1 text-white" />
             Email:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {email}
             </span>
           </p>
           <p>
-            <FaMobileAlt className="mr-2 mb-1 text-white" />
+            <Smartphone className="mr-2 mb-1 text-white" />
             Contact number:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {localCustomer.contact_number}
             </span>
           </p>
           <p>
-            <FaCoins className="mr-2 mb-1 text-white" />
+            <Coins className="mr-2 mb-1 text-white" />
             Total Points:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {localCustomer.total_points}
             </span>
           </p>
           <p>
-            <FaCar className="mr-2 mb-1 text-white" />
+            <Car className="mr-2 mb-1 text-white" />
             Registration:{' '}
             <span className="text-white ml-1 mt-1 font-weight-black">
               {registration_list}
@@ -193,5 +185,11 @@ const CustomersShow = () => {
     </div>
   )
 }
+
+const CustomersShow = () => (
+  <Suspense fallback={<DetailSkeleton label="Loading the customer" />}>
+    <CustomersShowContent />
+  </Suspense>
+)
 
 export default CustomersShow

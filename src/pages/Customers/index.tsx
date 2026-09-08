@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react'
+/* The customer card carries a nested "Add wash" button, so the card itself
+   cannot be a <button>; it stands in for one with role, tabIndex and a key
+   handler instead.  */
+/* oxlint-disable jsx-a11y/prefer-tag-over-role */
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
+import { Trash2 } from 'lucide-react'
 import {
   getCustomers,
   getCustomersCSV,
   deleteCustomer,
 } from '../../services/customersApi'
-import { Link, useHistory } from 'react-router-dom'
-import { handleDownload } from '../../helpers'
+import { Link, useNavigate } from 'react-router-dom'
+import { handleDownload, isAnonymousEmail } from '../../helpers'
+import type { Customer } from '../../types'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -17,14 +24,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { reportError } from '@/lib/reportError'
+import { toast } from '@/components/ui/toast'
+import { RecordListSkeleton } from '../../components/Loading'
 
-const formatEmail = (email) => {
-  const regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
-  if (regex.test(email)) {
-    return null
-  }
-  return email
-}
+const formatEmail = (email) => (isAnonymousEmail(email) ? null : email)
 
 const getVehicleRegs = (vehicles) => {
   if (!vehicles || vehicles.length === 0) return null
@@ -36,20 +40,35 @@ const getVehicleRegs = (vehicles) => {
     .toUpperCase()
 }
 
-const CustomerCard = ({ customer, onAddWash, history }) => {
+const CustomerCard = ({ customer, onAddWash, onDelete, navigate }) => {
   const email = formatEmail(customer.email)
   const vehicles = getVehicleRegs(customer.vehicles)
 
+  const openCustomer = () => navigate(`/customers/${customer.id}`)
+
   const handleCardClick = (e) => {
-    // Don't navigate if clicking the Wash button
     if (e.target.closest('button')) return
-    history.push(`/customers/${customer.id}`)
+    openCustomer()
+  }
+
+  // The card carries a nested button, so it cannot be one itself; this is the
+  // keyboard half of the role it stands in for.
+  const handleCardKeyDown = (e) => {
+    if (e.target !== e.currentTarget) return
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      openCustomer()
+    }
   }
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`View ${customer.name}`}
       className="bg-card mb-2 flex flex-col gap-1 rounded-lg px-4 py-3 cursor-pointer active:bg-muted/50"
       onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
     >
       <h3 className="font-semibold text-foreground leading-tight">
         {customer.name}
@@ -58,7 +77,7 @@ const CustomerCard = ({ customer, onAddWash, history }) => {
       <div className="flex items-end justify-between gap-3">
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           {email && (
-            <span className="text-sm break-words text-muted-foreground">
+            <span className="text-sm wrap-break-word text-muted-foreground">
               {email}
             </span>
           )}
@@ -68,83 +87,112 @@ const CustomerCard = ({ customer, onAddWash, history }) => {
             </span>
           )}
           {vehicles && (
-            <span className="font-mono text-xs break-words text-muted-foreground">
+            <span className="font-mono text-xs wrap-break-word text-muted-foreground">
               {vehicles}
             </span>
           )}
         </div>
 
-        <Button
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation()
-            onAddWash(customer.id)
-          }}
-        >
-          Add wash
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              onAddWash(customer.id)
+            }}
+          >
+            Add wash
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            aria-label={`Delete ${customer.name}`}
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(customer.id)
+            }}
+          >
+            <Trash2 />
+          </Button>
+        </div>
       </div>
     </div>
   )
 }
 
-const CustomerTableRow = ({ customer, onAddWash, history }) => {
+const CustomerTableRow = ({ customer, onAddWash, onDelete, navigate }) => {
   const email = formatEmail(customer.email)
   const vehicles = getVehicleRegs(customer.vehicles)
 
   return (
     <TableRow
       className="cursor-pointer"
-      onClick={() => history.push(`/customers/${customer.id}`)}
+      onClick={() => navigate(`/customers/${customer.id}`)}
     >
       <TableCell className="font-medium">{customer.name}</TableCell>
       <TableCell className="text-muted-foreground">{email || '—'}</TableCell>
       <TableCell>{customer.contact_number || '—'}</TableCell>
       <TableCell className="font-mono text-xs">{vehicles || '—'}</TableCell>
       <TableCell>
-        <Button
-          size="xs"
-          onClick={(e) => {
-            e.stopPropagation()
-            onAddWash(customer.id)
-          }}
-        >
-          Add wash
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            size="xs"
+            onClick={(e) => {
+              e.stopPropagation()
+              onAddWash(customer.id)
+            }}
+          >
+            Add wash
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            aria-label={`Delete ${customer.name}`}
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(customer.id)
+            }}
+          >
+            <Trash2 />
+          </Button>
+        </div>
       </TableCell>
     </TableRow>
   )
 }
 
-const CustomersIndex = () => {
-  const history = useHistory()
-  let [localCustomers, setLocalCustomers] = useState([])
-  let [loading, setLoading] = useState(true)
-  let [modalIsVisible, setModalIsVisible] = useState(false)
-  let [deleteId, setDeleteId] = useState('')
-  let [selectedCustomer, setSelectedCustomer] = useState({})
-  let [page, setPage] = useState(0)
-  let [perPage] = useState(20)
-  let [total, setTotal] = useState(0)
+const PER_PAGE = 20
 
-  const handleFetchCustomers = async (pageNum = page) => {
-    setLoading(true)
-    let res = await getCustomers(pageNum, perPage)
-    setLocalCustomers(res.data)
-    setTotal(res.total)
-    setLoading(false)
-  }
+const CustomersIndexContent = () => {
+  const navigate = useNavigate()
+  let [modalIsVisible, setModalIsVisible] = useState(false)
+  let [customerToDelete, setCustomerToDelete] = useState<Customer>()
+  let [page, setPage] = useState(0)
+
+  const { data, mutate } = useSWR(
+    ['customers', page],
+    () => getCustomers(page, PER_PAGE),
+    // Paging keeps the previous rows on screen rather than suspending back to
+    // a skeleton on every click.
+    { keepPreviousData: true }
+  )
+
+  const localCustomers = data.data
+  const total = data.total
 
   const handleDownloadCustomers = async () => {
-    let res = await getCustomersCSV()
-    handleDownload(res, 'CustomerList')
+    try {
+      let res = await getCustomersCSV()
+      handleDownload(res, 'CustomerList')
+    } catch (error) {
+      reportError(error, 'download the customer list')
+    }
   }
 
-  useEffect(() => {
-    handleFetchCustomers(page)
-  }, [page])
 
-  const totalPages = Math.ceil(total / perPage)
+  const totalPages = Math.ceil(total / PER_PAGE)
 
   const handlePrevPage = () => {
     if (page > 0) setPage(page - 1)
@@ -154,37 +202,31 @@ const CustomersIndex = () => {
     if (page < totalPages - 1) setPage(page + 1)
   }
 
-  const handleAddVehicle = (customerId) => {
-    history.push(`/customers/${customerId}/vehicles/new`)
-  }
-
   const handleAddWash = (customerId) => {
-    history.push(`/customers/${customerId}/washes/new`)
+    navigate(`/customers/${customerId}/washes/new`)
   }
 
-  const handleDeleteCustomer = async (elementId) => {
-    setSelectedCustomer(localCustomers.find((x) => x.id === elementId))
+  const handleDeleteCustomer = (elementId) => {
+    setCustomerToDelete(localCustomers.find((x) => x.id === elementId))
     setModalIsVisible(true)
-    setDeleteId(elementId)
   }
 
   const handleSubmit = async () => {
-    setLoading(!loading)
-    await deleteCustomer(deleteId)
-    handleFetchCustomers()
     setModalIsVisible(false)
-    history.go(0)
+    if (!customerToDelete) return
+
+    try {
+      await deleteCustomer(customerToDelete.id)
+    } catch (error) {
+      reportError(error, 'delete the customer')
+      return
+    }
+    toast.success('Customer deleted')
+    mutate()
   }
 
   const reversedCustomers = [...localCustomers].reverse()
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    )
-  }
 
   return (
     <div className="w-full">
@@ -193,7 +235,7 @@ const CustomersIndex = () => {
         onOpenChange={setModalIsVisible}
         onConfirm={handleSubmit}
         title="Delete customer"
-        description={`Are you sure you would like to delete ${selectedCustomer?.name ?? 'this customer'}?`}
+        description={`Are you sure you would like to delete ${customerToDelete?.name ?? 'this customer'}?`}
         confirmLabel="Delete"
         destructive
       />
@@ -216,7 +258,8 @@ const CustomersIndex = () => {
               key={customer.id}
               customer={customer}
               onAddWash={handleAddWash}
-              history={history}
+              onDelete={handleDeleteCustomer}
+              navigate={navigate}
             />
           ))
         )}
@@ -249,7 +292,8 @@ const CustomersIndex = () => {
                       key={customer.id}
                       customer={customer}
                       onAddWash={handleAddWash}
-                      history={history}
+                      onDelete={handleDeleteCustomer}
+                      navigate={navigate}
                     />
                   ))
                 )}
@@ -284,14 +328,21 @@ const CustomersIndex = () => {
         </div>
       )}
 
-      <button
-        className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground py-2"
+      <Button
+        variant="ghost"
+        className="w-full mt-4 h-auto py-2 text-sm text-muted-foreground hover:text-foreground"
         onClick={handleDownloadCustomers}
       >
         Download CSV
-      </button>
+      </Button>
     </div>
   )
 }
+
+const CustomersIndex = () => (
+  <Suspense fallback={<RecordListSkeleton rows={6} label="Loading customers" />}>
+    <CustomersIndexContent />
+  </Suspense>
+)
 
 export default CustomersIndex

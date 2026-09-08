@@ -4,7 +4,7 @@ const Card = (props) => {
   let content = props.data.map((wash) => {
     return (
       <article
-        className="shadow-custom flex flex-col justify-between rounded-2xl border-[1px] border-white/5 bg-card p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/40"
+        className="shadow-custom flex flex-col justify-between rounded-2xl border border-white/5 bg-card p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/40"
         key={wash.id}
       >
         <div>

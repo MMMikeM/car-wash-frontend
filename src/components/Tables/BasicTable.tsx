@@ -1,6 +1,6 @@
 import React from 'react'
+import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { FaEdit, FaTrash, FaInfo } from 'react-icons/fa'
 import {
   Table,
   TableBody,
@@ -10,6 +10,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
+import { isAnonymousEmail } from '../../helpers'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const actionClass =
   'rounded-md p-2 text-muted-foreground! no-underline! transition-colors hover:bg-accent hover:text-primary! cursor-pointer'
@@ -27,11 +30,7 @@ const heading = (input) =>
 // lists the values up to a count the row can show and says "Multiple" past it.
 const displayValue = (element, property) => {
   if (property === 'email') {
-    let regex = /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/g
-    if (regex.test(element.email)) {
-      return 'No email provided'
-    }
-    return element[property]
+    return isAnonymousEmail(element.email) ? 'No email provided' : element[property]
   }
 
   if (property.includes('/')) {
@@ -53,17 +52,21 @@ const displayValue = (element, property) => {
 export const CrudActions = ({ rowType, record, onDelete }) => (
   <>
     <Link className={actionClass} to={`/${rowType}/${record.id}`}>
-      <FaInfo />
+      <Info />
       <span className="sr-only">View details</span>
     </Link>
     <Link className={actionClass} to={`/${rowType}/${record.id}/edit`}>
-      <FaEdit />
+      <SquarePen />
       <span className="sr-only">Edit</span>
     </Link>
-    <a className={actionClass} onClick={() => onDelete(record.id)}>
-      <FaTrash />
+    <Button
+      variant="ghost"
+      className={cn('h-auto', actionClass)}
+      onClick={() => onDelete(record.id)}
+    >
+      <Trash2 />
       <span className="sr-only">Delete</span>
-    </a>
+    </Button>
   </>
 )
 

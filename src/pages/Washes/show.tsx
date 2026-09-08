@@ -1,34 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { Suspense } from 'react'
+import useSWR from 'swr'
+import { ArrowLeft, SquarePen } from 'lucide-react'
 import { getWash } from '../../services/washTypesApi'
+import { DetailSkeleton } from '../../components/Loading'
 import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FaArrowLeft, FaEdit } from 'react-icons/fa'
-import type { WashType } from '../../types'
 
-const WashShow = () => {
-  let [localWash, setLocalWash] = useState<Partial<WashType>>({})
-  let [loading, setLoading] = useState(true)
-
+const WashShowContent = () => {
   let { id } = useParams()
 
-  useEffect(() => {
-    const handleFetchWash = async () => {
-      let res = await getWash(id)
-      setLocalWash(res)
-      setLoading(false)
-    }
-    handleFetchWash()
-  }, [id])
+  const { data } = useSWR(['the wash type', id], () => getWash(id))
+  const localWash = data
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    )
-  }
 
   return (
     <div className="w-full max-w-lg mx-auto">
@@ -68,13 +53,13 @@ const WashShow = () => {
           <div className="flex flex-col sm:flex-row gap-2 mt-6 pt-4 border-t border-border">
             <Link to="/wash_types" className="flex-1">
               <Button variant="outline" className="w-full">
-                <FaArrowLeft className="mr-2" />
+                <ArrowLeft className="mr-2" />
                 Back to Washes
               </Button>
             </Link>
             <Link to={`/wash_types/${id}/edit`} className="flex-1">
               <Button className="w-full">
-                <FaEdit className="mr-2" />
+                <SquarePen className="mr-2" />
                 Edit
               </Button>
             </Link>
@@ -84,5 +69,11 @@ const WashShow = () => {
     </div>
   )
 }
+
+const WashShow = () => (
+  <Suspense fallback={<DetailSkeleton rows={4} label="Loading the wash type" />}>
+    <WashShowContent />
+  </Suspense>
+)
 
 export default WashShow

@@ -2,6 +2,15 @@ import { test, expect } from './fixtures'
 
 // Visual baselines. A refactor that changes these fails the run; if the change
 // was intended, regenerate with `pnpm test:e2e --update-snapshots`.
+//
+// Baselines are stored per platform because font rendering differs between
+// them. Only darwin baselines are committed, so this spec sits out elsewhere -
+// to cover another platform, generate its baselines there and drop this skip.
+test.skip(
+  process.platform !== 'darwin',
+  'no committed screenshot baselines for this platform'
+)
+
 test.use({ viewport: { width: 375, height: 812 } })
 
 const washType = {
@@ -22,6 +31,8 @@ test.describe('public pages', () => {
   ] as const) {
     test(name, async ({ page }) => {
       await page.goto(path)
+      // Routes are lazy; without this the shot can catch the chunk spinner.
+      await expect(page.getByText('Loading the page')).toHaveCount(0)
       await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true })
     })
   }

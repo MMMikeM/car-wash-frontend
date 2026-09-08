@@ -2,6 +2,8 @@
 // and the variable it reads are dropped from production bundles entirely.
 const devRoles = import.meta.env.DEV ? import.meta.env.VITE_DEV_AUTH_ROLE : ''
 
+export type Role = 'manager' | 'salesperson' | 'customer'
+
 export const currentRoles = (): string[] => {
   if (devRoles) {
     return devRoles.split(',').map((role) => role.trim())
@@ -15,5 +17,5 @@ export const currentRoles = (): string[] => {
   return JSON.parse(sessionStorage.getItem('roles')) ?? []
 }
 
-export const hasRole = (...allowed: string[]): boolean =>
-  currentRoles().some((role) => allowed.includes(role))
+export const hasRole = (...allowed: Role[]): boolean =>
+  currentRoles().some((role) => allowed.includes(role as Role))

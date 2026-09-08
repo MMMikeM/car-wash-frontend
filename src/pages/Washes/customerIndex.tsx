@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { Suspense } from 'react'
+import useSWR from 'swr'
 import BasicCard from '../../components/BasicCard'
 import Links, { MAPS_URL } from '../../components/Links'
 import { getWashes } from '../../services/washTypesApi'
 import { transformWashesCentsToRands } from '../../helpers'
+import { CardGridSkeleton } from '../../components/Loading'
+
+const PriceGrid = () => {
+  const { data } = useSWR('the wash prices', getWashes)
+  const priced = transformWashesCentsToRands(data)
+    .filter((wash) => wash.free == false)
+    .sort((a, b) => a.order - b.order)
+
+  return (
+    <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
+      <BasicCard data={priced} />
+    </div>
+  )
+}
 
 const Washes = () => {
-  let [washes, setWashes] = useState([])
-  let [loading, setLoading] = useState(true)
-  useEffect(() => {
-    handleFetchWashes()
-  }, [])
-
-  const handleFetchWashes = async () => {
-    let res = await getWashes()
-    let transformedWashes = transformWashesCentsToRands(res)
-    setWashes(transformedWashes)
-    setLoading(false)
-  }
-
-  const priced = washes
-    .filter((wash) => wash.free == false)
-    .sort((a, b) => (a.order > b.order ? 1 : -1))
-
   return (
     <div className="w-full">
       <section className="flex flex-col items-center px-4 pb-10 text-center">
@@ -41,7 +39,7 @@ const Washes = () => {
           <Links />
         </div>
 
-        <div className="mt-8 w-full max-w-2xl rounded-2xl border-[1px] border-primary/25 bg-primary/5 px-6 py-6">
+        <div className="mt-8 w-full max-w-2xl rounded-2xl border border-primary/25 bg-primary/5 px-6 py-6">
           <img
             alt="Carbon Coin"
             src="/coin.png"
@@ -63,19 +61,17 @@ const Washes = () => {
         <h2 className="font-heading mb-6! text-center text-2xl! uppercase tracking-wide text-muted-foreground">
           Our Washes
         </h2>
-        {loading ? (
-          <p className="text-center text-sm text-muted-foreground">
-            Loading prices…
-          </p>
-        ) : (
-          <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
-            <BasicCard data={priced} />
-          </div>
-        )}
+        <Suspense
+          fallback={
+            <CardGridSkeleton cards={9} label="Loading the wash prices" />
+          }
+        >
+          <PriceGrid />
+        </Suspense>
       </section>
 
       <details className="mx-auto mt-16 max-w-4xl px-4 text-sm">
-        <summary className="mx-auto w-fit cursor-pointer list-none rounded-full border-[1px] border-white/10 bg-white/5 px-4 py-2 text-muted-foreground transition-colors hover:text-foreground">
+        <summary className="mx-auto w-fit cursor-pointer list-none rounded-full border border-white/10 bg-white/5 px-4 py-2 text-muted-foreground transition-colors hover:text-foreground">
           Terms &amp; Conditions
         </summary>
         <div className="text-small mt-4 space-y-3 text-muted-foreground">

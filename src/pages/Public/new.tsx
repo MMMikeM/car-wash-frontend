@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { postCustomer } from '../../services/customersApi'
 import { SignUpForm } from './form'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { validate } from '../../lib/validate'
-import { customerSchema, passwordPairSchema } from '../../lib/schemas'
+import { reportError } from '@/lib/reportError'
+import { signUpSchema } from '../../lib/schemas'
 
 const Signup = () => {
   let [localCustomer, setLocalCustomer] = useState({
@@ -16,15 +17,20 @@ const Signup = () => {
   })
   let [loading, setLoading] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
-    let valid = validate(schema, localCustomer)
+    let valid = validate(signUpSchema, localCustomer)
     if (valid) {
       setLoading(true)
-      let res = await postCustomer(localCustomer)
-      setLoading(false)
-      history.push(`/login`)
+      try {
+        await postCustomer(localCustomer)
+        navigate(`/login`)
+      } catch (error) {
+        reportError(error, 'create your account')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -33,7 +39,6 @@ const Signup = () => {
     tempRecord[key] = value
     setLocalCustomer(tempRecord)
   }
-  const schema = passwordPairSchema.extend(customerSchema.shape)
 
   return (
     <div className="w-full">
@@ -41,15 +46,12 @@ const Signup = () => {
         <h4 className="text-8 mb-5">
           Sign up for the Carbon Car Wash Loyalty programme
         </h4>
-        {!loading ? (
           <SignUpForm
+          saving={loading}
             editRecordMethod={editRecordMethod}
             localCustomer={localCustomer}
             save={save}
           />
-        ) : (
-            ''
-          )}
       </div>
     </div>
   )

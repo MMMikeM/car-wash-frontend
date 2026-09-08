@@ -1,21 +1,28 @@
 import React from 'react'
-import { z } from 'zod'
+import * as v from 'valibot'
 import BasicForm from '../../components/Forms/BasicForm'
 import { centsToRands } from '../../helpers'
 
 
-// The form feeds these in as strings, and z.coerce.number() reads '' as 0,
-// so empty input is rejected before coercion rather than saved as a 0 price.
-const numeric = z
-  .union([z.number(), z.string().regex(/^-?\d+(\.\d+)?$/, 'Please enter a number')])
-  .pipe(z.coerce.number())
+// The form feeds these in as strings, and a bare coercion reads '' as 0, so
+// empty input is rejected before the transform rather than saved as a 0 price.
+const numeric = v.pipe(
+  v.union([
+    v.number(),
+    v.pipe(v.string(), v.regex(/^-?\d+(\.\d+)?$/, 'Please enter a number')),
+  ]),
+  v.transform(Number)
+)
 
-export const schema = z.object({
-  name: z.string({ error: 'Please enter a valid name' }).min(1, 'Please enter a valid name'),
-  cost: numeric.optional(),
+export const schema = v.object({
+  name: v.pipe(
+    v.string('Please enter a valid name'),
+    v.minLength(1, 'Please enter a valid name')
+  ),
+  cost: v.optional(numeric),
   price: numeric,
-  points: numeric.optional(),
-  description: z.string().optional(),
+  points: v.optional(numeric),
+  description: v.optional(v.string()),
 })
 
 
@@ -25,6 +32,7 @@ export const WashForm = (props) => {
         editRecordMethod={props.editRecordMethod}
         record={props.record}
         saveFormData={props.save}
+      saving={props.saving}
         editableKeys={['name', 'cost', 'price', 'points', 'description']}
         valueTransformations={['', centsToRands, centsToRands, '', '', '']}
       />

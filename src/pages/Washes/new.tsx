@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
 import { postWash } from '../../services/washTypesApi'
 import { WashForm, schema } from './form'
-import { useHistory, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FaArrowLeft } from 'react-icons/fa'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 
 const WashNew = () => {
   let [newWash, setNewWash] = useState({
@@ -18,15 +19,20 @@ const WashNew = () => {
 
   let [loading, setLoading] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
     let valid = validate(schema, newWash)
     if (valid) {
       setLoading(true)
-      let res = await postWash(newWash)
-      setLoading(false)
-      history.push(`/wash_types/${res.id}`)
+      try {
+        let res = await postWash(newWash)
+        navigate(`/wash_types/${res.id}`)
+      } catch (error) {
+        reportError(error, 'create the wash type')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -45,7 +51,7 @@ const WashNew = () => {
       <div className="mb-4">
         <Link to="/wash_types">
           <Button variant="ghost" size="sm">
-            <FaArrowLeft className="mr-2" />
+            <ArrowLeft className="mr-2" />
             Back to Washes
           </Button>
         </Link>
@@ -56,17 +62,12 @@ const WashNew = () => {
           <CardTitle>Add New Wash Type</CardTitle>
         </CardHeader>
         <CardContent>
-          {!loading ? (
-            <WashForm
-              editRecordMethod={editRecordMethod}
-              record={newWash}
-              save={save}
-            />
-          ) : (
-            <div className="text-center py-4 text-muted-foreground">
-              Saving...
-            </div>
-          )}
+          <WashForm
+            editRecordMethod={editRecordMethod}
+            record={newWash}
+            save={save}
+            saving={loading}
+          />
         </CardContent>
       </Card>
     </div>

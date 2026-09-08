@@ -1,179 +1,191 @@
-import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
-import { MobileNav, NavToggle } from './components/MobileNav'
+import React, { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom'
+import { NavPanel, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
 import { Toaster } from '@/components/ui/toast'
 
 // Each of these is the only user of a dependency worth ~14kB and ~4kB, so they
 // are the two routes where splitting pays for itself.
-const WashesOrder = React.lazy(() => import('./pages/Washes/order'))
-const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
+import { pageLoaders, prefetchPages } from './pages/routes'
+
+const lazyPages = Object.fromEntries(
+  Object.entries(pageLoaders).map(([key, load]) => [key, React.lazy(load)])
+) as unknown as Record<keyof typeof pageLoaders, React.ComponentType<any>>
+
+const {
+  login: Login,
+  logout: Logout,
+  passwordReset: PasswordReset,
+  forgotPassword: ForgotPassword,
+  customersIndex: CustomersIndex,
+  customersEdit: CustomersEdit,
+  customersNew: CustomersNew,
+  customersSearch: CustomersSearch,
+  customersShow: CustomersShow,
+  vehicleNew: VehicleNew,
+  settings: Settings,
+  washesIndex: WashesIndex,
+  washesShow: WashesShow,
+  washEdit: WashEdit,
+  washNew: WashNew,
+  manageUserWashes: ManageUserWashes,
+  usersReport: UsersReport,
+  washesReport: WashesReport,
+  dailyWashes: DailyWashes,
+  insuredWashes: InsuredWashes,
+  dailyWashesDetail: DailyWashesDetail,
+  activeUsersReport: ActiveUsersReport,
+  userEdit: UserEdit,
+  userNew: UserNew,
+  userIndex: UserIndex,
+  adminHome: AdminHome,
+  salesHome: SalesHome,
+  publicHome: Public,
+  signUp: SignUp,
+  salesNewVehicles: SalesNewVehicles,
+  searchCustomer: SearchCustomer,
+  salesNew: SalesNew,
+  washFreeEdit: WashFreeEdit,
+  washesOrder: WashesOrder,
+  customerHome: CustomerHome,
+} = lazyPages
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
-
-import Login from './pages/Auth/Login'
-import Logout from './pages/Auth/Logout'
-import PasswordReset from './pages/Auth/PasswordReset'
-import ForgotPassword from './pages/Auth/ForgotPassword'
+import { cn } from '@/lib/utils'
+import { PageLoading } from './components/Loading'
 
 
-import CustomersIndex from './pages/Customers/index'
-import CustomersEdit from './pages/Customers/edit'
-import CustomersNew from './pages/Customers/new'
-import CustomersSearch from './pages/Customers/search'
-import CustomersShow from './pages/Customers/show'
 
-import VehicleNew from './pages/Vehicles/new'
 
-import Settings from './pages/Settings/index'
 
-import WashesIndex from './pages/Washes/index'
-import WashesShow from './pages/Washes/show'
-import WashEdit from './pages/Washes/edit'
-import WashNew from './pages/Washes/new'
 
-import ManageUserWashes from './pages/Wash/manageUserWashes'
 
-import UsersReport from './pages/Reports/Users'
-import WashesReport from './pages/Reports/Washes'
-import DailyWashes from './pages/Reports/DailyWashes'
-import InsuredWashes from './pages/Reports/InsuredWashes'
-import DailyWashesDetail from './pages/Reports/DailWashesDetail'
-import ActiveUsersReport from './pages/Reports/ActiveUsers'
 
-import ManagerRoute from './pages/Layouts/ManagerRoute'
-import ProtectedRoute from './pages/Layouts/ProtectedRoute'
-import CustomerRoute from './pages/Layouts/CustomerRoute'
+
+import RequireRole from './pages/Layouts/RequireRole'
 import HomeRoute from './pages/Layouts/HomeRoute'
 
-import UserEdit from './pages/Users/edit'
-import UserNew from './pages/Users/new'
 
-import UserIndex from './pages/Users/index'
-import AdminHome from './pages/Admin/index'
-import SalesHome from './pages/Sales/index'
 
-import Public from './pages/Public/index'
-import SignUp from './pages/Public/new'
 
-import SalesNewVehicles from './pages/Sales/newVehicle'
-import SearchCustomer from './pages/Sales/search'
-import SalesNew from './pages/Sales/newCustomer'
 
 import './css/base.css'
-import WashFreeEdit from './pages/Settings/edit'
+
+const home = {
+  name: 'Home',
+  path: '/',
+  Icon: House,
+}
+
+const signUpLink = {
+  name: 'Sign Up',
+  path: '/sign_up',
+}
+const loginLink = {
+  name: 'Login',
+  path: '/login',
+}
+const logoutLink = {
+  name: 'Logout',
+  path: '/logout',
+}
+
+const salespersonLinks = [
+  {
+    name: 'Customers Today',
+    path: '/customers/report',
+    Icon: ClipboardList,
+  },
+  {
+    name: 'Daily Washes',
+    path: '/customers/daily_wash_list',
+    Icon: ChartColumn,
+  },
+]
+
+const managerLinks = [
+  {
+    name: 'Search Customers',
+    path: '/customers/search',
+    Icon: Search,
+  },
+  {
+    name: 'List Customers',
+    path: '/customers',
+    Icon: Users,
+  },
+  {
+    name: 'Daily Wash Summary',
+    path: '/reports/daily_washes',
+    Icon: ChartColumn,
+  },
+  {
+    name: 'Active Users',
+    path: '/reports/active_users',
+  },
+  {
+    name: 'Insured Washes',
+    path: '/reports/insured_washes',
+  },
+  {
+    name: 'Wash Prices',
+    path: '/wash_types',
+  },
+  {
+    name: 'Wash Order',
+    path: '/wash_order',
+  },
+  {
+    name: 'Washes Report',
+    path: '/reports/washes',
+  },
+  {
+    name: 'Users',
+    path: '/settings/users',
+  },
+  {
+    name: 'Settings',
+    path: '/settings',
+  },
+]
+
+interface NavLinkItem {
+  name: string
+  path: string
+  Icon?: LucideIcon
+}
+
+const navLinksFor = (roles: string[]): NavLinkItem[] => {
+  const links: NavLinkItem[] = [home]
+
+  for (const role of [...roles].reverse()) {
+    if (role === 'manager') links.push(...managerLinks)
+    if (role === 'salesperson') links.push(...salespersonLinks)
+  }
+
+  return roles.length > 0
+    ? [...links, logoutLink]
+    : [...links, loginLink, signUpLink]
+}
 
 function App() {
-  let [Links, setLinks] = useState([])
-  let [isStaff, setIsStaff] = useState(false)
-  let [mobileNavOpen, setMobileNavOpen] = useState(false)
+  useEffect(prefetchPages, [])
 
-  let home = {
-    name: 'Home',
-    path: '/',
-    Icon: House,
-  }
-
-  let signUpLink = {
-    name: 'Sign Up',
-    path: '/sign_up',
-  }
-  let loginLink = {
-    name: 'Login',
-    path: '/login',
-  }
-  let logoutLink = {
-    name: 'Logout',
-    path: '/logout',
-  }
-
-  let salespersonLinks = [
-    {
-      name: 'Customers Today',
-      path: '/customers/report',
-      Icon: ClipboardList,
-    },
-    {
-      name: 'Daily Washes',
-      path: '/customers/daily_wash_list',
-      Icon: ChartColumn,
-    },
-  ]
-
-  let managerLinks = [
-    {
-      name: 'Search Customers',
-      path: '/customers/search',
-      Icon: Search,
-    },
-    {
-      name: 'List Customers',
-      path: '/customers',
-      Icon: Users,
-    },
-    {
-      name: 'Daily Wash Summary',
-      path: '/reports/daily_washes',
-      Icon: ChartColumn,
-    },
-    {
-      name: 'Active Users',
-      path: '/reports/active_users',
-    },
-    {
-      name: 'Wash Prices',
-      path: '/wash_types',
-    },
-    {
-      name: 'Wash Order',
-      path: '/wash_order',
-    },
-    {
-      name: 'Washes Report',
-      path: '/reports/washes',
-    },
-    {
-      name: 'Users',
-      path: '/settings/users',
-    },
-    {
-      name: 'Settings',
-      path: '/settings',
-    },
-  ]
-
-  useEffect(() => {
-    let roles = [...currentRoles()]
-    let tempLinks = [...Links]
-    tempLinks.push(home)
-    roles.reverse().map((role) => {
-      if (role === 'manager') {
-        tempLinks = [...tempLinks, ...managerLinks]
-      }
-      if (role === 'salesperson') {
-        tempLinks = [...tempLinks, ...salespersonLinks]
-      }
-    })
-
-    if (roles.length > 0) {
-      tempLinks.push(logoutLink)
-    } else {
-      tempLinks.push(loginLink)
-      tempLinks.push(signUpLink)
-    }
-    setLinks(tempLinks)
-    setIsStaff(roles.some((role) => role === 'manager' || role === 'salesperson'))
-  }, [])
+  const roles = currentRoles()
+  const Links = navLinksFor(roles)
+  const isStaff = roles.some(
+    (role) => role === 'manager' || role === 'salesperson'
+  )
 
   return (
     <Router>
       <div className="page-glow min-h-screen">
-        <MobileNav links={Links} isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
-        <header className="sticky top-0 z-40 border-b-[1px] border-primary/40 bg-[#181818]/90 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-primary/40 bg-[#181818]/90 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2">
             <div className="flex items-center gap-2">
               {!isStaff ? (
-                <NavToggle onClick={() => setMobileNavOpen(true)} />
+                <NavPanel links={Links} trigger={<NavToggle />} />
               ) : null}
               <Link to="/" className="no-underline!">
                 <span className="font-heading text-xl uppercase tracking-wide text-primary">
@@ -185,10 +197,14 @@ function App() {
               {(isStaff ? [] : Links).map((link, key) => (
                 <NavLink
                   key={key}
-                  exact={link.path === '/'}
+                  end={link.path === '/'}
                   to={link.path}
-                  className="rounded-md px-3 py-2 text-sm text-foreground! no-underline! transition-colors hover:bg-primary/10 hover:text-primary!"
-                  activeClassName="bg-primary/10 text-primary!"
+                  className={({ isActive }) =>
+                    cn(
+                      'rounded-md px-3 py-2 text-sm text-foreground! no-underline! transition-colors hover:bg-primary/10 hover:text-primary!',
+                      isActive && 'bg-primary/10 text-primary!'
+                    )
+                  }
                 >
                   {link.name}
                 </NavLink>
@@ -201,65 +217,61 @@ function App() {
             isStaff ? 'pb-28' : ''
           }`}
         >
-        <React.Suspense fallback={null}>
-        <Switch>
-          <Route component={Login} path="/login" />
-          <Route component={Logout} path="/logout" />
-          <ProtectedRoute component={CustomersNew} path="/customers/new" />
-          <ManagerRoute
-            component={CustomersSearch}
-            path="/customers/search"
-          />
-          <ManagerRoute
-            component={CustomersEdit}
-            path="/customers/:id/edit"
-          />
-          <ProtectedRoute
-            component={VehicleNew}
-            path="/customers/:id/vehicles/new"
-          />
-          <ProtectedRoute
-            component={ManageUserWashes}
-            path="/customers/:id/washes/new"
-          />
-          <ProtectedRoute component={SalesNew} path="/new_customer/" />
-          <ProtectedRoute component={SearchCustomer} path="/search/q" />
-          <ProtectedRoute
-            component={SalesNewVehicles}
-            path="/sales/:id/vehicles/new"
-          />
-          <ProtectedRoute component={UsersReport} path="/customers/report" />
-          <ProtectedRoute component={DailyWashesDetail} path="/customers/daily_wash_list" />
-          <ProtectedRoute component={CustomersShow} path="/customers/:id" />
-          <ManagerRoute component={CustomersIndex} path="/customers" />
-          <ProtectedRoute component={WashNew} path="/wash_types/new" />
-          <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
-          <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
-          <ProtectedRoute component={WashesOrder} path="/wash_order" />
-          <ProtectedRoute component={WashesIndex} path="/wash_types" />
-          <ManagerRoute component={UserNew} path="/settings/users/new" />
-          <ManagerRoute component={UserEdit} path="/settings/users/:id/edit" />
-          <ManagerRoute component={WashFreeEdit} path="/settings/:id/edit" />
-          <ManagerRoute component={UserIndex} path="/settings/users" />
-          <ManagerRoute component={Settings} path="/settings" />
-          <ManagerRoute component={WashesReport} path="/reports/washes" />
-          <ManagerRoute component={DailyWashes} path="/reports/daily_washes" />
-          <ManagerRoute component={ActiveUsersReport} path="/reports/active_users" />
-          <Route component={PasswordReset} path="/:id/password_reset" />
-          <Route component={ForgotPassword} path="/forgot_password" />
-          <Route component={SignUp} path="/sign_up" />
-          <HomeRoute
-            manager={AdminHome}
-            sales={SalesHome}
-            customer={CustomerHome}
-            public={Public}
+        <React.Suspense fallback={<PageLoading label="Loading the page" />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route element={<RequireRole roles={['manager', 'salesperson']} />}>
+            <Route path="/customers/new" element={<CustomersNew />} />
+            <Route path="/customers/report" element={<UsersReport />} />
+            <Route path="/customers/daily_wash_list" element={<DailyWashesDetail />} />
+            <Route path="/customers/:id" element={<CustomersShow />} />
+            <Route path="/customers/:id/vehicles/new" element={<VehicleNew />} />
+            <Route path="/customers/:id/washes/new" element={<ManageUserWashes />} />
+            <Route path="/new_customer" element={<SalesNew />} />
+            <Route path="/search/q" element={<SearchCustomer />} />
+            <Route path="/sales/:id/vehicles/new" element={<SalesNewVehicles />} />
+            <Route path="/wash_types" element={<WashesIndex />} />
+            <Route path="/wash_types/new" element={<WashNew />} />
+            <Route path="/wash_types/:id" element={<WashesShow />} />
+            <Route path="/wash_types/:id/edit" element={<WashEdit />} />
+            <Route path="/wash_order" element={<WashesOrder />} />
+          </Route>
+
+          <Route element={<RequireRole roles={['manager']} />}>
+            <Route path="/customers" element={<CustomersIndex />} />
+            <Route path="/customers/search" element={<CustomersSearch />} />
+            <Route path="/customers/:id/edit" element={<CustomersEdit />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/:id/edit" element={<WashFreeEdit />} />
+            <Route path="/settings/users" element={<UserIndex />} />
+            <Route path="/settings/users/new" element={<UserNew />} />
+            <Route path="/settings/users/:id/edit" element={<UserEdit />} />
+            <Route path="/reports/washes" element={<WashesReport />} />
+            <Route path="/reports/daily_washes" element={<DailyWashes />} />
+            <Route path="/reports/active_users" element={<ActiveUsersReport />} />
+            <Route path="/reports/insured_washes" element={<InsuredWashes />} />
+          </Route>
+
+          <Route path="/:id/password_reset" element={<PasswordReset />} />
+          <Route path="/forgot_password" element={<ForgotPassword />} />
+          <Route path="/sign_up" element={<SignUp />} />
+          <Route
             path="/"
+            element={
+              <HomeRoute
+                manager={AdminHome}
+                sales={SalesHome}
+                customer={CustomerHome}
+                public={Public}
+              />
+            }
           />
-        </Switch>
+        </Routes>
         </React.Suspense>
         </div>
         {isStaff ? (
-          <BottomNav links={Links} onMore={() => setMobileNavOpen(true)} />
+          <BottomNav links={Links} />
         ) : null}
         <Toaster />
       </div>

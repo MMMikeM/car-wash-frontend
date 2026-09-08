@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { Suspense } from 'react'
+import useSWR from 'swr'
+import { useNavigate } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Button } from '@/components/ui/button'
+import { ListSkeleton } from '../../components/Loading'
 
-const Settings = () => {
-  let [systemUsers, setSystemUsers] = useState([])
-  let [loading, setLoading] = useState(false)
-  const history = useHistory()
+const SettingsContent = () => {
+  const navigate = useNavigate()
 
-  const handleFetchSystemUsers = async () => {
-    let res = await getSystemUsers()
-    setSystemUsers(res)
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    handleFetchSystemUsers()
-  }, [])
+  const { data } = useSWR('the users', getSystemUsers)
+  const systemUsers = data
 
   const editUser = (user) => {
-    history.push(`users/${user.id}/edit`)
+    navigate(`users/${user.id}/edit`)
   }
 
   const handleAdd = () => {
-    history.push('/settings/users/new')
+    navigate('/settings/users/new')
   }
 
+
   return (
-    <>
-      {!loading ? (
         <div className="w-full">
           <div className="flex flex-wrap max-md mx-auto">
             <div className="w-full md:w-3/4"></div>
@@ -57,11 +49,13 @@ const Settings = () => {
             </div>
           </div>
         </div>
-      ) : (
-        ''
-      )}
-    </>
   )
 }
+
+const Settings = () => (
+  <Suspense fallback={<ListSkeleton rows={5} columns={3} label="Loading the users" />}>
+    <SettingsContent />
+  </Suspense>
+)
 
 export default Settings

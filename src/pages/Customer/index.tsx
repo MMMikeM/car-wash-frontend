@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 import Washes from '../Washes/customerIndex'
 import {
   CircularProgressbarWithChildren,
@@ -7,20 +8,24 @@ import {
 import 'react-circular-progressbar/dist/styles.css'
 import { getCustomer } from '../../services/customersApi'
 import type { Customer } from '../../types'
+import { reportError } from '@/lib/reportError'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 const CustomerHome = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [loading, setLoading] = useState(true)
   let [isViewingPrice, setIsViewingPrice] = useState(false)
 
-  const handleFetchCustomer = async () => {
-    let res = await getCustomer(sessionStorage.getItem('id'))
-    setLocalCustomer(res)
-    setLoading(false)
-  }
-  useEffect(() => {
-    handleFetchCustomer()
-  }, [])
+  // Not suspended: the greeting and the ring sit among static copy, so the
+  // placeholders go inside the headings rather than replacing the page.
+  const { data, isLoading } = useSWR(
+    ['the customer', sessionStorage.getItem('id')],
+    () => getCustomer(sessionStorage.getItem('id')),
+    // Opting out of Suspense opts out of the boundary, so this reports itself.
+    { suspense: false, onError: (error) => reportError(error, 'load your profile') }
+  )
+  const localCustomer: Partial<Customer> = data ?? {}
+
 
   let classCreator = (bgNumber) =>
     `bg-${bgNumber} w-1/2 text-primary hover:text-primary/80 rounded-0 btn-link py-0 border-0 d-block button-to-link h-full`
@@ -33,13 +38,23 @@ const CustomerHome = () => {
         <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 justify-items-between">
           <div className="flex justify-center">
             <div className="flex flex-col items-center">
-              <h4 className="text-9 my-3 mx-3">
-                Welcome {localCustomer.name}!
+              <h4 className="text-9 my-3 mx-3" aria-busy={isLoading}>
+                Welcome{' '}
+                {isLoading ? (
+                  <Skeleton className="inline-block h-[1em] w-32 align-middle" />
+                ) : (
+                  localCustomer.name
+                )}
+                !
               </h4>
-              <h4 className="text-7 my-3 mx-3">
+              <h4 className="text-7 my-3 mx-3" aria-busy={isLoading}>
                 You have{' '}
                 <span className="text-primary">
-                  {localCustomer.total_points}
+                  {isLoading ? (
+                    <Skeleton className="inline-block h-[1em] w-10 align-middle" />
+                  ) : (
+                    localCustomer.total_points
+                  )}
                 </span>{' '}
                 Carbon Coins!
               </h4>
@@ -48,7 +63,7 @@ const CustomerHome = () => {
           <div className="max-sm mx-auto flex justify-center px-5 py-5 mb-5">
             <div style={{ width: '240px' }}>
               <CircularProgressbarWithChildren
-                value={localCustomer.total_points}
+                value={localCustomer.total_points ?? 0}
                 strokeWidth={4}
                 styles={buildStyles({
                   strokeLinecap: 'butt',
@@ -67,7 +82,7 @@ const CustomerHome = () => {
               </CircularProgressbarWithChildren>
             </div>
           </div>
-          <div className="text-small pt-5 max-md mx-auto mb-5 pb-5 pt-3">
+          <div className="text-small max-md mx-auto mb-5 pb-5 pt-3">
             <p className="text-9">
               *T’s & C’s. Complimentary Disinfectant Fogging Included in Full
               House And CARBON Treatment When Available. Carbon Loyalty
@@ -90,15 +105,20 @@ const CustomerHome = () => {
       )}
 
       <div className="footer flex">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsViewingPrice(false)}
-          className={accountPage}
+          className={cn('h-full rounded-none', accountPage)}
         >
           Account
-        </button>
-        <button onClick={() => setIsViewingPrice(true)} className={pricesPage}>
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => setIsViewingPrice(true)}
+          className={cn('h-full rounded-none', pricesPage)}
+        >
           Prices
-        </button>
+        </Button>
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ export const CustomerForm = (props) => {
       editRecordMethod={props.editRecordMethod}
       record={props.localCustomer}
       saveFormData={props.save}
+      saving={props.saving}
       editableKeys={['name', 'email', 'contact_number', 'total_points', 'loyalty_enabled']}
       valueTransformations={['', '', '', '', '']}
       inputTypes={['text', 'email', 'text', 'number', 'checkbox']}

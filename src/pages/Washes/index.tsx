@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
+import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { getWashes, deleteWash } from '../../services/washTypesApi'
 import { Link } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
+import { reportError } from '@/lib/reportError'
+import { toast } from '@/components/ui/toast'
+import { WashListSkeleton } from '../../components/Loading'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { FaEdit, FaTrash, FaInfo, FaPlus } from 'react-icons/fa'
+import ConfirmDialog from '../../components/ConfirmDialog'
 
 const WashCard = ({ wash, onDelete }) => {
   return (
@@ -30,12 +35,12 @@ const WashCard = ({ wash, onDelete }) => {
           <div className="flex gap-1">
             <Link to={`/wash_types/${wash.id}`}>
               <Button variant="ghost" size="icon-sm" className="text-primary" aria-label="View wash type">
-                <FaInfo />
+                <Info />
               </Button>
             </Link>
             <Link to={`/wash_types/${wash.id}/edit`}>
               <Button variant="ghost" size="icon-sm" className="text-primary" aria-label="Edit wash type">
-                <FaEdit />
+                <SquarePen />
               </Button>
             </Link>
             <Button
@@ -45,7 +50,7 @@ const WashCard = ({ wash, onDelete }) => {
               aria-label="Delete wash type"
               onClick={() => onDelete(wash.id)}
             >
-              <FaTrash />
+              <Trash2 />
             </Button>
           </div>
         </div>
@@ -66,12 +71,12 @@ const WashTableRow = ({ wash, onDelete }) => {
         <div className="flex gap-2">
           <Link to={`/wash_types/${wash.id}`}>
             <Button variant="ghost" size="icon-xs" aria-label="View wash type">
-              <FaInfo />
+              <Info />
             </Button>
           </Link>
           <Link to={`/wash_types/${wash.id}/edit`}>
             <Button variant="ghost" size="icon-xs" aria-label="Edit wash type">
-              <FaEdit />
+              <SquarePen />
             </Button>
           </Link>
           <Button
@@ -81,7 +86,7 @@ const WashTableRow = ({ wash, onDelete }) => {
             className="text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={() => onDelete(wash.id)}
           >
-            <FaTrash />
+            <Trash2 />
           </Button>
         </div>
       </td>
@@ -89,47 +94,51 @@ const WashTableRow = ({ wash, onDelete }) => {
   )
 }
 
-const WashesIndex = () => {
-  let [washes, setWashes] = useState([])
-  let [loading, setLoading] = useState(true)
+const WashesIndexContent = () => {
+  let [modalIsVisible, setModalIsVisible] = useState(false)
+  let [washToDelete, setWashToDelete] = useState<{ id: string; name: string }>()
 
-  const handleFetchWashes = async () => {
-    let res = await getWashes()
-    let transformedWashes = transformWashesCentsToRands(res)
-    setWashes(transformedWashes)
-    setLoading(false)
+  const { data, mutate } = useSWR('the wash types', getWashes)
+
+  const washes = transformWashesCentsToRands(data)
+
+  const requestDeleteWash = (washId) => {
+    setWashToDelete(washes.find((wash) => wash.id === washId))
+    setModalIsVisible(true)
   }
 
-  useEffect(() => {
-    handleFetchWashes()
-  }, [])
+  const handleDeleteWash = async () => {
+    setModalIsVisible(false)
+    if (!washToDelete) return
 
-  const handleDeleteWash = async (washId) => {
-    let mustDeletewash = window.confirm(
-      'Are you sure you want to delete this Wash Option?'
-    )
-
-    if (mustDeletewash) {
-      setLoading(!loading)
-      await deleteWash(washId)
-      handleFetchWashes()
+    try {
+      await deleteWash(washToDelete.id)
+    } catch (error) {
+      reportError(error, 'delete the wash type')
+      return
     }
+    toast.success('Wash type deleted')
+    mutate()
   }
 
   const sortedWashes = washes
     .filter((wash) => wash.free === false)
     .sort((a, b) => (a.order > b.order ? 1 : -1))
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    )
-  }
-
   return (
     <div className="w-full">
+      <ConfirmDialog
+        open={modalIsVisible}
+        onOpenChange={setModalIsVisible}
+        onConfirm={handleDeleteWash}
+        title="Delete wash type"
+        description={`Are you sure you would like to delete ${
+          washToDelete?.name ?? 'this wash type'
+        }?`}
+        confirmLabel="Delete"
+        destructive
+      />
+
       {/* Add button - full width like customers page */}
       <Link to="/wash_types/new" className="block mb-4">
         <Button className="w-full">Add Wash</Button>
@@ -145,7 +154,7 @@ const WashesIndex = () => {
           </Card>
         ) : (
           sortedWashes.map((wash) => (
-            <WashCard key={wash.id} wash={wash} onDelete={handleDeleteWash} />
+            <WashCard key={wash.id} wash={wash} onDelete={requestDeleteWash} />
           ))
         )}
       </div>
@@ -174,7 +183,7 @@ const WashesIndex = () => {
                   </tr>
                 ) : (
                   sortedWashes.map((wash) => (
-                    <WashTableRow key={wash.id} wash={wash} onDelete={handleDeleteWash} />
+                    <WashTableRow key={wash.id} wash={wash} onDelete={requestDeleteWash} />
                   ))
                 )}
               </tbody>
@@ -185,5 +194,11 @@ const WashesIndex = () => {
     </div>
   )
 }
+
+const WashesIndex = () => (
+  <Suspense fallback={<WashListSkeleton rows={9} label="Loading the wash types" />}>
+    <WashesIndexContent />
+  </Suspense>
+)
 
 export default WashesIndex

@@ -1,45 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import { getWashes, deleteWash } from '../../services/washTypesApi'
+import React, { Suspense } from 'react'
+import useSWR from 'swr'
+import { getWashes } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
-import { useParams, useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
+import { ListSkeleton } from '../../components/Loading'
 
-const Settings = () => {
-  let [washes, setWashes] = useState([])
-  let [loading, setLoading] = useState(true)
-  const history = useHistory()
-  let { id } = useParams()
+const SettingsContent = () => {
+  const navigate = useNavigate()
 
-  const handleFetchWashes = async () => {
-    let res = await getWashes()
-    let transformedWashes = transformWashesCentsToRands(res)
-    setWashes(transformedWashes)
-    setLoading(false)
-  }
 
-  useEffect(() => {
-    handleFetchWashes()
-  }, [])
-
-  const handleDeleteWash = async (washId) => {
-    let mustDeletewash = window.confirm(
-      'Are you sure you want to delete this Wash Option?'
-    )
-    if (mustDeletewash) {
-      setLoading(!loading)
-      await deleteWash(washId)
-      handleFetchWashes()
-    }
-  }
+  const { data } = useSWR('the wash types', getWashes)
+  const washes = transformWashesCentsToRands(data)
 
   const editFreeWash = (wash) => {
-    history.push(`settings/${wash.id}/edit`)
+    navigate(`settings/${wash.id}/edit`)
   }
+
 
   return (
     <div className="w-full">
-      {!loading ? (
         <div className="flex flex-wrap max-md mx-auto">
           {/* <div className="w-full md:w-3/4"></div>
           <div className="w-full md:w-1/4 text-right">
@@ -60,11 +41,16 @@ const Settings = () => {
             />
           </div>
         </div>
-      ) : (
-        ''
-      )}
     </div>
   )
 }
+
+const Settings = () => (
+  <Suspense fallback={<div className="w-full">
+        <ListSkeleton rows={2} columns={3} label="Loading the free washes" />
+      </div>}>
+    <SettingsContent />
+  </Suspense>
+)
 
 export default Settings

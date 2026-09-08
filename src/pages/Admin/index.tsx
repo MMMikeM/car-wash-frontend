@@ -1,6 +1,6 @@
 import React from 'react'
 import HomeTile from '@/components/HomeTile'
-import { ListOrdered, Settings, UserCheck } from 'lucide-react'
+import { ListOrdered, Settings, ShieldCheck, UserCheck } from 'lucide-react'
 
 const AdminHome = () => {
   const cards = [
@@ -38,6 +38,11 @@ const AdminHome = () => {
       name: 'Active Users',
       Icon: UserCheck,
       path: '/reports/active_users',
+    },
+    {
+      name: 'Insured Washes',
+      Icon: ShieldCheck,
+      path: '/reports/insured_washes',
     },
     {
       name: 'Wash Order',

@@ -1,9 +1,5 @@
 import React from 'react'
-import { customerSchema } from '../../lib/schemas'
 import BasicForm from '../../components/Forms/BasicForm'
-import PasswordReset from '../Auth/PasswordReset'
-
-export const schema = customerSchema
 
 export const SignUpForm = (props) => {
   return (
@@ -11,6 +7,7 @@ export const SignUpForm = (props) => {
       editRecordMethod={props.editRecordMethod}
       record={props.localCustomer}
       saveFormData={props.save}
+      saving={props.saving}
       editableKeys={[
         'name',
         'email',

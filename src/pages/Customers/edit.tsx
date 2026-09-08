@@ -1,49 +1,50 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import { getCustomer, saveCustomer } from '../../services/customersApi'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
+import { FormSkeleton } from '../../components/Loading'
 
-const CustomersEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [loading, setLoading] = useState(true)
+const CustomersEditContent = () => {
+  const [draft, setDraft] = useState<Partial<Customer>>()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
     tempRecord[key] = value
-    setLocalCustomer(tempRecord)
+    setDraft(tempRecord)
   }
 
   const save = async () => {
     let valid = validate(schema, localCustomer)
     if (valid) {
       const { name, email, contact_number, total_points, loyalty_enabled } = localCustomer
-      await saveCustomer(localCustomer.id, { name, email, contact_number, total_points, loyalty_enabled })
-      history.push(`/customers/${localCustomer.id}`)
+      try {
+        await saveCustomer(localCustomer.id, { name, email, contact_number, total_points, loyalty_enabled })
+      } catch (error) {
+        reportError(error, 'save the customer')
+        return
+      }
+      navigate(`/customers/${localCustomer.id}`)
     }
   }
 
-  useEffect(() => {
-    const handleFetchCustomer = async () => {
-      let res = await getCustomer(id)
-      setLocalCustomer(res)
-      setLoading(false)
-    }
-    handleFetchCustomer()
-  }, [id])
+  const { data } = useSWR(['the customer', id], () => getCustomer(id))
+  const localCustomer: Partial<Customer> = draft ?? data ?? {}
 
   let handleClick = () => {
-    history.push(`/settings/users/${id}/edit`)
+    navigate(`/settings/users/${id}/edit`)
   }
+
 
   return (
     <div className="w-full">
-      {!loading ? (
         <div className="max-sm mx-auto">
           <div className="flex justify-end">
             <Button className="my-3 mr-4" onClick={handleClick}>
@@ -56,11 +57,14 @@ const CustomersEdit = () => {
             save={save}
           />
         </div>
-      ) : (
-          ''
-        )}
     </div>
   )
 }
+
+const CustomersEdit = () => (
+  <Suspense fallback={<FormSkeleton fields={5} label="Loading the customer" />}>
+    <CustomersEditContent />
+  </Suspense>
+)
 
 export default CustomersEdit

@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import { reportError } from '@/lib/reportError'
 import { centsToRands } from '../../helpers'
 import type { WashType } from '../../types'
+import { FormSkeleton } from '../../components/Loading'
 
-const WashFreeEdit = () => {
-  let [localWash, setLocalWash] = useState<Partial<WashType>>({})
-  let [loading, setLoading] = useState(true)
+const WashFreeEditContent = () => {
+  const [draft, setDraft] = useState<Partial<WashType>>()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
@@ -19,28 +21,27 @@ const WashFreeEdit = () => {
     } else {
       tempRecord[key] = value
     }
-    setLocalWash(tempRecord)
+    setDraft(tempRecord)
   }
 
   const save = async () => {
     const { name, cost, points, description } = localWash
-    await saveWash(localWash.id, { name, cost, points, description })
-    history.push(`/wash_types/${id}`)
+    try {
+      await saveWash(localWash.id, { name, cost, points, description })
+    } catch (error) {
+      reportError(error, 'save the wash type')
+      return
+    }
+    navigate(`/wash_types/${id}`)
   }
 
-  useEffect(() => {
-    const handleFetchWash = async () => {
-      let res = await getWash(id)
-      setLocalWash(res)
-      setLoading(false)
-    }
-    handleFetchWash()
-  }, [id])
+  const { data } = useSWR(['the wash type', id], () => getWash(id))
+  const localWash: Partial<WashType> = draft ?? data ?? {}
+
 
   return (
     <div className="w-full">
       <div className="max-sm mx-auto bg-3 p-5 rounded">
-        {!loading ? (
           <BasicForm
             editRecordMethod={editRecordMethod}
             record={localWash}
@@ -48,12 +49,19 @@ const WashFreeEdit = () => {
             editableKeys={['name', 'cost', 'points', 'description']}
             valueTransformations={['', centsToRands, '', '']}
           />
-        ) : (
-          ''
-        )}
       </div>
     </div>
   )
 }
+
+const WashFreeEdit = () => (
+  <Suspense fallback={<div className="w-full">
+      <div className="max-sm mx-auto bg-3 p-5 rounded">
+          <FormSkeleton fields={4} label="Loading the wash type" />
+        </div>
+      </div>}>
+    <WashFreeEditContent />
+  </Suspense>
+)
 
 export default WashFreeEdit

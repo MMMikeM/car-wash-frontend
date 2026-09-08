@@ -14,14 +14,12 @@ export const centsToRands = (cents) => cents / 100
 export const transformCentsToRands = (input) => formatRands(centsToRands(input))
 
 export const transformWashesCentsToRands = (washes) =>
-  washes.map((wash) => {
-    wash.cost = formatRands(centsToRands(wash.cost))
-    wash.price = formatRands(centsToRands(wash.price))
-    return wash
-  })
+  washes.map((wash) => ({
+    ...wash,
+    cost: formatRands(centsToRands(wash.cost)),
+    price: formatRands(centsToRands(wash.price)),
+  }))
 
-// The total is summed off the raw cents before formatReportMoney rewrites the
-// rows in place, so the two run in that order.
 export const sumReportTotal = (rows) =>
   formatRands(
     centsToRands(
@@ -30,11 +28,30 @@ export const sumReportTotal = (rows) =>
   )
 
 export const formatReportMoney = (rows) =>
-  rows.map((row) => {
-    row.total_cost = formatRands(centsToRands(row.total_cost))
-    row.total_price = formatRands(centsToRands(row.total_price))
-    return row
-  })
+  rows.map((row) => ({
+    ...row,
+    total_cost: formatRands(centsToRands(row.total_cost)),
+    total_price: formatRands(centsToRands(row.total_price)),
+  }))
+
+/**
+ * Sign-ups without an email get a generated `<uuid>@carboncarwash.co.za`
+ * address. No `g` flag: `test()` on a global regex advances `lastIndex`, so a
+ * shared instance would alternate true/false between calls.
+ */
+const ANONYMOUS_EMAIL =
+  /[\d|a-f]{8}\b-[\d|a-f]{4}-[\d|a-f]{4}-[\d|a-f]{4}-\b[\d|a-f]{12}\b@carboncarwash.co.za/
+
+export const isAnonymousEmail = (email) => ANONYMOUS_EMAIL.test(email)
+
+const pad = (value: number) => String(value).padStart(2, '0')
+
+// Local time, which is what the report filters send.
+export const formatDate = (date: Date) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+
+export const formatDateTime = (date: Date) =>
+  `${formatDate(date)} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 
 export const handleDownload = async (res, filename) => {
   const url = window.URL.createObjectURL(new Blob([res]))

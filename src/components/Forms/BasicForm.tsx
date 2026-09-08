@@ -23,7 +23,7 @@ const inputs = (
     return inputTypes[index] === 'checkbox' ? (
       <div key={key} className="flex items-center space-x-2 py-3">
         <input
-          onChange={(e) => updateValueMethod(record, key, !value)}
+          onChange={() => updateValueMethod(record, key, !value)}
           checked={value}
           className="h-4 w-4 rounded border-input bg-background text-primary focus:ring-primary focus:ring-offset-background"
           type="checkbox"
@@ -38,10 +38,14 @@ const inputs = (
       </div>
     ) : (
       <div className="mb-4" key={key}>
-        <label className="block text-sm font-medium text-muted-foreground mb-1.5">
+        <label
+          className="block text-sm font-medium text-muted-foreground mb-1.5"
+          htmlFor={`field-${key}`}
+        >
           {snakeToSpace(key)}
         </label>
         <input
+          id={`field-${key}`}
           type={inputTypes[index] || 'text'}
           onChange={(e) => updateValueMethod(record, key, e.target.value)}
           className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
@@ -65,9 +69,20 @@ const BasicForm = (props) => {
       )}
       <Button
         className="w-full mt-4"
+        disabled={props.saving}
         onClick={() => props.saveFormData()}
       >
-        {props.buttonName ? props.buttonName : 'Save'}
+        {props.saving ? (
+          <>
+            <span
+              aria-hidden="true"
+              className="size-4 animate-spin rounded-full border-2 border-current/30 border-t-current"
+            />
+            Saving...
+          </>
+        ) : (
+          props.buttonName ?? 'Save'
+        )}
       </Button>
     </div>
   )

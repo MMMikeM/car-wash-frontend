@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { postCustomer } from '../../services/customersApi'
 import { CustomerForm, schema} from './form'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
 
 const CustomersNew = () => {
   let [localCustomer, setLocalCustomer] = useState({
@@ -13,15 +14,20 @@ const CustomersNew = () => {
   })
   let [loading, setLoading] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
     let valid = validate(schema, localCustomer)
     if (valid){ 
       setLoading(true)
-      let res = await postCustomer(localCustomer)
-      setLoading(false)
-      history.push(`/customers/${res.id}`)
+      try {
+        let res = await postCustomer(localCustomer)
+        navigate(`/customers/${res.id}`)
+      } catch (error) {
+        reportError(error, 'create the customer')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -33,15 +39,12 @@ const CustomersNew = () => {
 
   return (
     <div className="w-1/2 mx-auto flex flex-col">
-      {!loading ? (
         <CustomerForm
+          saving={loading}
           editRecordMethod={editRecordMethod}
           localCustomer={localCustomer}
           save={save}
         />
-      ) : (
-        ''
-      )}
     </div>
   )
 }

@@ -32,7 +32,7 @@ test('shows loyalty_enabled checkbox', async ({ page, api }) => {
 })
 
 test('saves a customer without its vehicles', async ({ page, api }) => {
-  // A customer with many vehicles used to push the payload past a 413.
+  // A customer with many vehicles must not push the payload past a 413.
   const vehicles = Array.from({ length: 100 }, (_, i) => ({
     id: `v-${i}`,
     registration_number: `TEST${i}GP`,

@@ -1,5 +1,6 @@
 import React from 'react'
-import dayjs from 'dayjs'
+import { subMonths } from 'date-fns'
+import { formatDate } from '../../helpers'
 import { getActiveUsersReport } from '../../services/reportsApi'
 import ReportPage from '../../components/Reports/ReportPage'
 
@@ -8,7 +9,7 @@ const ActiveUsersReport = () => (
     fetchReport={getActiveUsersReport}
     fields={['name', 'contact_number']}
     headings={['name', 'contact_number']}
-    initialStartDate={dayjs().subtract(7, 'month').format('YYYY-MM-DD')}
+    initialStartDate={formatDate(subMonths(new Date(), 7))}
     showFilters={false}
   />
 )

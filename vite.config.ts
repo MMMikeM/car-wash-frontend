@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import path from 'path'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -24,7 +23,10 @@ export default defineConfig({
           // Left unassigned so they follow the lazy route that imports them
           // into its own chunk rather than being pinned into vendor.
           if (/react-movable|react-circular-progressbar/.test(id)) return
-          if (/[\\/]react(-dom|-is)?[\\/]|[\\/]scheduler[\\/]/.test(id)) {
+          // Anchored to the node_modules boundary: a bare /react/ also
+          // matches @base-ui/react, which pinned all of Base UI into the
+          // React chunk and undid the caching this split exists for.
+          if (/node_modules\/(react|react-dom|react-is|scheduler)\//.test(id)) {
             return 'react'
           }
           return 'vendor'

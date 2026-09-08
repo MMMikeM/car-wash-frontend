@@ -1,12 +1,10 @@
-import request from './request'
+import { api } from './api'
+import type { Wash } from '../types'
 
-export const postWash = async (body) => {
-  let response = await request('POST', '/washes', body)
-  return response.json()
-}
+export const postWash = (body: {
+  user_id: string
+  wash_type_id: string
+  insurance: boolean
+}) => api.post('washes', { json: body }).json<Wash>()
 
-export const deleteWash = async (id) => {
-  let response = await request('DELETE', `/washes/${id}`)
-  //add error handling here
-  return response.json()
-}
+export const deleteWash = (id: string) => api.delete(`washes/${id}`)

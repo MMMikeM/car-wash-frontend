@@ -23,6 +23,17 @@ export interface WashType {
   free?: boolean
 }
 
+/** Form fields arrive as strings; the API coerces the numeric ones. */
+export interface WashTypeInput {
+  name?: string
+  description?: string
+  cost?: string | number
+  price?: string | number
+  points?: string | number
+  free?: boolean
+  order?: number
+}
+
 export interface Customer {
   id: string
   name: string

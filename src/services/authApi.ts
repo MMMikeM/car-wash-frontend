@@ -1,25 +1,17 @@
-import request from './request'
+import { api } from './api'
+import type { LoginResponse } from '../types'
 
-export const login = async (contact_number, password) => {
-  let response = await request('POST', '/sign_in', {
-    contact_number: contact_number,
-    password: password,
-  })
-  let parsedResponse = response.json()
-  return parsedResponse
-}
+export const login = (contact_number: string, password: string) =>
+  api.post('sign_in', { json: { contact_number, password } }).json<LoginResponse>()
 
-export const updatePassword = async (id, password, password_confirmation) => {
-  let response = await request('PUT', `/customers/${id}/update_password`, {
-    password: password,
-    password_confirmation: password_confirmation,
+export const updatePassword = (
+  id: string,
+  password: string,
+  password_confirmation: string
+) =>
+  api.put(`customers/${id}/update_password`, {
+    json: { password, password_confirmation },
   })
-  return response
-}
 
-export const forgotPassword = async (contact_number) => {
-  let response = await request('POST', `/customers/reset_password`, {
-    contact_number: contact_number,
-  })
-  return response
-}
+export const forgotPassword = (contact_number: string) =>
+  api.post('customers/reset_password', { json: { contact_number } })

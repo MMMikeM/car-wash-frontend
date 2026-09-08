@@ -1,4 +1,4 @@
-import AxeBuilder from '@axe-core/playwright'
+import { AxeBuilder } from '@axe-core/playwright'
 import { test, expect } from './fixtures'
 
 // Axe reports whole nodes, which are unreadable in a diff. Summarise to the

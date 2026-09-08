@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { forgotPassword } from '../../services/authApi'
-import { z } from 'zod'
 import { validate } from '../../lib/validate'
+import { reportError } from '@/lib/reportError'
+import * as v from 'valibot'
 import { contactNumberSchema } from '../../lib/schemas'
 import { toast } from '@/components/ui/toast'
 
-export const schema = z.object({ contact_number: contactNumberSchema.optional() })
+export const schema = v.object({ contact_number: v.optional(contactNumberSchema) })
 
 const ForgotPassword = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let [localUser, setLocalUser] = useState({
     contact_number: '',
   })
@@ -18,12 +19,17 @@ const ForgotPassword = () => {
   const resetPassword = async () => {
     let valid = validate(schema, localUser)
     if (valid) {
-      await forgotPassword(localUser.contact_number)
+      try {
+        await forgotPassword(localUser.contact_number)
+      } catch (error) {
+        reportError(error, 'send the reset link')
+        return
+      }
       toast.success(
         'Check your phone',
         'An SMS with a link to reset your password is on its way.'
       )
-      history.push('/')
+      navigate('/')
     }
   }
 

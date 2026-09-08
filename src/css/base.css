@@ -140,11 +140,6 @@ justify-content: center;
 border: none;
 } */
 
-.react-icons {
-  vertical-align: middle;
-  margin: auto;
-}
-
 div > input:focus,
 div > input:active {
   background: var(--grey-2) !important;

@@ -1,28 +1,28 @@
 import React, { useState } from 'react'
 import { postVehicle } from '../../services/vehiclesApi'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useHistory, useParams } from 'react-router-dom'
-import { z } from 'zod'
+import { useNavigate, useParams } from 'react-router-dom'
 import { validate } from '../../lib/validate'
+import { registrationSchema } from '../../lib/schemas'
+import { reportError } from '@/lib/reportError'
 
 const VehiclesNew = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
   let [data, setData] = useState({ user_id: id, registration_number: '' })
 
   const save = async () => {
-    let valid = validate(schema, data.registration_number)
+    let valid = validate(registrationSchema, data.registration_number)
     if (valid) {
-      let res = await postVehicle(data)
-      history.push('/')
+      try {
+        await postVehicle(data)
+      } catch (error) {
+        reportError(error, 'add the vehicle')
+        return
+      }
+      navigate('/')
     }
   }
-
-  const schema = z
-    .string({ error: 'Please enter a valid registration' })
-    .min(3, 'Please enter at least 3 characters')
-    .max(12, 'Maximum of 12 digits')
-    .regex(/^\w+$/, 'Registrations can only be letters and numbers')
 
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }

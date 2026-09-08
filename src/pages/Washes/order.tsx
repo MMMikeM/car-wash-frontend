@@ -1,51 +1,38 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import { getWashes, updateWashOrder } from '../../services/washTypesApi'
 import { List, arrayMove } from 'react-movable'
 import type { WashType } from '../../types'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
+import { reportError } from '@/lib/reportError'
+import { ListSkeleton } from '../../components/Loading'
 
-const WashesOrder = () => {
-  let [washes, setWashes] = useState<WashType[]>([])
-  let [loading, setLoading] = useState(true)
+const WashesOrderContent = () => {
+  const { data } = useSWR('the wash order', getWashes)
+  const [draft, setDraft] = useState<WashType[]>()
+  const washes = draft ?? [...data].sort((a, b) => a.order - b.order)
 
-  const handleFetchWashes = async () => {
-    let res = await getWashes()
-    console.log(res)
-    console.log(res.sort((a, b) => (a.order - b.order ? -1 : 1)))
-    console.log(await res.sort((a, b) => (a.order - b.order ? -1 : 1)))
-    let sorted = res.sort((a, b) => (a.order - b.order ? -1 : 1))
-    // let renumbered = sorted.map((wash, index) => {
-    //   let temp = wash
-    //   wash.order = index
-    //   return temp
-    // })
-    console.log(sorted)
-    setWashes(sorted)
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    handleFetchWashes()
-  }, [])
-
-  const handleChange = (washes: WashType[], oldIndex, newIndex) => {
-    let newArray = arrayMove<WashType>(washes, oldIndex, newIndex).map((wash, index) => {
-      wash.order = index
-      return wash
-    })
-    setWashes(newArray)
+  const handleChange = (current: WashType[], oldIndex, newIndex) => {
+    const newArray = arrayMove<WashType>(current, oldIndex, newIndex).map(
+      (wash, index) => ({ ...wash, order: index })
+    )
+    setDraft(newArray)
     return newArray
   }
 
-  const handleClick = () => {
-    updateWashOrder(washes)
+  const handleClick = async () => {
+    try {
+      await updateWashOrder(washes)
+    } catch (error) {
+      reportError(error, 'save the wash order')
+      return
+    }
     toast.success('Wash order updated')
   }
 
   return (
     <div className="w-full">
-      {!loading ? (
         <>
           <div
             style={{ margin: 'auto', display: 'flex', justifyContent: 'start' }}
@@ -55,14 +42,9 @@ const WashesOrder = () => {
               onChange={({ oldIndex, newIndex }) => {
                 handleChange(washes, oldIndex, newIndex)
               }}
-              renderList={({ children, props }) => {
-                const { key, ...rest } = props
-                return (
-                  <ul key={key} {...rest}>
-                    {children}
-                  </ul>
-                )
-              }}
+              renderList={({ children, props }) => (
+                <ul {...props}>{children}</ul>
+              )}
               renderItem={({ value, props }) => {
                 const { key, ...rest } = props
                 return (
@@ -86,11 +68,18 @@ const WashesOrder = () => {
             Save order
           </Button>
         </>
-      ) : (
-        ''
-      )}
     </div>
   )
 }
+
+const WashesOrder = () => (
+  <Suspense
+    fallback={
+      <ListSkeleton rows={8} columns={2} actions={false} label="Loading the wash order" />
+    }
+  >
+    <WashesOrderContent />
+  </Suspense>
+)
 
 export default WashesOrder
