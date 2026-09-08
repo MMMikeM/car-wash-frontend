@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom'
 import { NavPanel, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
@@ -6,64 +6,71 @@ import { Toaster } from '@/components/ui/toast'
 
 // Each of these is the only user of a dependency worth ~14kB and ~4kB, so they
 // are the two routes where splitting pays for itself.
-const WashesOrder = React.lazy(() => import('./pages/Washes/order'))
-const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
+import { pageLoaders, prefetchPages } from './pages/routes'
+
+const lazyPages = Object.fromEntries(
+  Object.entries(pageLoaders).map(([key, load]) => [key, React.lazy(load)])
+) as unknown as Record<keyof typeof pageLoaders, React.ComponentType<any>>
+
+const {
+  login: Login,
+  logout: Logout,
+  passwordReset: PasswordReset,
+  forgotPassword: ForgotPassword,
+  customersIndex: CustomersIndex,
+  customersEdit: CustomersEdit,
+  customersNew: CustomersNew,
+  customersSearch: CustomersSearch,
+  customersShow: CustomersShow,
+  vehicleNew: VehicleNew,
+  settings: Settings,
+  washesIndex: WashesIndex,
+  washesShow: WashesShow,
+  washEdit: WashEdit,
+  washNew: WashNew,
+  manageUserWashes: ManageUserWashes,
+  usersReport: UsersReport,
+  washesReport: WashesReport,
+  dailyWashes: DailyWashes,
+  insuredWashes: InsuredWashes,
+  dailyWashesDetail: DailyWashesDetail,
+  activeUsersReport: ActiveUsersReport,
+  userEdit: UserEdit,
+  userNew: UserNew,
+  userIndex: UserIndex,
+  adminHome: AdminHome,
+  salesHome: SalesHome,
+  publicHome: Public,
+  signUp: SignUp,
+  salesNewVehicles: SalesNewVehicles,
+  searchCustomer: SearchCustomer,
+  salesNew: SalesNew,
+  washFreeEdit: WashFreeEdit,
+  washesOrder: WashesOrder,
+  customerHome: CustomerHome,
+} = lazyPages
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
 import { cn } from '@/lib/utils'
 import { PageLoading } from './components/Loading'
 
-import Login from './pages/Auth/Login'
-import Logout from './pages/Auth/Logout'
-import PasswordReset from './pages/Auth/PasswordReset'
-import ForgotPassword from './pages/Auth/ForgotPassword'
 
 
-import CustomersIndex from './pages/Customers/index'
-import CustomersEdit from './pages/Customers/edit'
-import CustomersNew from './pages/Customers/new'
-import CustomersSearch from './pages/Customers/search'
-import CustomersShow from './pages/Customers/show'
 
-import VehicleNew from './pages/Vehicles/new'
 
-import Settings from './pages/Settings/index'
 
-import WashesIndex from './pages/Washes/index'
-import WashesShow from './pages/Washes/show'
-import WashEdit from './pages/Washes/edit'
-import WashNew from './pages/Washes/new'
 
-import ManageUserWashes from './pages/Wash/manageUserWashes'
 
-import UsersReport from './pages/Reports/Users'
-import WashesReport from './pages/Reports/Washes'
-import DailyWashes from './pages/Reports/DailyWashes'
-import InsuredWashes from './pages/Reports/InsuredWashes'
-import DailyWashesDetail from './pages/Reports/DailWashesDetail'
-import ActiveUsersReport from './pages/Reports/ActiveUsers'
 
-import ManagerRoute from './pages/Layouts/ManagerRoute'
-import ProtectedRoute from './pages/Layouts/ProtectedRoute'
+import RequireRole from './pages/Layouts/RequireRole'
 import HomeRoute from './pages/Layouts/HomeRoute'
 
-import UserEdit from './pages/Users/edit'
-import UserNew from './pages/Users/new'
 
-import UserIndex from './pages/Users/index'
-import AdminHome from './pages/Admin/index'
-import SalesHome from './pages/Sales/index'
 
-import Public from './pages/Public/index'
-import SignUp from './pages/Public/new'
 
-import SalesNewVehicles from './pages/Sales/newVehicle'
-import SearchCustomer from './pages/Sales/search'
-import SalesNew from './pages/Sales/newCustomer'
 
 import './css/base.css'
-import WashFreeEdit from './pages/Settings/edit'
 
 const home = {
   name: 'Home',
@@ -163,6 +170,8 @@ const navLinksFor = (roles: string[]): NavLinkItem[] => {
 }
 
 function App() {
+  useEffect(prefetchPages, [])
+
   const roles = currentRoles()
   const Links = navLinksFor(roles)
   const isStaff = roles.some(
@@ -212,32 +221,38 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/customers/new" element={<ProtectedRoute><CustomersNew /></ProtectedRoute>} />
-          <Route path="/customers/search" element={<ManagerRoute><CustomersSearch /></ManagerRoute>} />
-          <Route path="/customers/:id/edit" element={<ManagerRoute><CustomersEdit /></ManagerRoute>} />
-          <Route path="/customers/:id/vehicles/new" element={<ProtectedRoute><VehicleNew /></ProtectedRoute>} />
-          <Route path="/customers/:id/washes/new" element={<ProtectedRoute><ManageUserWashes /></ProtectedRoute>} />
-          <Route path="/new_customer" element={<ProtectedRoute><SalesNew /></ProtectedRoute>} />
-          <Route path="/search/q" element={<ProtectedRoute><SearchCustomer /></ProtectedRoute>} />
-          <Route path="/sales/:id/vehicles/new" element={<ProtectedRoute><SalesNewVehicles /></ProtectedRoute>} />
-          <Route path="/customers/report" element={<ProtectedRoute><UsersReport /></ProtectedRoute>} />
-          <Route path="/customers/daily_wash_list" element={<ProtectedRoute><DailyWashesDetail /></ProtectedRoute>} />
-          <Route path="/customers/:id" element={<ProtectedRoute><CustomersShow /></ProtectedRoute>} />
-          <Route path="/customers" element={<ManagerRoute><CustomersIndex /></ManagerRoute>} />
-          <Route path="/wash_types/new" element={<ProtectedRoute><WashNew /></ProtectedRoute>} />
-          <Route path="/wash_types/:id/edit" element={<ProtectedRoute><WashEdit /></ProtectedRoute>} />
-          <Route path="/wash_types/:id" element={<ProtectedRoute><WashesShow /></ProtectedRoute>} />
-          <Route path="/wash_order" element={<ProtectedRoute><WashesOrder /></ProtectedRoute>} />
-          <Route path="/wash_types" element={<ProtectedRoute><WashesIndex /></ProtectedRoute>} />
-          <Route path="/settings/users/new" element={<ManagerRoute><UserNew /></ManagerRoute>} />
-          <Route path="/settings/users/:id/edit" element={<ManagerRoute><UserEdit /></ManagerRoute>} />
-          <Route path="/settings/:id/edit" element={<ManagerRoute><WashFreeEdit /></ManagerRoute>} />
-          <Route path="/settings/users" element={<ManagerRoute><UserIndex /></ManagerRoute>} />
-          <Route path="/settings" element={<ManagerRoute><Settings /></ManagerRoute>} />
-          <Route path="/reports/washes" element={<ManagerRoute><WashesReport /></ManagerRoute>} />
-          <Route path="/reports/daily_washes" element={<ManagerRoute><DailyWashes /></ManagerRoute>} />
-          <Route path="/reports/active_users" element={<ManagerRoute><ActiveUsersReport /></ManagerRoute>} />
-          <Route path="/reports/insured_washes" element={<ManagerRoute><InsuredWashes /></ManagerRoute>} />
+          <Route element={<RequireRole roles={['manager', 'salesperson']} />}>
+            <Route path="/customers/new" element={<CustomersNew />} />
+            <Route path="/customers/report" element={<UsersReport />} />
+            <Route path="/customers/daily_wash_list" element={<DailyWashesDetail />} />
+            <Route path="/customers/:id" element={<CustomersShow />} />
+            <Route path="/customers/:id/vehicles/new" element={<VehicleNew />} />
+            <Route path="/customers/:id/washes/new" element={<ManageUserWashes />} />
+            <Route path="/new_customer" element={<SalesNew />} />
+            <Route path="/search/q" element={<SearchCustomer />} />
+            <Route path="/sales/:id/vehicles/new" element={<SalesNewVehicles />} />
+            <Route path="/wash_types" element={<WashesIndex />} />
+            <Route path="/wash_types/new" element={<WashNew />} />
+            <Route path="/wash_types/:id" element={<WashesShow />} />
+            <Route path="/wash_types/:id/edit" element={<WashEdit />} />
+            <Route path="/wash_order" element={<WashesOrder />} />
+          </Route>
+
+          <Route element={<RequireRole roles={['manager']} />}>
+            <Route path="/customers" element={<CustomersIndex />} />
+            <Route path="/customers/search" element={<CustomersSearch />} />
+            <Route path="/customers/:id/edit" element={<CustomersEdit />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/:id/edit" element={<WashFreeEdit />} />
+            <Route path="/settings/users" element={<UserIndex />} />
+            <Route path="/settings/users/new" element={<UserNew />} />
+            <Route path="/settings/users/:id/edit" element={<UserEdit />} />
+            <Route path="/reports/washes" element={<WashesReport />} />
+            <Route path="/reports/daily_washes" element={<DailyWashes />} />
+            <Route path="/reports/active_users" element={<ActiveUsersReport />} />
+            <Route path="/reports/insured_washes" element={<InsuredWashes />} />
+          </Route>
+
           <Route path="/:id/password_reset" element={<PasswordReset />} />
           <Route path="/forgot_password" element={<ForgotPassword />} />
           <Route path="/sign_up" element={<SignUp />} />

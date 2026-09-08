@@ -31,6 +31,8 @@ test.describe('public pages', () => {
   ] as const) {
     test(name, async ({ page }) => {
       await page.goto(path)
+      // Routes are lazy; without this the shot can catch the chunk spinner.
+      await expect(page.getByText('Loading the page')).toHaveCount(0)
       await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true })
     })
   }

@@ -33,3 +33,28 @@ test('navigating away clears the error', async ({ page, api }) => {
 
   await expect(page.getByText('Something went wrong')).toBeHidden()
 })
+
+test('a failed read shows the boundary with the API message', async ({ page }) => {
+  // Reads suspend, so a rejected fetch throws to the boundary rather than
+  // toasting over a skeleton that would never resolve.
+  await page.route('**/api/v1/wash_types', (route) =>
+    route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: 'The reports database is offline.' }),
+    })
+  )
+
+  await page.goto('/wash_types')
+
+  await expect(page.getByText('Something went wrong')).toBeVisible()
+  await expect(page.getByText('The reports database is offline.')).toBeVisible()
+})
+
+test('the skeleton shows while a read is in flight', async ({ page }) => {
+  await page.route('**/api/v1/wash_types', () => {})
+  await page.goto('/wash_types')
+
+  await expect(page.locator('output[aria-busy="true"]')).toHaveCount(1)
+  await expect(page.getByText('Loading the wash types')).toBeAttached()
+})
