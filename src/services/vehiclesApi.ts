@@ -1,6 +1,7 @@
-import request from './request'
+import { api } from './api'
+import type { Vehicle } from '../types'
 
-export const postVehicle = async (body) => {
-  let response = await request('POST', '/vehicles', body)
-  return response.json()
-}
+export const postVehicle = (body: {
+  user_id: string
+  registration_number: string
+}) => api.post('vehicles', { json: body }).json<Vehicle>()

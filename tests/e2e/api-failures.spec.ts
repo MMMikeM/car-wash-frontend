@@ -80,3 +80,27 @@ test('a failed report load shows an error rather than staying blank', async ({ p
 
   await expect(page.getByText('Could not load the report').first()).toBeVisible()
 })
+
+test("the API's own message is shown when it sends one", async ({ page, api }) => {
+  await api.customersList()
+  await page.route('**/api/v1/customers/cust-1', (route) =>
+    route.request().method() === 'DELETE'
+      ? route.fulfill({
+          status: 422,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'This customer still has washes recorded.' }),
+        })
+      : route.fallback()
+  )
+
+  await page.goto('/customers')
+  await page
+    .getByRole('button', { name: 'Delete John Doe' })
+    .filter({ visible: true })
+    .click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click()
+
+  await expect(
+    page.getByText('This customer still has washes recorded.').first()
+  ).toBeVisible()
+})

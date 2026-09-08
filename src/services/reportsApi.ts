@@ -1,58 +1,28 @@
-import request from './request'
+import { api } from './api'
 
-export const getWashesReport = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/washes_report?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.json()
-}
+type ReportRow = Record<string, unknown>
 
-export const getUsersReport = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/user_washes?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.json()
-}
+const dateRange = (startDate: string, endDate: string) => ({
+  start_date: startDate,
+  end_date: endDate,
+})
 
-export const getActiveUsersReport = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/active_users?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.json()
-}
+const report =
+  (path: string) =>
+  (startDate: string, endDate: string) =>
+    api.get(`reports/${path}`, { searchParams: dateRange(startDate, endDate) })
+      .json<ReportRow[]>()
 
-export const getDailyWashes = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/washes_daily.json?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.json()
-}
+export const getWashesReport = report('washes_report')
+export const getUsersReport = report('user_washes')
+export const getActiveUsersReport = report('active_users')
+export const getDailyWashes = report('washes_daily.json')
+export const getInsuredWashes = report('insurance.json')
+export const getDailyWashesDetail = report('washes_daily_detail.json')
 
-export const getInsuredWashes = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/insurance.json?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.json()
-}
-
-export const getDailyWashesDetail = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/washes_daily_detail.json?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.json()
-}
-
-
-export const getWashesReportDownload = async (startDate, endDate) => {
-  let response = await request(
-    'GET',
-    `/reports/washes_report.csv?start_date=${startDate}&end_date=${endDate}`
-  )
-  return response.blob()
-}
+export const getWashesReportDownload = (startDate: string, endDate: string) =>
+  api
+    .get('reports/washes_report.csv', {
+      searchParams: dateRange(startDate, endDate),
+    })
+    .blob()

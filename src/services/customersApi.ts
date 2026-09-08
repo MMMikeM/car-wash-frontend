@@ -1,50 +1,35 @@
-import request from './request'
+import { api, paginated } from './api'
+import type { Customer } from '../types'
 
-export const getCustomers = async (page = 0, perPage = 20) => {
-  let response = await request('GET', `/customers?page=${page}&per_page=${perPage}`)
-  const total = parseInt(response.headers.get('X-Instance-Total') || '0', 10)
-  const data = await response.json()
-  return { data, total }
-}
+export const getCustomers = (page = 0, perPage = 20) =>
+  paginated<Customer[]>('customers', { page, per_page: perPage })
 
-export const getCustomersCSV = async () => {
-  let response = await request('GET', '/customers.csv')
-  return response.blob()
-}
+export const searchCustomer = (
+  field: string,
+  value: string,
+  page = 0,
+  perPage = 20
+) =>
+  paginated<Customer[]>('customers', {
+    [field]: value,
+    page,
+    per_page: perPage,
+  })
 
-export const getCustomer = async (id) => {
-  let response = await request('GET', `/customers/${id}`)
-  return response.json()
-}
+export const getCustomersCSV = () => api.get('customers.csv').blob()
 
-export const postCustomer = async (body) => {
-  let response = await request('POST', '/customers', body)
-  return response.json()
-}
+export const getCustomer = (id: string) =>
+  api.get(`customers/${id}`).json<Customer>()
 
-export const saveCustomer = async (id, body) => {
-  let response = await request('PUT', `/customers/${id}`, body)
-  return response.json()
-}
-export const searchCustomer = async (searchTerm, searchValue, page = 0, perPage = 20) => {
-  const query = `${searchTerm}=${encodeURIComponent(searchValue)}&page=${page}&per_page=${perPage}`
-  let response = await request('GET', `/customers?${query}`)
-  const total = parseInt(response.headers.get('X-Instance-Total') || '0', 10)
-  const data = await response.json()
-  return { data, total }
-}
+export const postCustomer = (body: Partial<Customer>) =>
+  api.post('customers', { json: body }).json<Customer>()
 
-export const deleteCustomer = async (id) => {
-  let response = await request('DELETE', `/customers/${id}`)
-  return response.json()
-}
+export const saveCustomer = (id: string, body: Partial<Customer>) =>
+  api.put(`customers/${id}`, { json: body }).json<Customer>()
 
-export const getSystemUsers = async () => {
-  let response = await request('GET', `/system_users`)
-  return response.json()
-}
+export const deleteCustomer = (id: string) => api.delete(`customers/${id}`)
 
-export const saveSystemUsers = async (id, body) => {
-  let response = await request('PUT', `/system_users/${id}/roles`, body)
-  return response.json()
-}
+export const getSystemUsers = () => api.get('system_users').json<Customer[]>()
+
+export const saveSystemUsers = (id: string, body: { roles: string[] }) =>
+  api.put(`system_users/${id}/roles`, { json: body }).json<Customer>()
