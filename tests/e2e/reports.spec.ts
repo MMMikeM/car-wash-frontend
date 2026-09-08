@@ -5,8 +5,6 @@ test.beforeEach(async ({ login, api }) => {
   await api.washTypes()
 })
 
-// Each report is a route plus a ReportPage; the route registration is the part
-// nothing else covers.
 const reports = [
   {
     name: 'washes',
@@ -48,8 +46,8 @@ for (const { name, path, endpoint, row, expected } of reports) {
   })
 }
 
-// The callers that pass no `transform`, or an inline one - the shape that can
-// give ReportPage's loader a new identity every render.
+// An inline or absent `transform` is the shape that gave the loader a new
+// identity every render.
 for (const [name, path, endpoint] of [
   ['active users', '/reports/active_users', 'active_users'],
   ['users today', '/customers/report', 'user_washes'],

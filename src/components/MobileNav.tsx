@@ -36,17 +36,8 @@ const NavLinks = ({ links, Close }) => (
   </nav>
 )
 
-/**
- * The navigation overflow panel, with its own trigger.
- *
- * Wrapping the trigger in the primitive's `Trigger` is the point of this
- * shape: it is what wires `aria-haspopup`, `aria-expanded` and the focus
- * return, none of which a bare button driven by an `isOpen` prop announces.
- *
- * Below `md` it is a bottom drawer, which is what a phone user expects from a
- * bottom tab bar and brings swipe-to-dismiss with it; above `md` it stays the
- * left sheet the desktop header has always used.
- */
+// The trigger goes inside the primitive's `Trigger` for `aria-haspopup`,
+// `aria-expanded` and focus return, which a button on an `isOpen` prop lacks.
 const NavPanel = ({ links, trigger }) => {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [open, setOpen] = useState(false)

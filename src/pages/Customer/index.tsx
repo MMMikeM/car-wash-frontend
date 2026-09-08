@@ -21,8 +21,7 @@ const CustomerHome = () => {
   const { data, isLoading } = useSWR(
     ['the customer', sessionStorage.getItem('id')],
     () => getCustomer(sessionStorage.getItem('id')),
-    // Opting out of Suspense means opting out of the boundary, so this read
-    // reports its own failure.
+    // Opting out of Suspense opts out of the boundary, so this reports itself.
     { suspense: false, onError: (error) => reportError(error, 'load your profile') }
   )
   const localCustomer: Partial<Customer> = data ?? {}
@@ -39,8 +38,6 @@ const CustomerHome = () => {
         <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 justify-items-between">
           <div className="flex justify-center">
             <div className="flex flex-col items-center">
-              {/* The placeholders sit inside the real headings, so the
-                  surrounding copy and the line boxes never move. */}
               <h4 className="text-9 my-3 mx-3" aria-busy={isLoading}>
                 Welcome{' '}
                 {isLoading ? (

@@ -1,6 +1,5 @@
 import { test, expect } from './fixtures'
 
-// Each of these asserts that a failed request is surfaced, not swallowed.
 test.beforeEach(async ({ login, api }) => {
   await login('manager')
   await api.washTypes()
@@ -68,7 +67,6 @@ test('a failed wash capture can be retried rather than stranding the till', asyn
 
   await expect(page.getByText('Could not capture the wash').first()).toBeVisible()
 
-  // The button is usable again, and a second attempt goes through.
   await page.getByRole('button', { name: 'Proceed' }).click()
   await page.getByRole('alertdialog').getByRole('button', { name: 'Accept' }).click()
 

@@ -1,10 +1,6 @@
 import { useLocation } from 'react-router-dom'
 
-/**
- * Reads one query-string value.
- *
- * Returns the value rather than the `URLSearchParams`: a fresh object every
- * render can never be a stable effect dependency, but a string can.
- */
+// Returns the value, not the `URLSearchParams`: a fresh object every render can
+// never be a stable effect dependency.
 export const useQueryParam = (name: string) =>
   new URLSearchParams(useLocation().search).get(name)

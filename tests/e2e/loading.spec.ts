@@ -20,7 +20,6 @@ for (const [name, path, stub, label] of cases) {
     await hang(page, stub)
     await page.goto(path)
 
-    // <output> is implicitly a polite live region, so the label is announced.
     const busy = page.locator('output[aria-busy="true"]')
     await expect(busy).toHaveCount(1)
     await expect(busy).toContainText(label)
@@ -51,8 +50,7 @@ test('a saving form stays on screen with the button showing progress', async ({ 
 })
 
 test('the placeholder occupies the height the real rows will', async ({ page }) => {
-  // The point of a content-shaped skeleton over a spinner: swapping one for
-  // the other must not move the page.
+  // Swapping skeleton for content must not move the page.
   let release: () => void
   const arrived = new Promise<void>((resolve) => (release = resolve))
   await page.route('**/api/v1/customers?*', async (route) => {
@@ -128,8 +126,7 @@ test('the wash prices keep their grid shape while loading', async ({ page, login
   const real = await realCard.boundingBox()
   const afterHeight = await page.evaluate(() => document.body.scrollHeight)
 
-  // Card shape, not page height: how many wash types exist is data the
-  // skeleton cannot know, so only the per-card geometry is assertable.
+  // Only per-card geometry is assertable: the skeleton cannot know the count.
   expect(Math.abs(real!.height - placeholder!.height)).toBeLessThan(6)
   expect(Math.abs(real!.width - placeholder!.width)).toBeLessThan(2)
   expect(beforeHeight).toBeGreaterThan(0)

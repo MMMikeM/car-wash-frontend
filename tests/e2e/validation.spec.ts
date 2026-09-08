@@ -1,7 +1,5 @@
 import { test, expect } from './fixtures'
 
-// The rules with the least obvious encoding: the empty-string email union, the
-// cross-field password check, and the numeric coercion on the wash form.
 
 const fill = async (page, label: string, value: string) => {
   await page.getByLabel(label, { exact: false }).first().fill(value)

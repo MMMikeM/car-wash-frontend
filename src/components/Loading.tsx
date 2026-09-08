@@ -11,13 +11,8 @@ import {
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 
-/**
- * Wraps a placeholder so assistive tech is told the page is busy and what is
- * coming. Without it a skeleton announces nothing: it is decorative markup.
- *
- * `<output>` is implicitly a polite live region, so the label is read without
- * interrupting, and the shapes are hidden so they are not read out one by one.
- */
+// `<output>` is implicitly a polite live region, so the label announces without
+// interrupting.
 const LoadingRegion = ({ label, className = '', children }) => (
   <output aria-busy="true" className={cn('block w-full', className)}>
     <span className="sr-only">{label}</span>
@@ -25,18 +20,13 @@ const LoadingRegion = ({ label, className = '', children }) => (
   </output>
 )
 
-/**
- * Cycled rather than random: a skeleton that reflows on every render draws the
- * eye, and a screenshot of one is not comparable between runs.
- */
+// Cycled rather than random, so the shapes are stable across renders and
+// comparable between screenshot runs.
 const WIDTHS = ['w-32', 'w-20', 'w-40', 'w-24', 'w-36', 'w-28']
 const widthAt = (index: number) => WIDTHS[index % WIDTHS.length]
 
-/**
- * Mirrors BasicTable, down to the breakpoint it switches at and the elements
- * it switches to. Sharing the real Table and Card means the rows occupy the
- * height the data will, so nothing moves when it arrives.
- */
+// Breakpoint and elements must track BasicTable's, or the rows resize when the
+// data arrives.
 const ListShapes = ({
   rows,
   columns,
@@ -121,19 +111,14 @@ export const ListSkeleton = ({
   </LoadingRegion>
 )
 
-/**
- * The bespoke customer and wash-type lists: a stack of cards on a phone, a
- * table on a wide screen, with a primary action above both.
- */
 export const RecordListSkeleton = ({ rows = 5, label = 'Loading' }) => (
   <LoadingRegion label={label}>
     <Skeleton className="mb-4 h-9 w-full" />
 
     <div className="md:hidden">
       {Array.from({ length: rows }, (_, row) => (
-        // The real elements with placeholders inside them, rather than boxes
-        // guessed at the right size: line height and the margin base.css puts
-        // on an h3 then come from the same CSS the records will use.
+        // Placeholders sit inside the real elements, so spacing comes from the
+        // same CSS the records will use.
         <div
           key={row}
           className="bg-card mb-2 flex flex-col gap-1 rounded-lg px-4 py-3"
@@ -163,17 +148,11 @@ export const RecordListSkeleton = ({ rows = 5, label = 'Loading' }) => (
     </div>
 
     <div className="hidden md:block">
-      {/* xs buttons in these rows, not the default size. */}
       <ListShapes rows={rows} columns={4} actions actionSize="size-6" tableOnly />
     </div>
   </LoadingRegion>
 )
 
-/**
- * Mirrors the BasicCard grid on the customer-facing wash prices: the same
- * responsive columns and the same tall card, so the grid does not collapse to
- * a single column and then reflow when the prices land.
- */
 export const CardGridSkeleton = ({
   cards = 6,
   descriptionLines = 3,
@@ -195,8 +174,7 @@ export const CardGridSkeleton = ({
                 {Array.from({ length: descriptionLines }, (_line, line) => (
                   <Skeleton
                     key={line}
-                    // No margin between lines: wrapped text has none, so the
-                    // block matches the paragraph it stands in for exactly.
+                    // No margin: wrapped text has none either.
                     className={cn(
                       'block h-[1em]',
                       line === descriptionLines - 1 ? 'w-2/3' : 'w-full'
@@ -216,12 +194,7 @@ export const CardGridSkeleton = ({
   </LoadingRegion>
 )
 
-/**
- * Mirrors the wash-type card: name and order on the left, price and cost on
- * the right, then a divided footer of points and three icon actions. A
- * different shape from the customer card, so it gets its own placeholder
- * rather than borrowing one that is 60px short per row.
- */
+// Its own shape rather than the customer card's, which is 60px short per row.
 export const WashListSkeleton = ({ rows = 8, label = 'Loading' }) => (
   <LoadingRegion label={label}>
     <Skeleton className="mb-4 h-9 w-full" />
@@ -270,7 +243,6 @@ export const WashListSkeleton = ({ rows = 8, label = 'Loading' }) => (
   </LoadingRegion>
 )
 
-/** A record shown as icon-and-value rows rather than as a form. */
 export const DetailSkeleton = ({ rows = 5, label = 'Loading' }) => (
   <LoadingRegion label={label}>
     <div className="bg-3 max-sm flex flex-col rounded px-4 pt-4 pb-3">
@@ -287,9 +259,6 @@ export const DetailSkeleton = ({ rows = 5, label = 'Loading' }) => (
   </LoadingRegion>
 )
 
-/**
- * Mirrors BasicForm: label above input, and the full-width submit it ends on.
- */
 export const FormSkeleton = ({ fields = 4, label = 'Loading' }) => (
   <LoadingRegion label={label}>
     {Array.from({ length: fields }, (_, field) => (
@@ -302,10 +271,6 @@ export const FormSkeleton = ({ fields = 4, label = 'Loading' }) => (
   </LoadingRegion>
 )
 
-/**
- * For a whole route, where the shape of what is coming is not known - a lazy
- * chunk, say. Centred rather than content-shaped.
- */
 export const PageLoading = ({ label = 'Loading', className = '' }) => (
   <output
     aria-busy="true"

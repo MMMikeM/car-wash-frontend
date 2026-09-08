@@ -36,7 +36,7 @@ test('navigating away clears the error', async ({ page, api }) => {
 
 test('a failed read shows the boundary with the API message', async ({ page }) => {
   // Reads suspend, so a rejected fetch throws to the boundary rather than
-  // toasting over a skeleton that would never resolve.
+  // toasting over a skeleton that never resolves.
   await page.route('**/api/v1/wash_types', (route) =>
     route.fulfill({
       status: 500,

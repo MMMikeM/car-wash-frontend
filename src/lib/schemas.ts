@@ -24,11 +24,8 @@ export const passwordSchema = v.pipe(
   v.minLength(6, 'Passwords must be at least 6 characters long')
 )
 
-/**
- * Exported as entries rather than only as a schema: valibot puts cross-field
- * checks in the pipe around an object, so composing two objects means
- * rebuilding from their entries. See `signUpSchema`.
- */
+// Entries, not just a schema: valibot puts cross-field checks in the pipe around
+// an object, so composing two means rebuilding from entries. See `signUpSchema`.
 export const customerEntries = {
   name: nameSchema,
   email: v.optional(emailSchema),
@@ -42,13 +39,8 @@ export const passwordPairEntries = {
   password_confirmation: v.optional(v.string()),
 }
 
-/**
- * The predicate is shared, the action is not: a `check` action fixes its input
- * type, so one instance cannot serve both the password-only and the sign-up
- * shapes. `check` rather than `partialCheck` because the latter's one
- * advantage - pinning the issue to a named field - is unused; validate() only
- * ever reads the message.
- */
+// A `check` action fixes its input type, so the predicate is shared but the
+// action cannot be.
 const passwordsMatch = (input) =>
   input.password === input.password_confirmation
 
@@ -59,7 +51,6 @@ export const passwordPairSchema = v.pipe(
   v.check(passwordsMatch, PASSWORDS_MATCH_MESSAGE)
 )
 
-/** Sign-up asks for the customer fields and a password pair at once. */
 export const signUpSchema = v.pipe(
   v.object({ ...passwordPairEntries, ...customerEntries }),
   v.check(passwordsMatch, PASSWORDS_MATCH_MESSAGE)

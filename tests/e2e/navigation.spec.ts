@@ -37,7 +37,7 @@ test('customer search is manager-only', async ({ page, login, api }) => {
 
   await page.goto('/customers/search')
 
-  // ManagerRoute redirects everyone else to the home route.
+  // RequireRole redirects everyone else to the home route.
   await expect(page).toHaveURL(/localhost:\d+\/$/)
 })
 
