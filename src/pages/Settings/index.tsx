@@ -1,42 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import useSWR from 'swr'
 import { getWashes } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useHistory } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
-import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
 
 const Settings = () => {
-  let [washes, setWashes] = useState([])
-  let [loading, setLoading] = useState(true)
   const history = useHistory()
 
 
-  useEffect(() => {
-    const handleFetchWashes = async () => {
-      try {
-        let res = await getWashes()
-        setWashes(transformWashesCentsToRands(res))
-      } catch (error) {
-        reportError(error, 'load the wash types')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    handleFetchWashes()
-  }, [])
+  const { data, isLoading } = useSWR('the wash types', getWashes)
+  const washes = data ? transformWashesCentsToRands(data) : []
 
   const editFreeWash = (wash) => {
     history.push(`settings/${wash.id}/edit`)
   }
 
+  if (isLoading) {
+    return (
+      <div className="w-full">
+        <ListSkeleton rows={2} columns={3} label="Loading the free washes" />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full">
-      {loading ? (
-        <ListSkeleton rows={2} columns={3} label="Loading the free washes" />
-      ) : (
         <div className="flex flex-wrap max-md mx-auto">
           {/* <div className="w-full md:w-3/4"></div>
           <div className="w-full md:w-1/4 text-right">
@@ -57,7 +48,6 @@ const Settings = () => {
             />
           </div>
         </div>
-      )}
     </div>
   )
 }

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { getWashes, deleteWash } from '../../services/washTypesApi'
 import { Link } from 'react-router-dom'
@@ -94,27 +95,12 @@ const WashTableRow = ({ wash, onDelete }) => {
 }
 
 const WashesIndex = () => {
-  let [washes, setWashes] = useState([])
-  let [loading, setLoading] = useState(true)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [washToDelete, setWashToDelete] = useState<{ id: string; name: string }>()
 
-  const reloadWashes = useCallback(async () => {
-    try {
-      let res = await getWashes()
-      setWashes(transformWashesCentsToRands(res))
-    } catch (error) {
-      reportError(error, 'load the wash types')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const { data, isLoading, mutate } = useSWR('the wash types', getWashes)
 
-  useEffect(() => {
-    // State is set after the await, not synchronously.
-    // oxlint-disable-next-line react/set-state-in-effect
-    reloadWashes()
-  }, [reloadWashes])
+  const washes = data ? transformWashesCentsToRands(data) : []
 
   const requestDeleteWash = (washId) => {
     setWashToDelete(washes.find((wash) => wash.id === washId))
@@ -132,14 +118,14 @@ const WashesIndex = () => {
       return
     }
     toast.success('Wash type deleted')
-    reloadWashes()
+    mutate()
   }
 
   const sortedWashes = washes
     .filter((wash) => wash.free === false)
     .sort((a, b) => (a.order > b.order ? 1 : -1))
 
-  if (loading) {
+  if (isLoading) {
     return (
       <WashListSkeleton rows={9} label="Loading the wash types" />
     )

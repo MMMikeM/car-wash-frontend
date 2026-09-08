@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
 import { useParams, useHistory } from 'react-router-dom'
@@ -8,8 +9,7 @@ import type { WashType } from '../../types'
 import { FormSkeleton } from '../../components/Loading'
 
 const WashEdit = () => {
-  let [localWash, setLocalWash] = useState<Partial<WashType>>({})
-  let [loading, setLoading] = useState(true)
+  const [draft, setDraft] = useState<Partial<WashType>>()
 
   const history = useHistory()
   let { id } = useParams()
@@ -21,7 +21,7 @@ const WashEdit = () => {
     } else {
       tempRecord[key] = value
     }
-    setLocalWash(tempRecord)
+    setDraft(tempRecord)
   }
 
   const save = async () => {
@@ -35,26 +35,22 @@ const WashEdit = () => {
     history.push(`/wash_types/${id}`)
   }
 
-  useEffect(() => {
-    const handleFetchWash = async () => {
-      try {
-        let res = await getWash(id)
-        setLocalWash(res)
-      } catch (error) {
-        reportError(error, 'load the wash type')
-      } finally {
-        setLoading(false)
-      }
-    }
-    handleFetchWash()
-  }, [id])
+  const { data, isLoading } = useSWR(['the wash type', id], () => getWash(id))
+  const localWash: Partial<WashType> = draft ?? data ?? {}
+
+  if (isLoading) {
+    return (
+      <div className="w-full">
+      <div className="max-sm mx-auto rounded">
+          <FormSkeleton fields={5} label="Loading the wash type" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full">
       <div className="max-sm mx-auto rounded">
-        {loading ? (
-          <FormSkeleton fields={5} label="Loading the wash type" />
-        ) : (
           <BasicForm
             editRecordMethod={editRecordMethod}
             record={localWash}
@@ -69,7 +65,6 @@ const WashEdit = () => {
             ]}
             valueTransformations={['', centsToRands, centsToRands, '', '', '']}
           />
-        )}
       </div>
     </div>
   )

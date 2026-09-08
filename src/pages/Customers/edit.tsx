@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 import { getCustomer, saveCustomer } from '../../services/customersApi'
 import { useParams, useHistory } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
@@ -9,8 +10,7 @@ import { Button } from '@/components/ui/button'
 import { FormSkeleton } from '../../components/Loading'
 
 const CustomersEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [loading, setLoading] = useState(true)
+  const [draft, setDraft] = useState<Partial<Customer>>()
 
   const history = useHistory()
   let { id } = useParams()
@@ -18,7 +18,7 @@ const CustomersEdit = () => {
   const editRecordMethod = (record, key, value) => {
     let tempRecord = { ...record }
     tempRecord[key] = value
-    setLocalCustomer(tempRecord)
+    setDraft(tempRecord)
   }
 
   const save = async () => {
@@ -35,29 +35,23 @@ const CustomersEdit = () => {
     }
   }
 
-  useEffect(() => {
-    const handleFetchCustomer = async () => {
-      try {
-        let res = await getCustomer(id)
-        setLocalCustomer(res)
-      } catch (error) {
-        reportError(error, 'load the customer')
-      } finally {
-        setLoading(false)
-      }
-    }
-    handleFetchCustomer()
-  }, [id])
+  const { data, isLoading } = useSWR(['the customer', id], () => getCustomer(id))
+  const localCustomer: Partial<Customer> = draft ?? data ?? {}
 
   let handleClick = () => {
     history.push(`/settings/users/${id}/edit`)
   }
 
+  if (isLoading) {
+    return (
+      <div className="w-full">
+        <FormSkeleton fields={5} label="Loading the customer" />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full">
-      {loading ? (
-        <FormSkeleton fields={5} label="Loading the customer" />
-      ) : (
         <div className="max-sm mx-auto">
           <div className="flex justify-end">
             <Button className="my-3 mr-4" onClick={handleClick}>
@@ -70,7 +64,6 @@ const CustomersEdit = () => {
             save={save}
           />
         </div>
-        )}
     </div>
   )
 }

@@ -14,14 +14,12 @@ export const centsToRands = (cents) => cents / 100
 export const transformCentsToRands = (input) => formatRands(centsToRands(input))
 
 export const transformWashesCentsToRands = (washes) =>
-  washes.map((wash) => {
-    wash.cost = formatRands(centsToRands(wash.cost))
-    wash.price = formatRands(centsToRands(wash.price))
-    return wash
-  })
+  washes.map((wash) => ({
+    ...wash,
+    cost: formatRands(centsToRands(wash.cost)),
+    price: formatRands(centsToRands(wash.price)),
+  }))
 
-// The total is summed off the raw cents before formatReportMoney rewrites the
-// rows in place, so the two run in that order.
 export const sumReportTotal = (rows) =>
   formatRands(
     centsToRands(
@@ -30,11 +28,11 @@ export const sumReportTotal = (rows) =>
   )
 
 export const formatReportMoney = (rows) =>
-  rows.map((row) => {
-    row.total_cost = formatRands(centsToRands(row.total_cost))
-    row.total_price = formatRands(centsToRands(row.total_price))
-    return row
-  })
+  rows.map((row) => ({
+    ...row,
+    total_cost: formatRands(centsToRands(row.total_cost)),
+    total_price: formatRands(centsToRands(row.total_price)),
+  }))
 
 /**
  * Sign-ups without an email get a generated `<uuid>@carboncarwash.co.za`

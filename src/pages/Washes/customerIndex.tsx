@@ -1,29 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import useSWR from 'swr'
 import BasicCard from '../../components/BasicCard'
 import Links, { MAPS_URL } from '../../components/Links'
 import { getWashes } from '../../services/washTypesApi'
 import { transformWashesCentsToRands } from '../../helpers'
-import { reportError } from '@/lib/reportError'
 import { CardGridSkeleton } from '../../components/Loading'
 
 const Washes = () => {
-  let [washes, setWashes] = useState([])
-  let [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const handleFetchWashes = async () => {
-      try {
-        let res = await getWashes()
-        setWashes(transformWashesCentsToRands(res))
-      } catch (error) {
-        reportError(error, 'load the wash prices')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    handleFetchWashes()
-  }, [])
+  const { data, isLoading } = useSWR('the wash prices', getWashes)
+  const washes = data ? transformWashesCentsToRands(data) : []
 
   const priced = washes
     .filter((wash) => wash.free == false)
@@ -70,7 +56,7 @@ const Washes = () => {
         <h2 className="font-heading mb-6! text-center text-2xl! uppercase tracking-wide text-muted-foreground">
           Our Washes
         </h2>
-        {loading ? (
+        {isLoading ? (
           <CardGridSkeleton cards={9} label="Loading the wash prices" />
         ) : (
           <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">

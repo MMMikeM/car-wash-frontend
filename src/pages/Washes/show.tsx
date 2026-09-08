@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import useSWR from 'swr'
 import { ArrowLeft, SquarePen } from 'lucide-react'
 import { getWash } from '../../services/washTypesApi'
-import { reportError } from '@/lib/reportError'
 import { DetailSkeleton } from '../../components/Loading'
 import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
@@ -10,26 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { WashType } from '../../types'
 
 const WashShow = () => {
-  let [localWash, setLocalWash] = useState<Partial<WashType>>({})
-  let [loading, setLoading] = useState(true)
-
   let { id } = useParams()
 
-  useEffect(() => {
-    const handleFetchWash = async () => {
-      try {
-        let res = await getWash(id)
-        setLocalWash(res)
-      } catch (error) {
-        reportError(error, 'load the wash type')
-      } finally {
-        setLoading(false)
-      }
-    }
-    handleFetchWash()
-  }, [id])
+  const { data, isLoading } = useSWR(['the wash type', id], () => getWash(id))
+  const localWash: Partial<WashType> = data ?? {}
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DetailSkeleton rows={4} label="Loading the wash type" />
     )

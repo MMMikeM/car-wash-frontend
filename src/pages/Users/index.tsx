@@ -1,31 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import useSWR from 'swr'
 import { useHistory } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
-import { reportError } from '@/lib/reportError'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
 
 const Settings = () => {
-  let [systemUsers, setSystemUsers] = useState([])
-  let [loading, setLoading] = useState(false)
   const history = useHistory()
 
-
-  useEffect(() => {
-    const handleFetchSystemUsers = async () => {
-      try {
-        let res = await getSystemUsers()
-        setSystemUsers(res)
-      } catch (error) {
-        reportError(error, 'load the users')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    handleFetchSystemUsers()
-  }, [])
+  const { data, isLoading } = useSWR('the users', getSystemUsers)
+  const systemUsers = data ?? []
 
   const editUser = (user) => {
     history.push(`users/${user.id}/edit`)
@@ -35,11 +20,11 @@ const Settings = () => {
     history.push('/settings/users/new')
   }
 
+  if (isLoading) {
+    return <ListSkeleton rows={5} columns={3} label="Loading the users" />
+  }
+
   return (
-    <>
-      {loading ? (
-        <ListSkeleton rows={5} columns={3} label="Loading the users" />
-      ) : (
         <div className="w-full">
           <div className="flex flex-wrap max-md mx-auto">
             <div className="w-full md:w-3/4"></div>
@@ -67,8 +52,6 @@ const Settings = () => {
             </div>
           </div>
         </div>
-      )}
-    </>
   )
 }
 
