@@ -1,8 +1,6 @@
 import { test, expect } from './fixtures'
 
-// Every one of these reproduced a silent failure before the request layer
-// started throwing: a blank screen, a crash, or a success message for a call
-// that never succeeded.
+// Each of these asserts that a failed request is surfaced, not swallowed.
 test.beforeEach(async ({ login, api }) => {
   await login('manager')
   await api.washTypes()
@@ -33,7 +31,6 @@ test('an expired token sends the user back to login', async ({ page }) => {
 
   await page.goto('/customers')
 
-  // Before this, a 401 crashed the page with "localCustomers is not iterable".
   // The session is cleared too, but the login fixture's addInitScript re-seeds
   // sessionStorage on every navigation, so the redirect is what we assert on.
   await expect(page).toHaveURL(/\/login$/)

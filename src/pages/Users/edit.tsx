@@ -34,19 +34,14 @@ const UserEdit = () => {
     handleFetchCustomer()
   }, [id])
 
-  const save = async (id, body) => {
-    // let valid = await schema.validate(localCustomer).catch((err) => {
-    //   alert(err.errors)
-    // })
-    // if (valid) {
+  const save = async (userId, body) => {
     try {
-      await saveSystemUsers(id, body)
+      await saveSystemUsers(userId, body)
     } catch (error) {
       reportError(error, 'save the user')
       return
     }
     history.push(`/settings/users`)
-    // }
   }
 
   let inactive = 'text-white bg-4 px-4 py-2'

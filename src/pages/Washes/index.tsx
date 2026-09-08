@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { getWashes, deleteWash } from '../../services/washTypesApi'
 import { Link } from 'react-router-dom'
@@ -99,7 +99,7 @@ const WashesIndex = () => {
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [washToDelete, setWashToDelete] = useState<{ id: string; name: string }>()
 
-  const handleFetchWashes = async () => {
+  const reloadWashes = useCallback(async () => {
     try {
       let res = await getWashes()
       setWashes(transformWashesCentsToRands(res))
@@ -108,11 +108,13 @@ const WashesIndex = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    handleFetchWashes()
-  }, [])
+    // State is set after the await, not synchronously.
+    // oxlint-disable-next-line react/set-state-in-effect
+    reloadWashes()
+  }, [reloadWashes])
 
   const requestDeleteWash = (washId) => {
     setWashToDelete(washes.find((wash) => wash.id === washId))
@@ -130,7 +132,7 @@ const WashesIndex = () => {
       return
     }
     toast.success('Wash type deleted')
-    handleFetchWashes()
+    reloadWashes()
   }
 
   const sortedWashes = washes

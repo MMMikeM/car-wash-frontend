@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
 import { NavPanel, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/toast'
 const WashesOrder = React.lazy(() => import('./pages/Washes/order'))
 const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
 import { PageLoading } from './components/Loading'
 
@@ -63,110 +64,109 @@ import SalesNew from './pages/Sales/newCustomer'
 import './css/base.css'
 import WashFreeEdit from './pages/Settings/edit'
 
+const home = {
+  name: 'Home',
+  path: '/',
+  Icon: House,
+}
+
+const signUpLink = {
+  name: 'Sign Up',
+  path: '/sign_up',
+}
+const loginLink = {
+  name: 'Login',
+  path: '/login',
+}
+const logoutLink = {
+  name: 'Logout',
+  path: '/logout',
+}
+
+const salespersonLinks = [
+  {
+    name: 'Customers Today',
+    path: '/customers/report',
+    Icon: ClipboardList,
+  },
+  {
+    name: 'Daily Washes',
+    path: '/customers/daily_wash_list',
+    Icon: ChartColumn,
+  },
+]
+
+const managerLinks = [
+  {
+    name: 'Search Customers',
+    path: '/customers/search',
+    Icon: Search,
+  },
+  {
+    name: 'List Customers',
+    path: '/customers',
+    Icon: Users,
+  },
+  {
+    name: 'Daily Wash Summary',
+    path: '/reports/daily_washes',
+    Icon: ChartColumn,
+  },
+  {
+    name: 'Active Users',
+    path: '/reports/active_users',
+  },
+  {
+    name: 'Insured Washes',
+    path: '/reports/insured_washes',
+  },
+  {
+    name: 'Wash Prices',
+    path: '/wash_types',
+  },
+  {
+    name: 'Wash Order',
+    path: '/wash_order',
+  },
+  {
+    name: 'Washes Report',
+    path: '/reports/washes',
+  },
+  {
+    name: 'Users',
+    path: '/settings/users',
+  },
+  {
+    name: 'Settings',
+    path: '/settings',
+  },
+]
+
+interface NavLinkItem {
+  name: string
+  path: string
+  Icon?: LucideIcon
+}
+
+const navLinksFor = (roles: string[]): NavLinkItem[] => {
+  const links: NavLinkItem[] = [home]
+
+  for (const role of [...roles].reverse()) {
+    if (role === 'manager') links.push(...managerLinks)
+    if (role === 'salesperson') links.push(...salespersonLinks)
+  }
+
+  return roles.length > 0
+    ? [...links, logoutLink]
+    : [...links, loginLink, signUpLink]
+}
+
 function App() {
-  let [Links, setLinks] = useState([])
-  let [isStaff, setIsStaff] = useState(false)
-
-  let home = {
-    name: 'Home',
-    path: '/',
-    Icon: House,
-  }
-
-  let signUpLink = {
-    name: 'Sign Up',
-    path: '/sign_up',
-  }
-  let loginLink = {
-    name: 'Login',
-    path: '/login',
-  }
-  let logoutLink = {
-    name: 'Logout',
-    path: '/logout',
-  }
-
-  let salespersonLinks = [
-    {
-      name: 'Customers Today',
-      path: '/customers/report',
-      Icon: ClipboardList,
-    },
-    {
-      name: 'Daily Washes',
-      path: '/customers/daily_wash_list',
-      Icon: ChartColumn,
-    },
-  ]
-
-  let managerLinks = [
-    {
-      name: 'Search Customers',
-      path: '/customers/search',
-      Icon: Search,
-    },
-    {
-      name: 'List Customers',
-      path: '/customers',
-      Icon: Users,
-    },
-    {
-      name: 'Daily Wash Summary',
-      path: '/reports/daily_washes',
-      Icon: ChartColumn,
-    },
-    {
-      name: 'Active Users',
-      path: '/reports/active_users',
-    },
-    {
-      name: 'Insured Washes',
-      path: '/reports/insured_washes',
-    },
-    {
-      name: 'Wash Prices',
-      path: '/wash_types',
-    },
-    {
-      name: 'Wash Order',
-      path: '/wash_order',
-    },
-    {
-      name: 'Washes Report',
-      path: '/reports/washes',
-    },
-    {
-      name: 'Users',
-      path: '/settings/users',
-    },
-    {
-      name: 'Settings',
-      path: '/settings',
-    },
-  ]
-
-  useEffect(() => {
-    let roles = [...currentRoles()]
-    let tempLinks = [...Links]
-    tempLinks.push(home)
-    roles.reverse().map((role) => {
-      if (role === 'manager') {
-        tempLinks = [...tempLinks, ...managerLinks]
-      }
-      if (role === 'salesperson') {
-        tempLinks = [...tempLinks, ...salespersonLinks]
-      }
-    })
-
-    if (roles.length > 0) {
-      tempLinks.push(logoutLink)
-    } else {
-      tempLinks.push(loginLink)
-      tempLinks.push(signUpLink)
-    }
-    setLinks(tempLinks)
-    setIsStaff(roles.some((role) => role === 'manager' || role === 'salesperson'))
-  }, [])
+  const roles = currentRoles()
+  const Links = navLinksFor(roles)
+  const isStaff = roles.some(
+    (role) => role === 'manager' || role === 'salesperson'
+  )
 
   return (
     <Router>

@@ -11,23 +11,24 @@ const WashesOrder = () => {
   let [washes, setWashes] = useState<WashType[]>([])
   let [loading, setLoading] = useState(true)
 
-  const handleFetchWashes = async () => {
-    try {
-      let res = await getWashes()
-      setWashes([...res].sort((a, b) => a.order - b.order))
-    } catch (error) {
-      reportError(error, 'load the wash types')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
+    const handleFetchWashes = async () => {
+      try {
+        let res = await getWashes()
+        setWashes([...res].sort((a, b) => a.order - b.order))
+      } catch (error) {
+        reportError(error, 'load the wash types')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     handleFetchWashes()
   }, [])
 
-  const handleChange = (washes: WashType[], oldIndex, newIndex) => {
-    const newArray = arrayMove<WashType>(washes, oldIndex, newIndex).map(
+  const handleChange = (current: WashType[], oldIndex, newIndex) => {
+    const newArray = arrayMove<WashType>(current, oldIndex, newIndex).map(
       (wash, index) => ({ ...wash, order: index })
     )
     setWashes(newArray)

@@ -1,13 +1,24 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "jsx-a11y", "import"],
+  "plugins": [
+    "react",
+    "typescript",
+    "jsx-a11y",
+    "import"
+  ],
   "categories": {
     "correctness": "error",
     "suspicious": "warn"
   },
   "rules": {
-    "react/set-state-in-effect": "warn",
-    "react-hooks/exhaustive-deps": "warn"
+    "import/no-unassigned-import": [
+      "error",
+      {
+        "allow": [
+          "**/*.css"
+        ]
+      }
+    ]
   },
   "env": {
     "browser": true,

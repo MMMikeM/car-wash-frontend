@@ -17,17 +17,18 @@ const CustomerHome = () => {
   let [loading, setLoading] = useState(true)
   let [isViewingPrice, setIsViewingPrice] = useState(false)
 
-  const handleFetchCustomer = async () => {
-    try {
-      let res = await getCustomer(sessionStorage.getItem('id'))
-      setLocalCustomer(res)
-    } catch (error) {
-      reportError(error, 'load your profile')
-    } finally {
-      setLoading(false)
-    }
-  }
   useEffect(() => {
+    const handleFetchCustomer = async () => {
+      try {
+        let res = await getCustomer(sessionStorage.getItem('id'))
+        setLocalCustomer(res)
+      } catch (error) {
+        reportError(error, 'load your profile')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     handleFetchCustomer()
   }, [])
 

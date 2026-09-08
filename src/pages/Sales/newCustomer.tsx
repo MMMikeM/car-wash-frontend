@@ -1,32 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
 import { customerSchema } from '../../lib/schemas'
 import BasicForm from '../../components/Forms/BasicForm'
 import { postCustomer } from '../../services/customersApi'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
+import { useQueryParam } from '@/hooks/useQueryParam'
+
 
 const SalesNew = () => {
   const history = useHistory()
   let [loading, setLoading] = useState(false)
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
-    name: '',
+    name: useQueryParam('name') ?? '',
     email: '',
-    contact_number: '',
+    contact_number: useQueryParam('contact') ?? '',
   })
-
-  function useQuery() {
-    return new URLSearchParams(useLocation().search)
-  }
-
-  let query = useQuery()
-  useEffect(() => {
-    setLocalCustomer({
-      name: query.get('name'),
-      contact_number: query.get('contact'),
-    })
-  }, [])
 
   const save = async () => {
     let valid = validate(schema, localCustomer)

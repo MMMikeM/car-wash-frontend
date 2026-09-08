@@ -11,18 +11,19 @@ const Settings = () => {
   let [loading, setLoading] = useState(false)
   const history = useHistory()
 
-  const handleFetchSystemUsers = async () => {
-    try {
-      let res = await getSystemUsers()
-      setSystemUsers(res)
-    } catch (error) {
-      reportError(error, 'load the users')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
+    const handleFetchSystemUsers = async () => {
+      try {
+        let res = await getSystemUsers()
+        setSystemUsers(res)
+      } catch (error) {
+        reportError(error, 'load the users')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     handleFetchSystemUsers()
   }, [])
 

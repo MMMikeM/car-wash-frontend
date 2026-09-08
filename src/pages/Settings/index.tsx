@@ -12,18 +12,19 @@ const Settings = () => {
   let [loading, setLoading] = useState(true)
   const history = useHistory()
 
-  const handleFetchWashes = async () => {
-    try {
-      let res = await getWashes()
-      setWashes(transformWashesCentsToRands(res))
-    } catch (error) {
-      reportError(error, 'load the wash types')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
+    const handleFetchWashes = async () => {
+      try {
+        let res = await getWashes()
+        setWashes(transformWashesCentsToRands(res))
+      } catch (error) {
+        reportError(error, 'load the wash types')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     handleFetchWashes()
   }, [])
 

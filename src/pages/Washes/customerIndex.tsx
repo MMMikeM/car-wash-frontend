@@ -9,18 +9,19 @@ import { CardGridSkeleton } from '../../components/Loading'
 const Washes = () => {
   let [washes, setWashes] = useState([])
   let [loading, setLoading] = useState(true)
-  const handleFetchWashes = async () => {
-    try {
-      let res = await getWashes()
-      setWashes(transformWashesCentsToRands(res))
-    } catch (error) {
-      reportError(error, 'load the wash prices')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
+    const handleFetchWashes = async () => {
+      try {
+        let res = await getWashes()
+        setWashes(transformWashesCentsToRands(res))
+      } catch (error) {
+        reportError(error, 'load the wash prices')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     handleFetchWashes()
   }, [])
 

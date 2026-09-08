@@ -32,7 +32,6 @@ const UserNew = () => {
           await saveSystemUsers(resCustomer.id, roles)
           history.push(`/`)
         } catch (error) {
-          // setLoading was never reset on failure, leaving the form blank.
           reportError(error, 'create the user')
         } finally {
           setLoading(false)

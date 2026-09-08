@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import BasicTable from '../Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -6,41 +6,58 @@ import { formatDate } from '../../helpers'
 import { ListSkeleton } from '../Loading'
 import { reportError } from '@/lib/reportError'
 
+/** Module scope, so omitting the prop does not hand down a new function. */
+const identity = (rows) => rows
+
 const ReportPage = ({
   fetchReport,
   fields,
   headings,
-  transform = (rows) => rows,
+  transform = identity,
   total = null,
   onDownload = null,
   showFilters = true,
   heading = null,
   initialStartDate = formatDate(new Date()),
 }) => {
+  const todayValue = formatDate(new Date())
   let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState(initialStartDate)
-  let [endDate, setEndDate] = useState(formatDate(new Date()))
+  let [endDate, setEndDate] = useState(todayValue)
   let [mainTotal, setMainTotal] = useState('')
   let [loading, setLoading] = useState(true)
 
-  const load = async (from, to) => {
+  // Held in a ref, not closed over: depending on these props directly gives
+  // `load` a new identity whenever a caller passes an inline function, which
+  // re-runs the effect and fetches in a loop.
+  const report = useRef({ fetchReport, total, transform })
+
+  useEffect(() => {
+    report.current = { fetchReport, total, transform }
+  })
+
+  const load = useCallback(async (from, to) => {
     setLoading(true)
     try {
-      const res = await fetchReport(from, to)
-      if (total) {
-        setMainTotal(total(res))
+      const res = await report.current.fetchReport(from, to)
+      if (report.current.total) {
+        setMainTotal(report.current.total(res))
       }
-      setReportData(transform(res))
+      setReportData(report.current.transform(res))
     } catch (error) {
       reportError(error, 'load the report')
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    load(startDate, endDate)
   }, [])
+
+  // startDate and endDate are deliberately absent: editing either would
+  // refetch on every keystroke instead of waiting for Generate.
+  useEffect(() => {
+    // State is set after the await, not synchronously.
+    // oxlint-disable-next-line react/set-state-in-effect
+    load(initialStartDate, todayValue)
+  }, [load, initialStartDate, todayValue])
 
   return loading ? (
     <ListSkeleton rows={6} columns={4} actions={false} label="Loading the report" />

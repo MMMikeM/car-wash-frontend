@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { Car, Coins, Mail, Smartphone, User } from 'lucide-react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
@@ -24,7 +24,7 @@ const CustomersShow = () => {
 
   let { id } = useParams()
 
-  const handleFetchCustomer = async () => {
+  const loadCustomer = useCallback(async () => {
     try {
       let [resCustomer, resWashes] = await Promise.all([
         getCustomer(id),
@@ -37,10 +37,13 @@ const CustomersShow = () => {
     } finally {
       setLoading(false)
     }
-  }
-  useEffect(() => {
-    handleFetchCustomer()
   }, [id])
+
+  useEffect(() => {
+    // State is set after the await, not synchronously.
+    // oxlint-disable-next-line react/set-state-in-effect
+    loadCustomer()
+  }, [loadCustomer])
 
   const handleClick = async (wash) => {
     setSelectedWash(wash.id)
@@ -52,18 +55,14 @@ const CustomersShow = () => {
     try {
       await deleteWash(selectedWash)
     } catch (error) {
-      // A full reload past a failed delete left the wash on screen with
-      // nothing said, which reads exactly like a successful delete.
       reportError(error, 'delete the wash')
       return
     }
     toast.success('Wash deleted')
-    handleFetchCustomer()
+    loadCustomer()
   }
 
-  // Derived, not mutated in place: the old version rewrote the wash objects
-  // during render behind a `processed` flag, which only held while the render
-  // count stayed exactly what it expected.
+  // Derived rather than mutated in place: these rows are rebuilt each render.
   const washRows = useMemo(
     () =>
       (localCustomer?.washes ?? []).map((item) => ({

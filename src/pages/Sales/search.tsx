@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { searchCustomer } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
 
-import { useLocation, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import type { Customer } from '../../types'
+import { useQueryParam } from '@/hooks/useQueryParam'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
+
 
 const SearchCustomer = () => {
   let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
@@ -13,30 +15,27 @@ const SearchCustomer = () => {
   let [error, setError] = useState(null)
   const history = useHistory()
 
-  function useQuery() {
-    return new URLSearchParams(useLocation().search)
-  }
+  const contactNumber = useQueryParam('contact_number')
 
-  let query = useQuery()
-
-  const search = async (input) => {
-    setError(null)
-    try {
-      let res = await searchCustomer('contact_number', input)
-      setLocalCustomers(res.data || [])
-      setIsLoaded(true)
-    } catch {
-      setError('Failed to search. Please try again.')
-      setIsLoaded(true)
-    }
-  }
 
   useEffect(() => {
-    search(query.get('contact_number'))
-  }, [])
+    const search = async (input) => {
+      setError(null)
+      try {
+        let res = await searchCustomer('contact_number', input)
+        setLocalCustomers(res.data || [])
+        setIsLoaded(true)
+      } catch {
+        setError('Failed to search. Please try again.')
+        setIsLoaded(true)
+      }
+    }
+
+    search(contactNumber)
+  }, [contactNumber])
 
   const redirect = async () => {
-    history.push(`/new_customer/q?contact=${query.get('contact_number')}`)
+    history.push(`/new_customer/q?contact=${contactNumber}`)
   }
 
   return (

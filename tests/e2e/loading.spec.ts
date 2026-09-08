@@ -1,8 +1,6 @@
 import { test, expect, customersList, washTypes } from './fixtures'
 
-// Most of these pages used to render an empty string while fetching, so a slow
-// request showed a blank screen and told assistive tech nothing. The stubs here
-// never resolve, which makes the loading state the thing under test.
+// The stubs never resolve, which makes the loading state the thing under test.
 const hang = (page, url: string) => page.route(url, () => {})
 
 test.beforeEach(async ({ login, api }) => {
@@ -39,7 +37,6 @@ test('the placeholder is replaced by the real rows once they arrive', async ({ p
 })
 
 test('a saving form stays on screen with the button showing progress', async ({ page }) => {
-  // The form used to be replaced wholesale while the request was in flight.
   await hang(page, '**/api/v1/customers')
   await page.goto('/customers/new')
 
@@ -88,8 +85,6 @@ test('the placeholder occupies the height the real rows will', async ({ page }) 
 })
 
 test('the wash prices keep their grid shape while loading', async ({ page, login }) => {
-  // This grid used to be replaced by one generic block, which collapsed the
-  // two-column layout and moved the page by hundreds of pixels on arrival.
   await login('customer')
   let release: () => void
   const arrived = new Promise<void>((resolve) => (release = resolve))

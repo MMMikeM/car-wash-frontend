@@ -49,7 +49,7 @@ const ListShapes = ({
       {Array.from({ length: rows }, (_, row) => (
         <Card key={row} className="py-0">
           <CardContent className="flex flex-col gap-2 p-4">
-            {Array.from({ length: columns }, (_, column) => (
+            {Array.from({ length: columns }, (_cell, column) => (
               <div key={column} className="flex justify-between gap-4">
                 <Skeleton className="h-3 w-20" />
                 <Skeleton className={cn('h-4', widthAt(row + column))} />
@@ -82,7 +82,7 @@ const ListShapes = ({
           <TableBody>
             {Array.from({ length: rows }, (_, row) => (
               <TableRow key={row}>
-                {Array.from({ length: columns }, (_, column) => (
+                {Array.from({ length: columns }, (_cell, column) => (
                   <TableCell key={column}>
                     <Skeleton className={cn('h-4', widthAt(row + column))} />
                   </TableCell>
@@ -192,7 +192,7 @@ export const CardGridSkeleton = ({
             </h3>
             {descriptionLines > 0 && (
               <p className="mt-2 text-sm">
-                {Array.from({ length: descriptionLines }, (_, line) => (
+                {Array.from({ length: descriptionLines }, (_line, line) => (
                   <Skeleton
                     key={line}
                     // No margin between lines: wrapped text has none, so the

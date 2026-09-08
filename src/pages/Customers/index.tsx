@@ -2,7 +2,7 @@
    cannot be a <button>; it stands in for one with role, tabIndex and a key
    handler instead.  */
 /* oxlint-disable jsx-a11y/prefer-tag-over-role */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Trash2 } from 'lucide-react'
 import {
   getCustomers,
@@ -46,7 +46,6 @@ const CustomerCard = ({ customer, onAddWash, onDelete, history }) => {
   const openCustomer = () => history.push(`/customers/${customer.id}`)
 
   const handleCardClick = (e) => {
-    // Don't navigate if clicking the Wash button
     if (e.target.closest('button')) return
     openCustomer()
   }
@@ -173,7 +172,7 @@ const CustomersIndex = () => {
   let [perPage] = useState(20)
   let [total, setTotal] = useState(0)
 
-  const handleFetchCustomers = async (pageNum = page) => {
+  const loadCustomers = useCallback(async (pageNum: number) => {
     setLoading(true)
     try {
       let res = await getCustomers(pageNum, perPage)
@@ -184,7 +183,7 @@ const CustomersIndex = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [perPage])
 
   const handleDownloadCustomers = async () => {
     try {
@@ -196,8 +195,10 @@ const CustomersIndex = () => {
   }
 
   useEffect(() => {
-    handleFetchCustomers(page)
-  }, [page])
+    // State is set after the await, not synchronously.
+    // oxlint-disable-next-line react/set-state-in-effect
+    loadCustomers(page)
+  }, [loadCustomers, page])
 
   const totalPages = Math.ceil(total / perPage)
 
@@ -225,13 +226,11 @@ const CustomersIndex = () => {
     try {
       await deleteCustomer(customerToDelete.id)
     } catch (error) {
-      // Reloading past a failed delete used to leave the customer on screen
-      // with nothing said, which reads exactly like a successful delete.
       reportError(error, 'delete the customer')
       return
     }
     toast.success('Customer deleted')
-    handleFetchCustomers()
+    loadCustomers(page)
   }
 
   const reversedCustomers = [...localCustomers].reverse()

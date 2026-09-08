@@ -84,8 +84,6 @@ test('deletes a wash type through the confirmation dialog', async ({ page, api }
     .first()
     .click()
 
-  // Previously a native window.confirm, which Playwright auto-dismissed and no
-  // test could assert on.
   await expect(page.getByText('Wash & Go', { exact: false }).last()).toBeVisible()
   await page.getByRole('alertdialog').getByRole('button', { name: 'Delete' }).click()
 

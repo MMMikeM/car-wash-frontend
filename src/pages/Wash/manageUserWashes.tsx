@@ -39,11 +39,6 @@ const ManageUserWashes = () => {
   const freeWashPoints = -washes?.filter((wash) => wash.free == true)[0]?.points
   let qualifies = localCustomer.total_points >= freeWashPoints
 
-  // const save = async (body) => {
-  //   let res = await postWash(data)
-  //   history.push('/')
-  // }
-
   useEffect(() => {
     const handleFetchData = async () => {
       try {
@@ -62,7 +57,6 @@ const ManageUserWashes = () => {
     handleFetchData()
   }, [id])
 
-  // Free first when the customer qualifies, then by the configured order.
   // Free first when the customer qualifies, then by the configured order.
   const selectableWashes = (
     qualifies ? [...washes] : washes.filter((wash) => wash.free === false)
@@ -89,8 +83,7 @@ const ManageUserWashes = () => {
         insurance: hasInsurance,
       })
     } catch (error) {
-      // Release the guard so the wash can be captured again; leaving it set
-      // stranded the till on "Processing..." until someone reloaded.
+      // Release the guard so the capture can be retried.
       setSubmitted(false)
       reportError(error, 'capture the wash')
       return

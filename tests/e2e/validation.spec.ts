@@ -1,7 +1,6 @@
 import { test, expect } from './fixtures'
 
-// The schema layer moved from zod to valibot; these cover the rules whose
-// translation was least mechanical - the empty-string email union, the
+// The rules with the least obvious encoding: the empty-string email union, the
 // cross-field password check, and the numeric coercion on the wash form.
 
 const fill = async (page, label: string, value: string) => {

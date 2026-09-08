@@ -68,7 +68,6 @@ const Login = () => {
         window.location.assign(`${import.meta.env.REACT_APP_URL}/`)
       }
 
-      // history.push('/')
     }
   }
 

@@ -7,6 +7,5 @@ export const postWash = async (body) => {
 
 export const deleteWash = async (id) => {
   let response = await request('DELETE', `/washes/${id}`)
-  //add error handling here
   return response.json()
 }

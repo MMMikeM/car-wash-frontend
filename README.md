@@ -76,11 +76,7 @@ platform, generate its baselines there and remove the `test.skip` at the top of
 `.github/workflows/ci.yml` lints, type-checks, builds, runs knip and runs the
 end-to-end suite on every pull request and on pushes to `master` and `main`.
 
-Lint rules live in `.oxlintrc.json` and knip's config in `knip.json`. The two
-React effect rules (`react/set-state-in-effect` and `react-hooks/exhaustive-deps`)
-are warnings rather than errors: every page fetches inside an effect and setting
-state from it, so clearing them needs a data-fetching refactor rather than a
-per-call-site edit.
+Lint rules live in `.oxlintrc.json` and knip's config in `knip.json`.
 
 `.github/workflows/deploy.yml` builds the app, syncs `build/` to the S3 bucket and
 invalidates the CloudFront distribution. It runs on pushes to `main` and can also
