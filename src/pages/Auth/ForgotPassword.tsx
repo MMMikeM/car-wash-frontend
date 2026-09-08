@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { forgotPassword } from '../../services/authApi'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/toast'
 export const schema = v.object({ contact_number: v.optional(contactNumberSchema) })
 
 const ForgotPassword = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let [localUser, setLocalUser] = useState({
     contact_number: '',
   })
@@ -29,7 +29,7 @@ const ForgotPassword = () => {
         'Check your phone',
         'An SMS with a link to reset your password is on its way.'
       )
-      history.push('/')
+      navigate('/')
     }
   }
 

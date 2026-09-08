@@ -9,7 +9,7 @@ import {
   getCustomersCSV,
   deleteCustomer,
 } from '../../services/customersApi'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { handleDownload, isAnonymousEmail } from '../../helpers'
 import type { Customer } from '../../types'
 import ConfirmDialog from '../../components/ConfirmDialog'
@@ -39,11 +39,11 @@ const getVehicleRegs = (vehicles) => {
     .toUpperCase()
 }
 
-const CustomerCard = ({ customer, onAddWash, onDelete, history }) => {
+const CustomerCard = ({ customer, onAddWash, onDelete, navigate }) => {
   const email = formatEmail(customer.email)
   const vehicles = getVehicleRegs(customer.vehicles)
 
-  const openCustomer = () => history.push(`/customers/${customer.id}`)
+  const openCustomer = () => navigate(`/customers/${customer.id}`)
 
   const handleCardClick = (e) => {
     if (e.target.closest('button')) return
@@ -120,14 +120,14 @@ const CustomerCard = ({ customer, onAddWash, onDelete, history }) => {
   )
 }
 
-const CustomerTableRow = ({ customer, onAddWash, onDelete, history }) => {
+const CustomerTableRow = ({ customer, onAddWash, onDelete, navigate }) => {
   const email = formatEmail(customer.email)
   const vehicles = getVehicleRegs(customer.vehicles)
 
   return (
     <TableRow
       className="cursor-pointer"
-      onClick={() => history.push(`/customers/${customer.id}`)}
+      onClick={() => navigate(`/customers/${customer.id}`)}
     >
       <TableCell className="font-medium">{customer.name}</TableCell>
       <TableCell className="text-muted-foreground">{email || '—'}</TableCell>
@@ -163,7 +163,7 @@ const CustomerTableRow = ({ customer, onAddWash, onDelete, history }) => {
 }
 
 const CustomersIndex = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
   let [loading, setLoading] = useState(true)
   let [modalIsVisible, setModalIsVisible] = useState(false)
@@ -211,7 +211,7 @@ const CustomersIndex = () => {
   }
 
   const handleAddWash = (customerId) => {
-    history.push(`/customers/${customerId}/washes/new`)
+    navigate(`/customers/${customerId}/washes/new`)
   }
 
   const handleDeleteCustomer = (elementId) => {
@@ -272,7 +272,7 @@ const CustomersIndex = () => {
               customer={customer}
               onAddWash={handleAddWash}
               onDelete={handleDeleteCustomer}
-              history={history}
+              navigate={navigate}
             />
           ))
         )}
@@ -306,7 +306,7 @@ const CustomersIndex = () => {
                       customer={customer}
                       onAddWash={handleAddWash}
                       onDelete={handleDeleteCustomer}
-                      history={history}
+                      navigate={navigate}
                     />
                   ))
                 )}

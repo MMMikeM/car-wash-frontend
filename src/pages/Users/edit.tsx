@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { getCustomer, saveSystemUsers } from '../../services/customersApi'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,7 @@ import { FormSkeleton } from '../../components/Loading'
 const UserEdit = () => {
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [loading, setLoading] = useState(true)
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
   let [selected, setSelected] = useState('')
 
@@ -41,7 +41,7 @@ const UserEdit = () => {
       reportError(error, 'save the user')
       return
     }
-    history.push(`/settings/users`)
+    navigate(`/settings/users`)
   }
 
   let inactive = 'text-white bg-4 px-4 py-2'

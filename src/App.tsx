@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Link, NavLink } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom'
 import { NavPanel, NavToggle } from './components/MobileNav'
 import BottomNav from './components/BottomNav'
 import { Toaster } from '@/components/ui/toast'
@@ -11,6 +11,7 @@ const CustomerHome = React.lazy(() => import('./pages/Customer/index'))
 import { House, Search, Users, ChartColumn, ClipboardList } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { currentRoles } from '@/lib/auth'
+import { cn } from '@/lib/utils'
 import { PageLoading } from './components/Loading'
 
 import Login from './pages/Auth/Login'
@@ -187,10 +188,14 @@ function App() {
               {(isStaff ? [] : Links).map((link, key) => (
                 <NavLink
                   key={key}
-                  exact={link.path === '/'}
+                  end={link.path === '/'}
                   to={link.path}
-                  className="rounded-md px-3 py-2 text-sm text-foreground! no-underline! transition-colors hover:bg-primary/10 hover:text-primary!"
-                  activeClassName="bg-primary/10 text-primary!"
+                  className={({ isActive }) =>
+                    cn(
+                      'rounded-md px-3 py-2 text-sm text-foreground! no-underline! transition-colors hover:bg-primary/10 hover:text-primary!',
+                      isActive && 'bg-primary/10 text-primary!'
+                    )
+                  }
                 >
                   {link.name}
                 </NavLink>
@@ -204,61 +209,50 @@ function App() {
           }`}
         >
         <React.Suspense fallback={<PageLoading label="Loading the page" />}>
-        <Switch>
-          <Route component={Login} path="/login" />
-          <Route component={Logout} path="/logout" />
-          <ProtectedRoute component={CustomersNew} path="/customers/new" />
-          <ManagerRoute
-            component={CustomersSearch}
-            path="/customers/search"
-          />
-          <ManagerRoute
-            component={CustomersEdit}
-            path="/customers/:id/edit"
-          />
-          <ProtectedRoute
-            component={VehicleNew}
-            path="/customers/:id/vehicles/new"
-          />
-          <ProtectedRoute
-            component={ManageUserWashes}
-            path="/customers/:id/washes/new"
-          />
-          <ProtectedRoute component={SalesNew} path="/new_customer/" />
-          <ProtectedRoute component={SearchCustomer} path="/search/q" />
-          <ProtectedRoute
-            component={SalesNewVehicles}
-            path="/sales/:id/vehicles/new"
-          />
-          <ProtectedRoute component={UsersReport} path="/customers/report" />
-          <ProtectedRoute component={DailyWashesDetail} path="/customers/daily_wash_list" />
-          <ProtectedRoute component={CustomersShow} path="/customers/:id" />
-          <ManagerRoute component={CustomersIndex} path="/customers" />
-          <ProtectedRoute component={WashNew} path="/wash_types/new" />
-          <ProtectedRoute component={WashEdit} path="/wash_types/:id/edit" />
-          <ProtectedRoute component={WashesShow} path="/wash_types/:id" />
-          <ProtectedRoute component={WashesOrder} path="/wash_order" />
-          <ProtectedRoute component={WashesIndex} path="/wash_types" />
-          <ManagerRoute component={UserNew} path="/settings/users/new" />
-          <ManagerRoute component={UserEdit} path="/settings/users/:id/edit" />
-          <ManagerRoute component={WashFreeEdit} path="/settings/:id/edit" />
-          <ManagerRoute component={UserIndex} path="/settings/users" />
-          <ManagerRoute component={Settings} path="/settings" />
-          <ManagerRoute component={WashesReport} path="/reports/washes" />
-          <ManagerRoute component={DailyWashes} path="/reports/daily_washes" />
-          <ManagerRoute component={ActiveUsersReport} path="/reports/active_users" />
-          <ManagerRoute component={InsuredWashes} path="/reports/insured_washes" />
-          <Route component={PasswordReset} path="/:id/password_reset" />
-          <Route component={ForgotPassword} path="/forgot_password" />
-          <Route component={SignUp} path="/sign_up" />
-          <HomeRoute
-            manager={AdminHome}
-            sales={SalesHome}
-            customer={CustomerHome}
-            public={Public}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/customers/new" element={<ProtectedRoute><CustomersNew /></ProtectedRoute>} />
+          <Route path="/customers/search" element={<ManagerRoute><CustomersSearch /></ManagerRoute>} />
+          <Route path="/customers/:id/edit" element={<ManagerRoute><CustomersEdit /></ManagerRoute>} />
+          <Route path="/customers/:id/vehicles/new" element={<ProtectedRoute><VehicleNew /></ProtectedRoute>} />
+          <Route path="/customers/:id/washes/new" element={<ProtectedRoute><ManageUserWashes /></ProtectedRoute>} />
+          <Route path="/new_customer" element={<ProtectedRoute><SalesNew /></ProtectedRoute>} />
+          <Route path="/search/q" element={<ProtectedRoute><SearchCustomer /></ProtectedRoute>} />
+          <Route path="/sales/:id/vehicles/new" element={<ProtectedRoute><SalesNewVehicles /></ProtectedRoute>} />
+          <Route path="/customers/report" element={<ProtectedRoute><UsersReport /></ProtectedRoute>} />
+          <Route path="/customers/daily_wash_list" element={<ProtectedRoute><DailyWashesDetail /></ProtectedRoute>} />
+          <Route path="/customers/:id" element={<ProtectedRoute><CustomersShow /></ProtectedRoute>} />
+          <Route path="/customers" element={<ManagerRoute><CustomersIndex /></ManagerRoute>} />
+          <Route path="/wash_types/new" element={<ProtectedRoute><WashNew /></ProtectedRoute>} />
+          <Route path="/wash_types/:id/edit" element={<ProtectedRoute><WashEdit /></ProtectedRoute>} />
+          <Route path="/wash_types/:id" element={<ProtectedRoute><WashesShow /></ProtectedRoute>} />
+          <Route path="/wash_order" element={<ProtectedRoute><WashesOrder /></ProtectedRoute>} />
+          <Route path="/wash_types" element={<ProtectedRoute><WashesIndex /></ProtectedRoute>} />
+          <Route path="/settings/users/new" element={<ManagerRoute><UserNew /></ManagerRoute>} />
+          <Route path="/settings/users/:id/edit" element={<ManagerRoute><UserEdit /></ManagerRoute>} />
+          <Route path="/settings/:id/edit" element={<ManagerRoute><WashFreeEdit /></ManagerRoute>} />
+          <Route path="/settings/users" element={<ManagerRoute><UserIndex /></ManagerRoute>} />
+          <Route path="/settings" element={<ManagerRoute><Settings /></ManagerRoute>} />
+          <Route path="/reports/washes" element={<ManagerRoute><WashesReport /></ManagerRoute>} />
+          <Route path="/reports/daily_washes" element={<ManagerRoute><DailyWashes /></ManagerRoute>} />
+          <Route path="/reports/active_users" element={<ManagerRoute><ActiveUsersReport /></ManagerRoute>} />
+          <Route path="/reports/insured_washes" element={<ManagerRoute><InsuredWashes /></ManagerRoute>} />
+          <Route path="/:id/password_reset" element={<PasswordReset />} />
+          <Route path="/forgot_password" element={<ForgotPassword />} />
+          <Route path="/sign_up" element={<SignUp />} />
+          <Route
             path="/"
+            element={
+              <HomeRoute
+                manager={AdminHome}
+                sales={SalesHome}
+                customer={CustomerHome}
+                public={Public}
+              />
+            }
           />
-        </Switch>
+        </Routes>
         </React.Suspense>
         </div>
         {isStaff ? (

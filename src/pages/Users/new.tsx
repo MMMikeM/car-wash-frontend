@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { postCustomer, saveSystemUsers } from '../../services/customersApi'
 import { CustomerForm, schema } from './form'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
@@ -18,7 +18,7 @@ const UserNew = () => {
   let [loading, setLoading] = useState(false)
   let [selected, setSelected] = useState('')
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
     if (!selected) {
@@ -30,7 +30,7 @@ const UserNew = () => {
         try {
           let resCustomer = await postCustomer(localCustomer)
           await saveSystemUsers(resCustomer.id, roles)
-          history.push(`/`)
+          navigate(`/`)
         } catch (error) {
           reportError(error, 'create the user')
         } finally {

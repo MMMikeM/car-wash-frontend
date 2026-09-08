@@ -5,7 +5,7 @@ import { getWashes } from '../../services/washTypesApi'
 import { getCustomer } from '../../services/customersApi'
 import { transformCentsToRands } from '../../helpers'
 import BasicTable from '../../components/Tables/BasicTable'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import type { Customer, WashType } from '../../types'
 import { reportError } from '@/lib/reportError'
@@ -26,7 +26,7 @@ const SelectCard = ({ label, selected, onSelect }) => (
 )
 
 const ManageUserWashes = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
   let [washes, setWashes] = useState<WashType[]>([])
@@ -91,7 +91,7 @@ const ManageUserWashes = () => {
 
     setSelectedWashId('')
     toast.success('Wash captured')
-    history.push(`/customers/${id}`)
+    navigate(`/customers/${id}`)
   }
 
   let registration_list = []

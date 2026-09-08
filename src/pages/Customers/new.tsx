@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { postCustomer } from '../../services/customersApi'
 import { CustomerForm, schema} from './form'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
 
@@ -14,7 +14,7 @@ const CustomersNew = () => {
   })
   let [loading, setLoading] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
     let valid = validate(schema, localCustomer)
@@ -22,7 +22,7 @@ const CustomersNew = () => {
       setLoading(true)
       try {
         let res = await postCustomer(localCustomer)
-        history.push(`/customers/${res.id}`)
+        navigate(`/customers/${res.id}`)
       } catch (error) {
         reportError(error, 'create the customer')
       } finally {

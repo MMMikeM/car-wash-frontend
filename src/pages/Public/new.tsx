@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { postCustomer } from '../../services/customersApi'
 import { SignUpForm } from './form'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
 import { signUpSchema } from '../../lib/schemas'
@@ -17,7 +17,7 @@ const Signup = () => {
   })
   let [loading, setLoading] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
     let valid = validate(signUpSchema, localCustomer)
@@ -25,7 +25,7 @@ const Signup = () => {
       setLoading(true)
       try {
         await postCustomer(localCustomer)
-        history.push(`/login`)
+        navigate(`/login`)
       } catch (error) {
         reportError(error, 'create your account')
       } finally {

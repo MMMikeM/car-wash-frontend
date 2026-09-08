@@ -2,20 +2,20 @@ import React from 'react'
 import useSWR from 'swr'
 import { getWashes } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { transformWashesCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
 
 const Settings = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
 
   const { data, isLoading } = useSWR('the wash types', getWashes)
   const washes = data ? transformWashesCentsToRands(data) : []
 
   const editFreeWash = (wash) => {
-    history.push(`settings/${wash.id}/edit`)
+    navigate(`settings/${wash.id}/edit`)
   }
 
   if (isLoading) {

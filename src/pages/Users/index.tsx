@@ -1,23 +1,23 @@
 import React from 'react'
 import useSWR from 'swr'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
 import BasicTable from '../../components/Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
 
 const Settings = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const { data, isLoading } = useSWR('the users', getSystemUsers)
   const systemUsers = data ?? []
 
   const editUser = (user) => {
-    history.push(`users/${user.id}/edit`)
+    navigate(`users/${user.id}/edit`)
   }
 
   const handleAdd = () => {
-    history.push('/settings/users/new')
+    navigate('/settings/users/new')
   }
 
   if (isLoading) {

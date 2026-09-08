@@ -1,15 +1,13 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { hasRole } from '@/lib/auth'
+import { ErrorBoundary } from '../../components/ErrorBoundary'
 
-const ManagerRoute = ({ component: Component, ...rest }) => {
-  let validateUser = () => {
-    if (hasRole('manager')) {
-      return <Component />
-    } else return <Redirect to={'/'} />
-  }
-
-  return <Route {...rest}>{validateUser()}</Route>
-}
+const ManagerRoute = ({ children }: { children: React.ReactNode }) =>
+  hasRole('manager') ? (
+    <ErrorBoundary>{children}</ErrorBoundary>
+  ) : (
+    <Navigate to="/" replace />
+  )
 
 export default ManagerRoute

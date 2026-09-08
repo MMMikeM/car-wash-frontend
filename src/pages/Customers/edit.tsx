@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import useSWR from 'swr'
 import { getCustomer, saveCustomer } from '../../services/customersApi'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { CustomerForm, schema } from './form'
 import type { Customer } from '../../types'
 import { validate } from '../../lib/validate'
@@ -12,7 +12,7 @@ import { FormSkeleton } from '../../components/Loading'
 const CustomersEdit = () => {
   const [draft, setDraft] = useState<Partial<Customer>>()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
@@ -31,7 +31,7 @@ const CustomersEdit = () => {
         reportError(error, 'save the customer')
         return
       }
-      history.push(`/customers/${localCustomer.id}`)
+      navigate(`/customers/${localCustomer.id}`)
     }
   }
 
@@ -39,7 +39,7 @@ const CustomersEdit = () => {
   const localCustomer: Partial<Customer> = draft ?? data ?? {}
 
   let handleClick = () => {
-    history.push(`/settings/users/${id}/edit`)
+    navigate(`/settings/users/${id}/edit`)
   }
 
   if (isLoading) {

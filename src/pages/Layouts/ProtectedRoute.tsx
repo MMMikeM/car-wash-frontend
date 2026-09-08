@@ -1,15 +1,13 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { hasRole } from '@/lib/auth'
+import { ErrorBoundary } from '../../components/ErrorBoundary'
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-  let validateUser = () => {
-    if (hasRole('manager', 'salesperson')) {
-      return <Component />
-    } else return <Redirect to={'/'} />
-  }
-
-  return <Route {...rest}>{validateUser()}</Route>
-}
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) =>
+  hasRole('manager', 'salesperson') ? (
+    <ErrorBoundary>{children}</ErrorBoundary>
+  ) : (
+    <Navigate to="/" replace />
+  )
 
 export default ProtectedRoute

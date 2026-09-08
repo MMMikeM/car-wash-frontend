@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { postVehicle } from '../../services/vehiclesApi'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { validate } from '../../lib/validate'
 import { registrationSchema } from '../../lib/schemas'
 import { reportError } from '@/lib/reportError'
 
 const SalesNewVehicles = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
   let [data, setData] = useState({ user_id: id, registration_number: '' })
 
@@ -20,7 +20,7 @@ const SalesNewVehicles = () => {
         reportError(error, 'add the vehicle')
         return
       }
-      history.push(`/customers/${id}/washes/new`)
+      navigate(`/customers/${id}/washes/new`)
     }
   }
 

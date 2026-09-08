@@ -18,9 +18,10 @@ const BottomNav = ({ links }) => {
           <NavLink
             key={path}
             to={path}
-            exact={path === '/'}
-            className={tabClass}
-            activeClassName="text-primary!"
+            end={path === '/'}
+            className={({ isActive }) =>
+              cn(tabClass, isActive && 'text-primary!')
+            }
           >
             <Icon className="size-6" />
             <span className="text-center leading-tight">{name}</span>

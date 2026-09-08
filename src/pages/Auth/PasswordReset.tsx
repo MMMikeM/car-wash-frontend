@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { updatePassword } from '../../services/authApi'
 import { validate } from '../../lib/validate'
 import { reportError } from '@/lib/reportError'
@@ -8,7 +8,7 @@ import { passwordPairSchema } from '../../lib/schemas'
 import { toast } from '@/components/ui/toast'
 
 const PasswordReset = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { id } = useParams()
   let [localUser, setLocalUser] = useState({
     password: '',
@@ -30,7 +30,7 @@ const PasswordReset = () => {
       }
 
       toast.success('Password updated')
-      history.push('/')
+      navigate('/')
     }
   }
 

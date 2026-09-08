@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { searchCustomer, deleteCustomer } from '../../services/customersApi'
 import BasicTable, { CrudActions } from '../../components/Tables/BasicTable'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
@@ -27,7 +27,7 @@ const CustomersSearch = () => {
   let [perPage] = useState(20)
   let [total, setTotal] = useState(0)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const totalPages = Math.ceil(total / perPage)
 
@@ -60,11 +60,11 @@ const CustomersSearch = () => {
   }
 
   let addWash = (customer) => {
-    history.push(`/customers/${customer.id}/washes/new`)
+    navigate(`/customers/${customer.id}/washes/new`)
   }
 
   const addVehicle = (customer) => {
-    history.push(`/customers/${customer.id}/vehicles/new`)
+    navigate(`/customers/${customer.id}/vehicles/new`)
   }
 
   const handleSubmit = async () => {

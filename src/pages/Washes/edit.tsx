@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useSWR from 'swr'
 import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { reportError } from '@/lib/reportError'
 import { centsToRands } from '../../helpers'
 import type { WashType } from '../../types'
@@ -11,7 +11,7 @@ import { FormSkeleton } from '../../components/Loading'
 const WashEdit = () => {
   const [draft, setDraft] = useState<Partial<WashType>>()
 
-  const history = useHistory()
+  const navigate = useNavigate()
   let { id } = useParams()
 
   const editRecordMethod = (record, key, value) => {
@@ -32,7 +32,7 @@ const WashEdit = () => {
       reportError(error, 'save the wash type')
       return
     }
-    history.push(`/wash_types/${id}`)
+    navigate(`/wash_types/${id}`)
   }
 
   const { data, isLoading } = useSWR(['the wash type', id], () => getWash(id))

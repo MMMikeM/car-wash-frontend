@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { postWash } from '../../services/washTypesApi'
 import { WashForm, schema } from './form'
-import { useHistory, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { validate } from '../../lib/validate'
@@ -19,7 +19,7 @@ const WashNew = () => {
 
   let [loading, setLoading] = useState(false)
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const save = async () => {
     let valid = validate(schema, newWash)
@@ -27,7 +27,7 @@ const WashNew = () => {
       setLoading(true)
       try {
         let res = await postWash(newWash)
-        history.push(`/wash_types/${res.id}`)
+        navigate(`/wash_types/${res.id}`)
       } catch (error) {
         reportError(error, 'create the wash type')
       } finally {

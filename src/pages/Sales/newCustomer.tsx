@@ -4,13 +4,13 @@ import { reportError } from '@/lib/reportError'
 import { customerSchema } from '../../lib/schemas'
 import BasicForm from '../../components/Forms/BasicForm'
 import { postCustomer } from '../../services/customersApi'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { Customer } from '../../types'
 import { useQueryParam } from '@/hooks/useQueryParam'
 
 
 const SalesNew = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   let [loading, setLoading] = useState(false)
   let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({
     name: useQueryParam('name') ?? '',
@@ -24,7 +24,7 @@ const SalesNew = () => {
       setLoading(true)
       try {
         let res = await postCustomer(localCustomer)
-        history.push(`/sales/${res.id}/vehicles/new`)
+        navigate(`/sales/${res.id}/vehicles/new`)
       } catch (error) {
         reportError(error, 'create the customer')
       } finally {

@@ -14,8 +14,9 @@
     "react": "^19.2.4",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.2.4",
+    "react-error-boundary": "^6.1.5",
     "react-movable": "^2.5.3",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^7.18.3",
     "swr": "^2.5.1",
     "tailwind-merge": "^3.4.0",
     "valibot": "^1.4.2"

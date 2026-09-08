@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import * as v from 'valibot'
 import { validate } from '../../lib/validate'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import HomeTile from '@/components/HomeTile'
 import { ClipboardList, ChartColumn, CarFront } from 'lucide-react'
@@ -11,12 +11,12 @@ const WALK_IN_CUSTOMER_ID = 'e92d521d-0628-4cb3-8252-02d5d65272e5'
 
 const SalesHome = () => {
   let [inputValue, setInputValue] = useState('')
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const redirect = async () => {
     let valid = validate(schema, inputValue)
     if (valid) {
-      history.push(`/search/q?contact_number=${inputValue}`)
+      navigate(`/search/q?contact_number=${inputValue}`)
     }
   }
 
@@ -61,7 +61,7 @@ const SalesHome = () => {
             name="Walk-in wash"
             Icon={CarFront}
             onClick={() =>
-              history.push(`/customers/${WALK_IN_CUSTOMER_ID}/washes/new/`)
+              navigate(`/customers/${WALK_IN_CUSTOMER_ID}/washes/new/`)
             }
           />
           <HomeTile
