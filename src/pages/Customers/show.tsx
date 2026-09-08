@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, Suspense } from 'react'
+import useSWR from 'swr'
 import { Car, Coins, Mail, Smartphone, User } from 'lucide-react'
 import { getCustomer } from '../../services/customersApi'
 import { getWashes } from '../../services/washTypesApi'
@@ -6,7 +7,6 @@ import { Link, useParams } from 'react-router-dom'
 import BasicTable from '../../components/Tables/BasicTable'
 import { deleteWash } from '../../services/washesApi'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import type { Customer, WashType } from '../../types'
 import { Button } from '@/components/ui/button'
 import { DetailSkeleton } from '../../components/Loading'
 import { currentRoles } from '@/lib/auth'
@@ -15,35 +15,17 @@ import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
 
 
-const CustomersShow = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [washes, setWashes] = useState<WashType[]>([])
-  let [loading, setLoading] = useState(true)
+const CustomersShowContent = () => {
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWash, setSelectedWash] = useState('')
 
   let { id } = useParams()
 
-  const loadCustomer = useCallback(async () => {
-    try {
-      let [resCustomer, resWashes] = await Promise.all([
-        getCustomer(id),
-        getWashes(),
-      ])
-      setLocalCustomer(resCustomer)
-      setWashes(resWashes)
-    } catch (error) {
-      reportError(error, 'load the customer')
-    } finally {
-      setLoading(false)
-    }
-  }, [id])
-
-  useEffect(() => {
-    // State is set after the await, not synchronously.
-    // oxlint-disable-next-line react/set-state-in-effect
-    loadCustomer()
-  }, [loadCustomer])
+  // Two reads, one boundary: they resolve in parallel and the page waits once.
+  const { data: localCustomer, mutate } = useSWR(['the customer', id], () =>
+    getCustomer(id)
+  )
+  const { data: washes } = useSWR('the wash types', getWashes)
 
   const handleClick = async (wash) => {
     setSelectedWash(wash.id)
@@ -59,7 +41,7 @@ const CustomersShow = () => {
       return
     }
     toast.success('Wash deleted')
-    loadCustomer()
+    mutate()
   }
 
   // Derived rather than mutated in place: these rows are rebuilt each render.
@@ -96,9 +78,7 @@ const CustomersShow = () => {
 
   let roles = currentRoles()
 
-  return loading ? (
-    <DetailSkeleton label="Loading the customer" />
-  ) : (
+  return (
     <div>
       <ConfirmDialog
         open={modalIsVisible}
@@ -205,5 +185,11 @@ const CustomersShow = () => {
     </div>
   )
 }
+
+const CustomersShow = () => (
+  <Suspense fallback={<DetailSkeleton label="Loading the customer" />}>
+    <CustomersShowContent />
+  </Suspense>
+)
 
 export default CustomersShow

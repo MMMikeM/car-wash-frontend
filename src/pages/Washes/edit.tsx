@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import useSWR from 'swr'
 import { getWash, saveWash } from '../../services/washTypesApi'
 import BasicForm from '../../components/Forms/BasicForm'
@@ -8,7 +8,7 @@ import { centsToRands } from '../../helpers'
 import type { WashType } from '../../types'
 import { FormSkeleton } from '../../components/Loading'
 
-const WashEdit = () => {
+const WashEditContent = () => {
   const [draft, setDraft] = useState<Partial<WashType>>()
 
   const navigate = useNavigate()
@@ -35,18 +35,9 @@ const WashEdit = () => {
     navigate(`/wash_types/${id}`)
   }
 
-  const { data, isLoading } = useSWR(['the wash type', id], () => getWash(id))
+  const { data } = useSWR(['the wash type', id], () => getWash(id))
   const localWash: Partial<WashType> = draft ?? data ?? {}
 
-  if (isLoading) {
-    return (
-      <div className="w-full">
-      <div className="max-sm mx-auto rounded">
-          <FormSkeleton fields={5} label="Loading the wash type" />
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="w-full">
@@ -69,5 +60,15 @@ const WashEdit = () => {
     </div>
   )
 }
+
+const WashEdit = () => (
+  <Suspense fallback={<div className="w-full">
+      <div className="max-sm mx-auto rounded">
+          <FormSkeleton fields={5} label="Loading the wash type" />
+        </div>
+      </div>}>
+    <WashEditContent />
+  </Suspense>
+)
 
 export default WashEdit

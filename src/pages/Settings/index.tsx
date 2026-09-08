@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import useSWR from 'swr'
 import { getWashes } from '../../services/washTypesApi'
 import BasicTable from '../../components/Tables/BasicTable'
@@ -7,24 +7,17 @@ import { transformWashesCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
 
-const Settings = () => {
+const SettingsContent = () => {
   const navigate = useNavigate()
 
 
-  const { data, isLoading } = useSWR('the wash types', getWashes)
-  const washes = data ? transformWashesCentsToRands(data) : []
+  const { data } = useSWR('the wash types', getWashes)
+  const washes = transformWashesCentsToRands(data)
 
   const editFreeWash = (wash) => {
     navigate(`settings/${wash.id}/edit`)
   }
 
-  if (isLoading) {
-    return (
-      <div className="w-full">
-        <ListSkeleton rows={2} columns={3} label="Loading the free washes" />
-      </div>
-    )
-  }
 
   return (
     <div className="w-full">
@@ -51,5 +44,13 @@ const Settings = () => {
     </div>
   )
 }
+
+const Settings = () => (
+  <Suspense fallback={<div className="w-full">
+        <ListSkeleton rows={2} columns={3} label="Loading the free washes" />
+      </div>}>
+    <SettingsContent />
+  </Suspense>
+)
 
 export default Settings

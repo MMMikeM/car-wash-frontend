@@ -2,7 +2,8 @@
    cannot be a <button>; it stands in for one with role, tabIndex and a key
    handler instead.  */
 /* oxlint-disable jsx-a11y/prefer-tag-over-role */
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import { Trash2 } from 'lucide-react'
 import {
   getCustomers,
@@ -162,28 +163,24 @@ const CustomerTableRow = ({ customer, onAddWash, onDelete, navigate }) => {
   )
 }
 
-const CustomersIndex = () => {
+const PER_PAGE = 20
+
+const CustomersIndexContent = () => {
   const navigate = useNavigate()
-  let [localCustomers, setLocalCustomers] = useState<Customer[]>([])
-  let [loading, setLoading] = useState(true)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [customerToDelete, setCustomerToDelete] = useState<Customer>()
   let [page, setPage] = useState(0)
-  let [perPage] = useState(20)
-  let [total, setTotal] = useState(0)
 
-  const loadCustomers = useCallback(async (pageNum: number) => {
-    setLoading(true)
-    try {
-      let res = await getCustomers(pageNum, perPage)
-      setLocalCustomers(res.data)
-      setTotal(res.total)
-    } catch (error) {
-      reportError(error, 'load customers')
-    } finally {
-      setLoading(false)
-    }
-  }, [perPage])
+  const { data, mutate } = useSWR(
+    ['customers', page],
+    () => getCustomers(page, PER_PAGE),
+    // Paging keeps the previous rows on screen rather than suspending back to
+    // a skeleton on every click.
+    { keepPreviousData: true }
+  )
+
+  const localCustomers = data.data
+  const total = data.total
 
   const handleDownloadCustomers = async () => {
     try {
@@ -194,13 +191,8 @@ const CustomersIndex = () => {
     }
   }
 
-  useEffect(() => {
-    // State is set after the await, not synchronously.
-    // oxlint-disable-next-line react/set-state-in-effect
-    loadCustomers(page)
-  }, [loadCustomers, page])
 
-  const totalPages = Math.ceil(total / perPage)
+  const totalPages = Math.ceil(total / PER_PAGE)
 
   const handlePrevPage = () => {
     if (page > 0) setPage(page - 1)
@@ -230,16 +222,11 @@ const CustomersIndex = () => {
       return
     }
     toast.success('Customer deleted')
-    loadCustomers(page)
+    mutate()
   }
 
   const reversedCustomers = [...localCustomers].reverse()
 
-  if (loading) {
-    return (
-      <RecordListSkeleton rows={6} label="Loading customers" />
-    )
-  }
 
   return (
     <div className="w-full">
@@ -351,5 +338,11 @@ const CustomersIndex = () => {
     </div>
   )
 }
+
+const CustomersIndex = () => (
+  <Suspense fallback={<RecordListSkeleton rows={6} label="Loading customers" />}>
+    <CustomersIndexContent />
+  </Suspense>
+)
 
 export default CustomersIndex

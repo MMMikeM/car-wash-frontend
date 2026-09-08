@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import useSWR from 'swr'
 import { useNavigate } from 'react-router-dom'
 import { getSystemUsers } from '../../services/customersApi'
@@ -6,11 +6,11 @@ import BasicTable from '../../components/Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { ListSkeleton } from '../../components/Loading'
 
-const Settings = () => {
+const SettingsContent = () => {
   const navigate = useNavigate()
 
-  const { data, isLoading } = useSWR('the users', getSystemUsers)
-  const systemUsers = data ?? []
+  const { data } = useSWR('the users', getSystemUsers)
+  const systemUsers = data
 
   const editUser = (user) => {
     navigate(`users/${user.id}/edit`)
@@ -20,9 +20,6 @@ const Settings = () => {
     navigate('/settings/users/new')
   }
 
-  if (isLoading) {
-    return <ListSkeleton rows={5} columns={3} label="Loading the users" />
-  }
 
   return (
         <div className="w-full">
@@ -54,5 +51,11 @@ const Settings = () => {
         </div>
   )
 }
+
+const Settings = () => (
+  <Suspense fallback={<ListSkeleton rows={5} columns={3} label="Loading the users" />}>
+    <SettingsContent />
+  </Suspense>
+)
 
 export default Settings

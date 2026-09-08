@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
+import { DetailSkeleton } from '../../components/Loading'
 import { Car, Coins, Smartphone, User } from 'lucide-react'
 import { postWash } from '../../services/washesApi'
 import { getWashes } from '../../services/washTypesApi'
@@ -7,7 +9,6 @@ import { transformCentsToRands } from '../../helpers'
 import BasicTable from '../../components/Tables/BasicTable'
 import { useNavigate, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import type { Customer, WashType } from '../../types'
 import { reportError } from '@/lib/reportError'
 import { toast } from '@/components/ui/toast'
 import { Button } from '@/components/ui/button'
@@ -25,12 +26,15 @@ const SelectCard = ({ label, selected, onSelect }) => (
   </Button>
 )
 
-const ManageUserWashes = () => {
+const ManageUserWashesContent = () => {
   const navigate = useNavigate()
   let { id } = useParams()
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [washes, setWashes] = useState<WashType[]>([])
-  let [loading, setLoading] = useState(true)
+
+  const { data: localCustomer, mutate } = useSWR(['the customer', id], () =>
+    getCustomer(id)
+  )
+  const { data: washes } = useSWR('the wash types', getWashes)
+
   let [submitted, setSubmitted] = useState(false)
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [selectedWashId, setSelectedWashId] = useState('')
@@ -39,23 +43,6 @@ const ManageUserWashes = () => {
   const freeWashPoints = -washes?.filter((wash) => wash.free == true)[0]?.points
   let qualifies = localCustomer.total_points >= freeWashPoints
 
-  useEffect(() => {
-    const handleFetchData = async () => {
-      try {
-        let [resCustomer, resWashes] = await Promise.all([
-          getCustomer(id),
-          getWashes(),
-        ])
-        setLocalCustomer(resCustomer)
-        setWashes(resWashes)
-      } catch (error) {
-        reportError(error, 'load this customer')
-      } finally {
-        setLoading(false)
-      }
-    }
-    handleFetchData()
-  }, [id])
 
   // Free first when the customer qualifies, then by the configured order.
   const selectableWashes = (
@@ -63,7 +50,7 @@ const ManageUserWashes = () => {
   ).sort((a, b) => Number(b.free) - Number(a.free) || a.order - b.order)
 
   const toggleWash = (washId: string) =>
-    setSelectedWashId(selectedWashId === washId && !loading ? '' : washId)
+    setSelectedWashId(selectedWashId === washId ? '' : washId)
 
   let handleProceed = () => {
     setModalIsVisible(true)
@@ -89,6 +76,8 @@ const ManageUserWashes = () => {
       return
     }
 
+    // Same cache key as the customer page, so the points it shows are fresh.
+    await mutate()
     setSelectedWashId('')
     toast.success('Wash captured')
     navigate(`/customers/${id}`)
@@ -196,7 +185,7 @@ const ManageUserWashes = () => {
           ''
         )}
       </div>
-      {!loading && localCustomer.washes.length > 0 ? (
+      {localCustomer.washes.length > 0 ? (
         <div className="max-md mx-auto">
           <BasicTable
             records={localCustomer.washes}
@@ -210,5 +199,11 @@ const ManageUserWashes = () => {
     </div>
   )
 }
+
+const ManageUserWashes = () => (
+  <Suspense fallback={<DetailSkeleton label="Loading this customer" />}>
+    <ManageUserWashesContent />
+  </Suspense>
+)
 
 export default ManageUserWashes

@@ -13,7 +13,8 @@ test('customers list reports a server error instead of blanking', async ({ page 
   await page.route('**/api/v1/customers?*', fail(500, '<html>err</html>', 'text/html'))
   await page.goto('/customers')
 
-  await expect(page.getByText('Could not load customers').first()).toBeVisible()
+  await expect(page.getByText('Something went wrong')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
 })
 
 test('a JSON error body does not crash the customers list', async ({ page }) => {
@@ -22,7 +23,8 @@ test('a JSON error body does not crash the customers list', async ({ page }) => 
   await page.route('**/api/v1/customers?*', fail(500, JSON.stringify({ error: 'boom' })))
 
   await page.goto('/customers')
-  await expect(page.getByText('Could not load customers').first()).toBeVisible()
+  await expect(page.getByText('Something went wrong')).toBeVisible()
+  await expect(page.getByText('boom')).toBeVisible()
   expect(crashes).toEqual([])
 })
 
@@ -78,7 +80,8 @@ test('a failed report load shows an error rather than staying blank', async ({ p
   await page.route('**/api/v1/reports/washes_report*', fail(500, '{}'))
   await page.goto('/reports/washes')
 
-  await expect(page.getByText('Could not load the report').first()).toBeVisible()
+  await expect(page.getByText('Something went wrong')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
 })
 
 test("the API's own message is shown when it sends one", async ({ page, api }) => {

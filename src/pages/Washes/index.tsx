@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import useSWR from 'swr'
 import { Info, SquarePen, Trash2 } from 'lucide-react'
 import { getWashes, deleteWash } from '../../services/washTypesApi'
@@ -94,13 +94,13 @@ const WashTableRow = ({ wash, onDelete }) => {
   )
 }
 
-const WashesIndex = () => {
+const WashesIndexContent = () => {
   let [modalIsVisible, setModalIsVisible] = useState(false)
   let [washToDelete, setWashToDelete] = useState<{ id: string; name: string }>()
 
-  const { data, isLoading, mutate } = useSWR('the wash types', getWashes)
+  const { data, mutate } = useSWR('the wash types', getWashes)
 
-  const washes = data ? transformWashesCentsToRands(data) : []
+  const washes = transformWashesCentsToRands(data)
 
   const requestDeleteWash = (washId) => {
     setWashToDelete(washes.find((wash) => wash.id === washId))
@@ -124,12 +124,6 @@ const WashesIndex = () => {
   const sortedWashes = washes
     .filter((wash) => wash.free === false)
     .sort((a, b) => (a.order > b.order ? 1 : -1))
-
-  if (isLoading) {
-    return (
-      <WashListSkeleton rows={9} label="Loading the wash types" />
-    )
-  }
 
   return (
     <div className="w-full">
@@ -200,5 +194,11 @@ const WashesIndex = () => {
     </div>
   )
 }
+
+const WashesIndex = () => (
+  <Suspense fallback={<WashListSkeleton rows={9} label="Loading the wash types" />}>
+    <WashesIndexContent />
+  </Suspense>
+)
 
 export default WashesIndex

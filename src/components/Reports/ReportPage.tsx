@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import BasicTable from '../Tables/BasicTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatDate } from '../../helpers'
 import { ListSkeleton } from '../Loading'
-import { reportError } from '@/lib/reportError'
 
 /** Module scope, so omitting the prop does not hand down a new function. */
 const identity = (rows) => rows
 
-const ReportPage = ({
+const ReportPageContent = ({
   fetchReport,
   fields,
   headings,
@@ -21,47 +21,26 @@ const ReportPage = ({
   initialStartDate = formatDate(new Date()),
 }) => {
   const todayValue = formatDate(new Date())
-  let [reportData, setReportData] = useState([])
   let [startDate, setStartDate] = useState(initialStartDate)
   let [endDate, setEndDate] = useState(todayValue)
-  let [mainTotal, setMainTotal] = useState('')
-  let [loading, setLoading] = useState(true)
 
-  // Held in a ref, not closed over: depending on these props directly gives
-  // `load` a new identity whenever a caller passes an inline function, which
-  // re-runs the effect and fetches in a loop.
-  const report = useRef({ fetchReport, total, transform })
-
-  useEffect(() => {
-    report.current = { fetchReport, total, transform }
+  // The applied range is separate from the inputs, so editing a date does not
+  // refetch until Generate is pressed.
+  const [applied, setApplied] = useState({
+    from: initialStartDate,
+    to: todayValue,
   })
 
-  const load = useCallback(async (from, to) => {
-    setLoading(true)
-    try {
-      const res = await report.current.fetchReport(from, to)
-      if (report.current.total) {
-        setMainTotal(report.current.total(res))
-      }
-      setReportData(report.current.transform(res))
-    } catch (error) {
-      reportError(error, 'load the report')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const { data: reportData } = useSWR(
+    ['report', fetchReport.name, applied.from, applied.to],
+    () => fetchReport(applied.from, applied.to),
+    { keepPreviousData: true }
+  )
 
-  // startDate and endDate are deliberately absent: editing either would
-  // refetch on every keystroke instead of waiting for Generate.
-  useEffect(() => {
-    // State is set after the await, not synchronously.
-    // oxlint-disable-next-line react/set-state-in-effect
-    load(initialStartDate, todayValue)
-  }, [load, initialStartDate, todayValue])
+  const mainTotal = total ? total(reportData) : ''
+  const rows = transform(reportData)
 
-  return loading ? (
-    <ListSkeleton rows={6} columns={4} actions={false} label="Loading the report" />
-  ) : (
+  return (
     <div className="grid w-full grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-4">
       {showFilters ? (
         <>
@@ -88,7 +67,7 @@ const ReportPage = ({
             />
           </div>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row md:col-span-2 md:mt-6 md:justify-end">
-            <Button onClick={() => load(startDate, endDate)}>
+            <Button onClick={() => setApplied({ from: startDate, to: endDate })}>
               Generate Report
             </Button>
             {onDownload ? (
@@ -111,7 +90,7 @@ const ReportPage = ({
 
       <div className="mt-6 md:col-span-4">
         <BasicTable
-          records={reportData}
+          records={rows}
           fields={fields}
           headings={headings}
         />
@@ -125,5 +104,15 @@ const ReportPage = ({
     </div>
   )
 }
+
+const ReportPage = (props: React.ComponentProps<typeof ReportPageContent>) => (
+  <Suspense
+    fallback={
+      <ListSkeleton rows={6} columns={4} actions={false} label="Loading the report" />
+    }
+  >
+    <ReportPageContent {...props} />
+  </Suspense>
+)
 
 export default ReportPage

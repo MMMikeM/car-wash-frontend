@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import { getWashes, updateWashOrder } from '../../services/washTypesApi'
 import { List, arrayMove } from 'react-movable'
 import type { WashType } from '../../types'
@@ -7,31 +8,16 @@ import { toast } from '@/components/ui/toast'
 import { reportError } from '@/lib/reportError'
 import { ListSkeleton } from '../../components/Loading'
 
-const WashesOrder = () => {
-  let [washes, setWashes] = useState<WashType[]>([])
-  let [loading, setLoading] = useState(true)
-
-
-  useEffect(() => {
-    const handleFetchWashes = async () => {
-      try {
-        let res = await getWashes()
-        setWashes([...res].sort((a, b) => a.order - b.order))
-      } catch (error) {
-        reportError(error, 'load the wash types')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    handleFetchWashes()
-  }, [])
+const WashesOrderContent = () => {
+  const { data } = useSWR('the wash order', getWashes)
+  const [draft, setDraft] = useState<WashType[]>()
+  const washes = draft ?? [...data].sort((a, b) => a.order - b.order)
 
   const handleChange = (current: WashType[], oldIndex, newIndex) => {
     const newArray = arrayMove<WashType>(current, oldIndex, newIndex).map(
       (wash, index) => ({ ...wash, order: index })
     )
-    setWashes(newArray)
+    setDraft(newArray)
     return newArray
   }
 
@@ -47,9 +33,6 @@ const WashesOrder = () => {
 
   return (
     <div className="w-full">
-      {loading ? (
-        <ListSkeleton rows={8} columns={2} actions={false} label="Loading the wash order" />
-      ) : (
         <>
           <div
             style={{ margin: 'auto', display: 'flex', justifyContent: 'start' }}
@@ -85,9 +68,18 @@ const WashesOrder = () => {
             Save order
           </Button>
         </>
-      )}
     </div>
   )
 }
+
+const WashesOrder = () => (
+  <Suspense
+    fallback={
+      <ListSkeleton rows={8} columns={2} actions={false} label="Loading the wash order" />
+    }
+  >
+    <WashesOrderContent />
+  </Suspense>
+)
 
 export default WashesOrder

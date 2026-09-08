@@ -1,38 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
+import useSWR from 'swr'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getCustomer, saveSystemUsers } from '../../services/customersApi'
-import type { Customer } from '../../types'
 import { Button } from '@/components/ui/button'
 import { reportError } from '@/lib/reportError'
 import { FormSkeleton } from '../../components/Loading'
 
-const UserEdit = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [loading, setLoading] = useState(true)
+const currentRole = (roles: string[] = []) => {
+  if (roles.includes('manager')) return 'manager'
+  if (roles.includes('salesperson')) return 'salesperson'
+  if (roles.includes('customer')) return 'customer'
+  return ''
+}
+
+const UserEditContent = () => {
   const navigate = useNavigate()
   let { id } = useParams()
-  let [selected, setSelected] = useState('')
 
-  useEffect(() => {
-    const handleFetchCustomer = async () => {
-      try {
-        let res = await getCustomer(id)
-        setLocalCustomer(res)
-        if (res.roles.includes('manager')) {
-          setSelected('manager')
-        } else if (res.roles.includes('salesperson')) {
-          setSelected('salesperson')
-        } else if (res.roles.includes('customer')) {
-          setSelected('customer')
-        }
-      } catch (error) {
-        reportError(error, 'load the user')
-      } finally {
-        setLoading(false)
-      }
-    }
-    handleFetchCustomer()
-  }, [id])
+  const { data: localCustomer } = useSWR(['the user', id], () => getCustomer(id))
+  const [chosen, setChosen] = useState<string>()
+  const selected = chosen ?? currentRole(localCustomer.roles)
 
   const save = async (userId, body) => {
     try {
@@ -48,13 +35,13 @@ const UserEdit = () => {
   let active = 'text-1 px-4 py-2 highlighted'
 
   let handleCustomerClick = () => {
-    setSelected('customer')
+    setChosen('customer')
   }
   let handleSalespersonClick = () => {
-    setSelected('salesperson')
+    setChosen('salesperson')
   }
   let handleManagerClick = () => {
-    setSelected('manager')
+    setChosen('manager')
   }
 
   let handleSubmitClick = () => {
@@ -71,9 +58,6 @@ const UserEdit = () => {
 
   return (
     <div className="w-full">
-      {loading ? (
-        <FormSkeleton fields={2} label="Loading the user" />
-      ) : (
         <div className="max-xs mx-auto flex justify-center flex-col bg-3 py-4 rounded">
           <div className="px-2 border-b border-primary mb-4">
             <h2 className="text-white mb-3 px-4">{localCustomer.name}</h2>
@@ -120,9 +104,14 @@ const UserEdit = () => {
           /> */}
           </div>
         </div>
-      )}
     </div>
   )
 }
+
+const UserEdit = () => (
+  <Suspense fallback={<FormSkeleton fields={2} label="Loading the user" />}>
+    <UserEditContent />
+  </Suspense>
+)
 
 export default UserEdit

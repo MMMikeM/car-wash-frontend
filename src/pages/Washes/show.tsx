@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import useSWR from 'swr'
 import { ArrowLeft, SquarePen } from 'lucide-react'
 import { getWash } from '../../services/washTypesApi'
@@ -7,19 +7,13 @@ import { useParams, Link } from 'react-router-dom'
 import { transformCentsToRands } from '../../helpers'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { WashType } from '../../types'
 
-const WashShow = () => {
+const WashShowContent = () => {
   let { id } = useParams()
 
-  const { data, isLoading } = useSWR(['the wash type', id], () => getWash(id))
-  const localWash: Partial<WashType> = data ?? {}
+  const { data } = useSWR(['the wash type', id], () => getWash(id))
+  const localWash = data
 
-  if (isLoading) {
-    return (
-      <DetailSkeleton rows={4} label="Loading the wash type" />
-    )
-  }
 
   return (
     <div className="w-full max-w-lg mx-auto">
@@ -75,5 +69,11 @@ const WashShow = () => {
     </div>
   )
 }
+
+const WashShow = () => (
+  <Suspense fallback={<DetailSkeleton rows={4} label="Loading the wash type" />}>
+    <WashShowContent />
+  </Suspense>
+)
 
 export default WashShow

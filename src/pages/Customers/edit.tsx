@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import useSWR from 'swr'
 import { getCustomer, saveCustomer } from '../../services/customersApi'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { reportError } from '@/lib/reportError'
 import { Button } from '@/components/ui/button'
 import { FormSkeleton } from '../../components/Loading'
 
-const CustomersEdit = () => {
+const CustomersEditContent = () => {
   const [draft, setDraft] = useState<Partial<Customer>>()
 
   const navigate = useNavigate()
@@ -35,20 +35,13 @@ const CustomersEdit = () => {
     }
   }
 
-  const { data, isLoading } = useSWR(['the customer', id], () => getCustomer(id))
+  const { data } = useSWR(['the customer', id], () => getCustomer(id))
   const localCustomer: Partial<Customer> = draft ?? data ?? {}
 
   let handleClick = () => {
     navigate(`/settings/users/${id}/edit`)
   }
 
-  if (isLoading) {
-    return (
-      <div className="w-full">
-        <FormSkeleton fields={5} label="Loading the customer" />
-      </div>
-    )
-  }
 
   return (
     <div className="w-full">
@@ -67,5 +60,11 @@ const CustomersEdit = () => {
     </div>
   )
 }
+
+const CustomersEdit = () => (
+  <Suspense fallback={<FormSkeleton fields={5} label="Loading the customer" />}>
+    <CustomersEditContent />
+  </Suspense>
+)
 
 export default CustomersEdit

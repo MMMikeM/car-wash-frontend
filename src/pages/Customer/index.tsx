@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import useSWR from 'swr'
 import Washes from '../Washes/customerIndex'
 import {
   CircularProgressbarWithChildren,
@@ -13,24 +14,19 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const CustomerHome = () => {
-  let [localCustomer, setLocalCustomer] = useState<Partial<Customer>>({})
-  let [loading, setLoading] = useState(true)
   let [isViewingPrice, setIsViewingPrice] = useState(false)
 
-  useEffect(() => {
-    const handleFetchCustomer = async () => {
-      try {
-        let res = await getCustomer(sessionStorage.getItem('id'))
-        setLocalCustomer(res)
-      } catch (error) {
-        reportError(error, 'load your profile')
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Not suspended: the greeting and the ring sit among static copy, so the
+  // placeholders go inside the headings rather than replacing the page.
+  const { data, isLoading } = useSWR(
+    ['the customer', sessionStorage.getItem('id')],
+    () => getCustomer(sessionStorage.getItem('id')),
+    // Opting out of Suspense means opting out of the boundary, so this read
+    // reports its own failure.
+    { suspense: false, onError: (error) => reportError(error, 'load your profile') }
+  )
+  const localCustomer: Partial<Customer> = data ?? {}
 
-    handleFetchCustomer()
-  }, [])
 
   let classCreator = (bgNumber) =>
     `bg-${bgNumber} w-1/2 text-primary hover:text-primary/80 rounded-0 btn-link py-0 border-0 d-block button-to-link h-full`
@@ -45,19 +41,19 @@ const CustomerHome = () => {
             <div className="flex flex-col items-center">
               {/* The placeholders sit inside the real headings, so the
                   surrounding copy and the line boxes never move. */}
-              <h4 className="text-9 my-3 mx-3" aria-busy={loading}>
+              <h4 className="text-9 my-3 mx-3" aria-busy={isLoading}>
                 Welcome{' '}
-                {loading ? (
+                {isLoading ? (
                   <Skeleton className="inline-block h-[1em] w-32 align-middle" />
                 ) : (
                   localCustomer.name
                 )}
                 !
               </h4>
-              <h4 className="text-7 my-3 mx-3" aria-busy={loading}>
+              <h4 className="text-7 my-3 mx-3" aria-busy={isLoading}>
                 You have{' '}
                 <span className="text-primary">
-                  {loading ? (
+                  {isLoading ? (
                     <Skeleton className="inline-block h-[1em] w-10 align-middle" />
                   ) : (
                     localCustomer.total_points

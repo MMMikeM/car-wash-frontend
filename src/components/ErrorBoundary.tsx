@@ -21,9 +21,16 @@ const Fallback = ({ error, resetErrorBoundary }: FallbackProps) => (
   </Card>
 )
 
-export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => (
+export const ErrorBoundary = ({
+  children,
+  resetKeys,
+}: {
+  children: React.ReactNode
+  resetKeys?: unknown[]
+}) => (
   <Boundary
     FallbackComponent={Fallback}
+    resetKeys={resetKeys}
     onError={(error, info) =>
       console.error('Unhandled error while rendering:', error, info.componentStack)
     }

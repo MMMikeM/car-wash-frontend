@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import useSWR from 'swr'
 import BasicCard from '../../components/BasicCard'
 import Links, { MAPS_URL } from '../../components/Links'
@@ -6,15 +6,20 @@ import { getWashes } from '../../services/washTypesApi'
 import { transformWashesCentsToRands } from '../../helpers'
 import { CardGridSkeleton } from '../../components/Loading'
 
-const Washes = () => {
-
-  const { data, isLoading } = useSWR('the wash prices', getWashes)
-  const washes = data ? transformWashesCentsToRands(data) : []
-
-  const priced = washes
+const PriceGrid = () => {
+  const { data } = useSWR('the wash prices', getWashes)
+  const priced = transformWashesCentsToRands(data)
     .filter((wash) => wash.free == false)
-    .sort((a, b) => (a.order > b.order ? 1 : -1))
+    .sort((a, b) => a.order - b.order)
 
+  return (
+    <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
+      <BasicCard data={priced} />
+    </div>
+  )
+}
+
+const Washes = () => {
   return (
     <div className="w-full">
       <section className="flex flex-col items-center px-4 pb-10 text-center">
@@ -56,13 +61,13 @@ const Washes = () => {
         <h2 className="font-heading mb-6! text-center text-2xl! uppercase tracking-wide text-muted-foreground">
           Our Washes
         </h2>
-        {isLoading ? (
-          <CardGridSkeleton cards={9} label="Loading the wash prices" />
-        ) : (
-          <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
-            <BasicCard data={priced} />
-          </div>
-        )}
+        <Suspense
+          fallback={
+            <CardGridSkeleton cards={9} label="Loading the wash prices" />
+          }
+        >
+          <PriceGrid />
+        </Suspense>
       </section>
 
       <details className="mx-auto mt-16 max-w-4xl px-4 text-sm">
