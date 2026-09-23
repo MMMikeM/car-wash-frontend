@@ -13,7 +13,7 @@ const SettingsContent = () => {
   const systemUsers = data
 
   const editUser = (user) => {
-    navigate(`users/${user.id}/edit`)
+    navigate(`/settings/users/${user.id}/edit`)
   }
 
   const handleAdd = () => {
