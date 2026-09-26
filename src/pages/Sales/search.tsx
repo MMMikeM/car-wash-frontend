@@ -21,7 +21,7 @@ const SearchResults = ({ contactNumber }: { contactNumber: string | null }) => {
         <div className="flex justify-between mt-2">
           <Button
             className="px-5"
-            onClick={() => navigate(`/new_customer/q?contact=${contactNumber}`)}
+            onClick={() => navigate(`/new_customer?contact=${contactNumber}`)}
           >
             Create new customer
           </Button>
@@ -57,7 +57,7 @@ const SearchResults = ({ contactNumber }: { contactNumber: string | null }) => {
       <div className="flex justify-between mt-2">
         <Button
           className="px-5"
-          onClick={() => navigate(`/new_customer/q?contact=${contactNumber}`)}
+          onClick={() => navigate(`/new_customer?contact=${contactNumber}`)}
         >
           Create new customer
         </Button>

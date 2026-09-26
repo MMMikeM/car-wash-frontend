@@ -21,7 +21,7 @@ const Login = () => {
       } else if (roles.includes('salesperson')) {
         window.location.assign(`${import.meta.env.REACT_APP_URL}/customers/search`)
       } else {
-        window.location.assign(`${import.meta.env.REACT_APP_URL}/profile`)
+        window.location.assign(`${import.meta.env.REACT_APP_URL}/`)
       }
     }
   }, [])

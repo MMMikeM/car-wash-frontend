@@ -15,7 +15,7 @@ const SettingsContent = () => {
   const washes = transformWashesCentsToRands(data)
 
   const editFreeWash = (wash) => {
-    navigate(`settings/${wash.id}/edit`)
+    navigate(`/settings/${wash.id}/edit`)
   }
 
 
